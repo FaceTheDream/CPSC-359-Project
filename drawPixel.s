@@ -58,8 +58,10 @@ drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	
 	
 drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagonalD as parameters
+	push(r3-r9)
 	
-
+	pop(r3-r9)
+	bx	lr
 
 drawCircle:
 
