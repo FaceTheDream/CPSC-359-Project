@@ -3,6 +3,7 @@
 .section .init
 .globl drawPixel
 .globl drawRect
+.globl drawLine
 
 .section .text
 
