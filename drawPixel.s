@@ -58,12 +58,87 @@ drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	
 	
 drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagonalD as parameters
-	push(r3-r9)
-	
+	push(r3-r10)
+	ldr   r0, [sp,#40] // x
+	ldr	  r1, [sp,#44] // y
+	ldr   r2, [sp,#60] // colour
+	ldr   r3, [sp,#52] // length
+	ldr   r4, [sp,#56] // thickness
+	ldr   r5, [sp,#48] // direction
+	sub   r6, r4, #1
+	rsl   r6, #1 // a
+	mov   r7, #0 // i
+	mov   r8, r0 // x (constant)
+	mov   r9, r1 // y (constant)
+	dLFL1s:
+	cmp   r7, r3
+	bge   dLFL1e
+	mov   r0, r8
+	mov   r1, r9
+	b     drawPixel
+	cmp   r4, #1
+	ble   afterif1
+	and   r0, r5, #2
+	srl   r0, #1
+	and   r1, r5, #4
+	srl   r1, #2
+	orr   r0, r1
+	cmp   r0, #1
+	bne   afterif1
+	sub   r0, r8, r6
+	mov   r1, r9
+	mov   r10, #1
+	push{r0,r1,r2,r6,r10}
+	b     drawRect
+	pop{r0,r1,r2,r6,r10}
+	mov    r0, r8
+	push{r0,r1,r2,r6,r10}
+	b     drawRect
+	pop{r0,r1,r2,r6,r10}
+	afterif1:
+	and   r0, r5, #1
+	cmp   r0, #1
+	bne   afterif2
+	cmp	  r4, #1
+	ble   afterif3
+	push{r4}
+	mov   r0, #1
+	push{r0}
+	push{r2}
+	mov   r0,r8
+	sub   r1,r9,r4
+	push{r0,r1}
+	b     drawRect
+	pop{r0,r1}
+	pop{r0,r1}
+	pop{r0}
+	push{r4}
+	mov   r0, #1
+	push{r0}
+	mov   r0, r8
+	mov   r1, r9
+	push{r0,r1,r2}
+	b     drawRect
+	pop{r0,r1}
+	pop{r0,r1}
+	pop{r0}
+	afterif3:
+	add   r8, #1
+	afterif2:
+	tst  r5, #2
+	bne  ifpart2
+	add  r9, #1
+	ifpart2:
+	tst r5, #4
+	bne  afterif4
+	sub  r9, #1
+	afterif4:
+	add  r7, #1
+	b    dLFL1s
+	dLFL1e:	
 	pop(r3-r9)
 	bx	lr
 
-drawCircle:
 
 drawTriangle:
 
@@ -73,18 +148,9 @@ drawSquare:
 
 drawStripedCircle:
 
-drawCircleB: //bordered circle
-
-drawArc:
-
-drawHalfCircle:
-
 drawRectB: //rectangle with border
 
 drawBG: //draw background colour
-
-
-drawFlower: //draw multiple circles in a flower-like shape
 
 drawBee: //draw a bee with size and colour of yellow stripes being variables
 
@@ -103,4 +169,3 @@ drawLazer: //draws player lazer projectile
 drawBeeSting: //draws bee bullet projectile
 
 drawCursor: //draws cursor for use on pause menu
-
