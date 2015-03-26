@@ -16,9 +16,9 @@ drawRect(x,y,colour,lenX,lenY) { //(x,y), top left starting position, lenX=lengt
  * direction = 101 // diagonal up (y--,x++) (start at bottom left)
 */
 drawLine(x,y,direction,length,thickness,colour) {
-	for ( i = 0; i < length; i++) {
-		a = thickness - 1
+	a = thickness - 1
 		a = a/2
+	for ( i = 0; i < length; i++) {
 		drawPixel(x,y,colour)
 		if ( (direction & 2 == 1 || direction & 4 == 1) && thickness > 1) {
 			drawRect(x-a,y,colour,a,1)
