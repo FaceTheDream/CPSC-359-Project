@@ -80,3 +80,28 @@ drawTriangleRight(x,y,height,colour) {
 		drawLine(x-i,y+i,1,2*i+1,colour)
 	}
 }
+
+//(x,y) is the midpoint on the bottom of the crown
+// four-point crown
+drawCrown(x,y,width,height) {
+	
+}
+
+drawBee(x,y,colour,size) {
+
+}
+
+drawBeePawn(x,y) {
+	drawBee(x,y,yellow,normal)
+}
+
+drawBeeKnight(x,y) {
+	drawBee(x,y,red,normal*1.5)
+}
+
+drawBeeQueen(x,y) {
+	drawBee(x,y,yellow,normal*2)
+	x = (start point of crown)
+	y = (start point of crown)
+	drawCrown(x,y,queenCWid,queenCHeight)
+}
