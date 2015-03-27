@@ -105,3 +105,13 @@ drawBeeQueen(x,y) {
 	y = (start point of crown)
 	drawCrown(x,y,queenCWid,queenCHeight)
 }
+
+drawBush(x,y) // draws green rectangular 'bush'
+
+drawPlayer(x,y) // draw brown bear with white helmet, very blocky
+
+drawLazer(x,y) // red rectangle that is the lazer
+
+drawBeeSting(x,y,direction) // black triangle that is the bees' bullets
+
+drawCursor(x,y) // Some colour right-pointing triangle that points to the option to be selected
