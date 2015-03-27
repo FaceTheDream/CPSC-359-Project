@@ -47,14 +47,36 @@ drawLine(x,y,direction,length,thickness,colour) {
 // direction = 11 = right
 drawTriangle(x,y,height,colour,direction) {
 	if (direction == 0) {
-		for ( i = 0; i < height; i++) {
-			drawLine(x-i,y+i,1,2*i+1,1,colour)
-		}
+		drawTriangleUp(x,y,height,colour)
 	} else if (direction == 1) {
-		
+		drawTriangleDown(x,y,height,colour)
 	} else if (direction == 2) {
-		
+		drawTriangleLeft(x,y,height,colour)
 	} else {
-		
+		drawTriangleRight(x,y,height,colour)
+	}
+}
+
+drawTriangleUp(x,y,height,colour) {
+	for ( i = 0; i < height; i++) {
+		drawLine(x-i,y+i,1,2*i+1,1,colour)
+	}
+}
+
+drawTriangleDown(x,y,height,colour) {
+	for ( i = 0; i < height; i++) {
+		drawLine(x-i,y-i,1,2*i+1,colour)
+	}
+}
+
+drawTriangleLeft(x,y,height,colour) {
+	for ( i = 0; i < height; i++) {
+		drawLine(x+i,y+i,1,2*i+1,colour)
+	}
+}
+
+drawTriangleRight(x,y,height,colour) {
+	for ( i = 0; i < height; i++) {
+		drawLine(x-i,y+i,1,2*i+1,colour)
 	}
 }
