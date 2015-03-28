@@ -47,18 +47,16 @@ InitUArt:
     lsl r2, #12
     bic r1, r2
 
+    bx, lr
+
 */
-.globl readController
+.globl initSNES
 
 .equ GPFSEL1, 0x20200004
 .equ GPFSEL0, 0x20200000
 
 
-readController:
-    buttons .req    r0
-
-    mov buttons, 0
-
+initSNES:
     //Setting GPIO pin 11 (Clock) to output
 
     mov r1, #3
@@ -76,7 +74,7 @@ readController:
     mov r1, #27
     ldr r2, =GPFSEL0
     mov r3, #0b0111
-    lsl r3, r1          //creats the mask to clear bits
+    lsl r3, r1          //creates the mask to clear bits
     bic r1, r2          //clears pin 9 bits
     mov r3, #1          //output function code
     lsl r3, r1          //shifts output function code to match pin 9
@@ -92,7 +90,9 @@ readController:
     bic r1, r2          //clears pin 10 bits
     str r1, [r0]        //write back to GPFSEL1
 
+    bx, lr
 
+.globl writeClock
     // Write r0 value to Clock
 writeClock:
     mov r1, #11          //sets pin 11
@@ -103,7 +103,11 @@ writeClock:
     streq r3, [r2, #40] //clears if r0=0
     strne r3, [r2, #28] //writes if r0=1
 
+    bx, lr
+
+
     // Write r0 value to Latch
+.globl writeLatch
 writeLatch:
     mov r1, #9          //sets pin 9
     ldr r2, =GPFSEL0    //sets GPFSEL0
@@ -113,9 +117,12 @@ writeLatch:
     streq r3, [r2, #40] //clears if r0=0
     strne r3, [r2, #28] //writes if r0=1
 
+    bx, lr
+
     /*Read from Data, only reads one bit
-     *Return: r4 = bit held in data
+     *Return: r0 = bit held in data
      */
+.globl readData
 readData:
     r0 = #10            //sets pin 10
     ldr r2, =GPFSEL0    //sets GPFSEL0
@@ -124,21 +131,81 @@ readData:
     lsl r3, r0          //aligns pin 10 bit
     and r1, r3          //masks everything else
     teq r1, #0
-    moveq r4, #0        //return 0
-    movne r4, #1        //return 1
+    moveq r0, #0        //return 0
+    movne r0, #1        //return 1
+
+    bx lr
 
     //Clock loop, where r0 is the time delay in micro seconds
+.globl simpleWait
 simpleWait:
     ldr r1, =0x20003004 //address of CLO
-    ldr r1, [r0]        //reads CLO
+    ldr r1, [r1]        //reads CLO
     add r1, r0          //adds time delay
 waitLoop:
     ldr r2, [r0]        //loads current CLO
     cmp r1, r2          //compares current CLO with CLO + time delay
     bhi waitLoop        //branches when times match up
 
+    bx lr
 
 
+    //Read from SNES
+.globl readSNES
+readSNES:
+    buttons .req    r5  //Sets register to store buttons
+    mov buttons, #0
+
+    mov r0, 1           //writes 1 to clock
+    bl writeClock
+
+    mov r0, 1           //writes 1 to latch
+    bl writeLatch
+
+    mov r0, 12          //waits 12 microseconds
+    bl simpleWait
+
+    mov r0, 0           //writes 0 to latch
+    bl writeLatch
+
+pulseLoop:
+    i .req          r6  //sets register to store iterator
+    mov i, #0
+
+    mov r0, 6           //waits 6 microseconds
+    bl simpleWait
+
+    mov r0, 0           //writes 0 to clock
+    bl writeClock
+
+    mov r0, 6           //waits 6 microseconds
+    bl simpleWait
+
+    bl readData         //reads data and stores it in buttons
+    teq r0, #0
+    beq add0
+
+    eor buttons, #1     //places a 1 in bit 0, then rotates right
+    ror buttons, #1
+    b   finishReading
+
+add0:
+    ror buttons, #1     //rotates right, (stores a 0 bit)
+
+finishReading:
+    mov r0, 1           //writes 1 to clock
+    bl writeClock
+
+    add i, #1           //increments i
+    teq i, #16
+    blt pulseLoop       //branches if i < 16 to start of loop
+
+    ror buttons, #16    //rotates to get the correct format
+    mov r0, buttons     //moves buttons to r0 to be returned
+    unreq.  buttons     //unregisters buttons
+    unreq.  i           //unregisters iterator
+
+    bx lr
     
 
 
@@ -213,3 +280,95 @@ FrameBufferInfo:
 .globl FrameBufferPointer
 FrameBufferPointer:
     .int    0
+
+/*  interupt stuff
+
+hang:
+	b		hang
+
+InstallIntTable:
+	ldr		r0, =IntTable
+	mov		r1, #0x00000000
+
+	// load the first 8 words and store at the 0 address
+	ldmia	r0!, {r2-r9}
+	stmia	r1!, {r2-r9}
+
+	// load the second 8 words and store at the next address
+	ldmia	r0!, {r2-r9}
+	stmia	r1!, {r2-r9}
+
+	// switch to IRQ mode and set stack pointer
+	mov		r0, #0xD2
+	msr		cpsr_c, r0
+	mov		sp, #0x8000
+
+	// switch back to Supervisor mode, set the stack pointer
+	mov		r0, #0xD3
+	msr		cpsr_c, r0
+	mov		sp, #0x8000000
+
+	bx		lr	
+
+irq:
+	push	{r0-r12, lr}
+
+	// test if there is an interrupt pending in IRQ Pending 2
+	ldr		r0, =0x2000B200
+	ldr		r1, [r0]
+	tst		r1, #0x200		// bit 9
+	beq		irqEnd
+
+	// test that at least one GPIO IRQ line caused the interrupt
+	ldr		r0, =0x2000B208		// IRQ Pending 2 register
+	ldr		r1, [r0]
+	tst		r1, #0x001E0000
+	beq		irqEnd
+
+	// test if GPIO line 10 caused the interrupt
+	ldr		r0, =0x20200040		// GPIO event detect status register
+	ldr		r1, [r0]
+	tst		r1, #0x400			// bit 10
+	beq		irqEnd
+
+	// invert the LSB of SNESDat
+	ldr		r0, =SNESDat
+	ldr		r1, [r0]
+	eor		r1, #1
+	str		r1, [r0]
+
+	// clear bit 10 in the event detect register
+	ldr		r0, =0x20200040
+	mov		r1, #0x400
+	str		r1, [r0]
+	
+irqEnd:
+	pop		{r0-r12, lr}
+	subs	pc, lr, #4
+
+.section .data
+
+SNESDat:
+	.int	1
+
+IntTable:
+	// Interrupt Vector Table (16 words)
+	ldr		pc, reset_handler
+	ldr		pc, undefined_handler
+	ldr		pc, swi_handler
+	ldr		pc, prefetch_handler
+	ldr		pc, data_handler
+	ldr		pc, unused_handler
+	ldr		pc, irq_handler
+	ldr		pc, fiq_handler
+
+reset_handler:		.word InstallIntTable
+undefined_handler:	.word hang
+swi_handler:		.word hang
+prefetch_handler:	.word hang
+data_handler:		.word hang
+unused_handler:		.word hang
+irq_handler:		.word irq
+fiq_handler:		.word hang
+
+*/
