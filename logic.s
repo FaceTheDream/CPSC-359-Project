@@ -34,7 +34,7 @@ npcStuff:
 	cmp r1, r0
 	bge afterNpc
 	//make r4 = 1 if current npc is dead
-	cmp r1, #1
+	cmp r4, #1
 	bge npcStuff
 	//puts random number %4 in r2
 	mov r3, #69069
