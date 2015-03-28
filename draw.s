@@ -324,10 +324,37 @@ drawBeeBody:
 	// r1, top left y
 	// r2, size multiplier (will be included in a shift operation, ex: 2^r2)
 	// [sp], non-black colour
+	// nine-striped bees
 	push{r3-r8}	// save registers
+	mov	r8, r2
+	mov	r3, r0
+	mov	r4, r1
+	mov	r5, #0  // stripe counter initialization
+	ldr	r6, =beeBlackColour
+	ldr	r6, [r6] //black colour
+	ldr	r7, [sp,#24]
+	startStripBeeLoop:
+	cmp	r5, #10
+	bge	endStripBeeLoop
+	mov	r0, #5 //init stripe xlength
+	lsl	r0, r8 // adjust stripe xlength
+	mov	r1, #90 //init bee height
+	lsl	r1, r8 // adjusted bee height
+	push{r1}
+	push{r0}
+	
+	stripecolourif:
 	
 	
+	stipecolourelse:
 	
+	//if r5 mod 2 == 0 {colour=black} else {colour=yellow} then store colour
+	
+	
+	bl	drawRect
+	
+	add	r5, #1	//increment stripe counter
+	endStripBeeLoop:
 	pop{r3-r8}	// restore registers
 	bx	lrq	// branch to calling code
 
@@ -356,5 +383,6 @@ drawCursor: //draws cursor for use on pause menu
 
 .section .data
 
-beeStingSize:  int   6
-lazerSize:     int   50, 8
+beeBlackColour: .word	0x000000
+beeStingSize:  .int   6
+lazerSize:     .int   50, 8
