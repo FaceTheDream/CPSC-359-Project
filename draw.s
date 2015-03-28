@@ -9,6 +9,8 @@
 .globl drawTriangleDown
 .globl drawTriangleLeft
 .globl drawTriangleRight
+.globl drawBeeBody
+.globl drawRectB
 
 .section .text
 
@@ -23,7 +25,7 @@ drawPixel: //r0 is assumed to be the x location, r1 is assumed to be the y locat
 	cmp    r1,    0                      //check min y
 	blt    endDrawPixel                  //
 	
-	mul    r0,    #1024                  //row-major
+	mul    r1,    #1024                  //row-major
 	add    r0,    r1                     //
 	lsl    r0,    #3                     //8-bit colour assumed
 	ldr    r1,    =frameBufferPointer    // should get frameBuffer location from file that contains frameBuffer information
@@ -418,8 +420,7 @@ drawRectB: //rectangle with border
 	bx	lr
 	
 
-
-drawBee: //draw a bee with size and colour of yellow stripes being variables
+drawBeeWings:
 
 drawBeeP: //draws pawn bee
 
@@ -430,6 +431,10 @@ drawBeeQ: //draws queen bee
 drawPlayer: //draws player
 
 drawBush: //draws "bush" cover
+	//r0 is the x location
+	//r1 is the y location
+	//r2 is the size of the bush (bush is square)
+	
 
 drawLazer: //draws player lazer projectile
 	// r0 is x location
@@ -481,6 +486,7 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 .section .data
 
 beeBlackColour: .word	0x000000
+bushColour:	.word
 cursorColour:	.word
 lazerColour:	.word
 beeStingSize:  .int   6
