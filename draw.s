@@ -476,7 +476,6 @@ drawBeeP: //draws pawn bee (top left)
 	mov	r2, r7
 	bl	drawBeeWings
 	//now both body and wings are drawn
-	
 	pop {r3-r10}
 	bx	lr
 
