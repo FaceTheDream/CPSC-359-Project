@@ -32,7 +32,30 @@ drawPixel: //r0 is assumed to be the x location, r1 is assumed to be the y locat
 	
 endDrawPixel:
 	bx     lr                            //
-	
+
+drawBG: //r0 is the colour to set the background to
+	push{r3-r5}
+	mov	r5, r0 //colour
+	mov	r3, #0 //row number
+	rowBGloops:
+	cmp	r3, #1024
+	bge	rowBGloope
+	mov	r4, #0 //column number
+	colBGloops:
+	cmp	r4, #768
+	bge	colBGloope
+	mov	r0, r3	//set x to draw
+	mov	r1, r4 //set y to draw
+	mov	r2, r5 //set colour to draw
+	bl	drawPixel
+	add	r4, #1
+	b	colBGloops
+	colBGloope:
+	add	r3, #1
+	b	rowBGloops
+	rowBGloope:
+	pop{r3-r5}
+	bx	lr
 	
 drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	push{r3,r4,r5,r6,r7,r8}
@@ -150,7 +173,7 @@ push{r3-r8}
 mov	r3, r0 //x
 mov	r4, r1 //y
 mov	r5, r2 // height
-ldr	r6, [sp,#20] //colour
+ldr	r6, [sp,#24] //colour
 mov	r7, #0 // i
 dtufl1start: //draw triangle up for loop 1 start
 cmp	r7, r5
@@ -181,7 +204,7 @@ push{r3-r7}
 mov	r3, r0 //x
 mov	r4, r1 //y
 mov	r5, r2 // height
-ldr	r6, [sp,#16] //colour
+ldr	r6, [sp,#20] //colour
 mov	r7, #0 // i
 dtdfl1start: //draw triangle down for loop 1 start
 cmp	r7, r5
@@ -212,7 +235,7 @@ push{r3-r7}
 mov	r3, r0 //x
 mov	r4, r1 //y
 mov	r5, r2 // height
-ldr	r6, [sp,#16] //colour
+ldr	r6, [sp,#20] //colour
 mov	r7, #0 // i
 dtlfl1start: //draw triangle left for loop 1 start
 cmp	r7, r5
@@ -242,7 +265,7 @@ push{r3-r7}
 mov	r3, r0 //x
 mov	r4, r1 //y
 mov	r5, r2 // height
-ldr	r6, [sp,#16] //colour
+ldr	r6, [sp,#20] //colour
 mov	r7, #0 // i
 dtrfl1start: //draw triangle right for loop 1 start
 cmp	r7, r5
