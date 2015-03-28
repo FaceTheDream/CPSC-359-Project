@@ -467,7 +467,17 @@ drawBeeP: //draws pawn bee (top left)
 	bl	drawBeeBody //draw bee body
 	add	sp, #4
 	mov	r6, r4
-	add	r6, 
+	add	r6, #90 //add in bee body width (will probably need to be changed later) POTENTIAL DISEMBODIED WING ERROR
+	sub	r6, #5 //breathing room
+	ldr	r7, =wingLength
+	ldr	r7, [r7]
+	sub	r6, r7
+	mov	r0, r6
+	mov	r1, r5
+	add	r1, #15 //more natural looking wings
+	mov	r2, r7
+	bl	drawBeeWings
+	//now both body and wings are drawn
 	
 	pop{r3-r10}
 	bx	lr
