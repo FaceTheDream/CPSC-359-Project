@@ -1,5 +1,3 @@
-//include(frameBuffer) should have a line to include/reference the frameBuffer initialization file
-
 .section .init
 .globl drawPixel
 .globl drawBG
