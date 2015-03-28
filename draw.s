@@ -10,6 +10,7 @@
 .globl drawTriangleLeft
 .globl drawTriangleRight
 .globl drawBeeBody
+.globl drawBeeWings
 .globl drawRectB
 
 .section .text
