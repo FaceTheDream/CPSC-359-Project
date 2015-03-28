@@ -156,29 +156,29 @@ readSNES:
     buttons .req    r5  //Sets register to store buttons
     mov buttons, #0
 
-    mov r0, 1           //writes 1 to clock
+    mov r0, #1           //writes 1 to clock
     bl writeClock
 
-    mov r0, 1           //writes 1 to latch
+    mov r0, #1           //writes 1 to latch
     bl writeLatch
 
-    mov r0, 12          //waits 12 microseconds
+    mov r0, #12          //waits 12 microseconds
     bl simpleWait
 
-    mov r0, 0           //writes 0 to latch
+    mov r0, #0           //writes 0 to latch
     bl writeLatch
 
 pulseLoop:
     i .req          r6  //sets register to store iterator
     mov i, #0
 
-    mov r0, 6           //waits 6 microseconds
+    mov r0, #6           //waits 6 microseconds
     bl simpleWait
 
-    mov r0, 0           //writes 0 to clock
+    mov r0, #0           //writes 0 to clock
     bl writeClock
 
-    mov r0, 6           //waits 6 microseconds
+    mov r0, #6           //waits 6 microseconds
     bl simpleWait
 
     bl readData         //reads data and stores it in buttons
@@ -193,7 +193,7 @@ add0:
     ror buttons, #1     //rotates right, (stores a 0 bit)
 
 finishReading:
-    mov r0, 1           //writes 1 to clock
+    mov r0, #1           //writes 1 to clock
     bl writeClock
 
     add i, #1           //increments i
@@ -202,8 +202,8 @@ finishReading:
 
     ror buttons, #16    //rotates to get the correct format
     mov r0, buttons     //moves buttons to r0 to be returned
-    unreq.  buttons     //unregisters buttons
-    unreq.  i           //unregisters iterator
+    .unreq  buttons     //unregisters buttons
+    .unreq  i           //unregisters iterator
 
     bx lr
     
@@ -259,39 +259,39 @@ noPixel$:
 
 .globl drawScore
 drawScore:
-    mov r1, 0
-    mov r2, 0
-    mov r3, 0xFFFFFF
+    mov r1, #0
+    mov r2, #0
+    mov r3, #0xFFFFFF
     mov r0, #'S'
     bl drawChar
 
-    mov r1, 10
-    mov r2, 0
-    mov r3, 0xFFFFFF
+    mov r1, #10
+    mov r2, #0
+    mov r3, #0xFFFFFF
     mov r0, #'c'
     bl drawChar
 
-    mov r1, 20
-    mov r2, 0
-    mov r3, 0xFFFFFF
+    mov r1, #20
+    mov r2, #0
+    mov r3, #0xFFFFFF
     mov r0, #'o'
     bl drawChar
 
-    mov r1, 30
-    mov r2, 0
-    mov r3, 0xFFFFFF
+    mov r1, #30
+    mov r2, #0
+    mov r3, #0xFFFFFF
     mov r0, #'r'
     bl drawChar
 
-    mov r1, 40
-    mov r2, 0
-    mov r3, 0xFFFFFF
+    mov r1, #40
+    mov r2, #0
+    mov r3, #0xFFFFFF
     mov r0, #'e'
 
     bl drawChar
-    mov r1, 50
-    mov r2, 0
-    mov r3, 0xFFFFFF
+    mov r1, #50
+    mov r2, #0
+    mov r3, #0xFFFFFF
     mov r0, #':'
     bl drawChar
 
@@ -377,7 +377,7 @@ drawHundred:
 drawTen:
     mov r1, #70
     mov r2, #0
-    mov r3, 0xFFFFFF
+    mov r3, #0xFFFFFF
     b drawChar
 
     cmp r4, #9
