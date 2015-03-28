@@ -420,7 +420,37 @@ drawRectB: //rectangle with border
 	bx	lr
 	
 
-drawBeeWings:
+drawBeeWings: //very boxy wings
+	//r0 is x location
+	//r1 is y location
+	//r2 is size (square-ish)
+	push{r3-r6}
+	mov	r3, r0 //x
+	mov	r4, r1 //y
+	mov	r5, r2 //size
+	ldr	r6, =beeWingColour
+	ldr	r6, [r6] //colour
+	push{r5}
+	push{r5}
+	push{r6}
+	push{r4}
+	push{r3}
+	bl	drawRect //main wing
+	add	sp, #20
+	sub	r4,#1
+	push{r6}
+	mov	r0, #1
+	push{r0}
+	sub	r1,r2,#2
+	push{r1}
+	push{r0}
+	add	r1,r3,#1
+	sub	r0,r4,#1
+	push{r0,r1}
+	call	drawLine  //hint of wing-curve
+	add	sp, #20
+	pop{r3-r6}
+	bx	lr
 
 drawBeeP: //draws pawn bee
 
@@ -497,6 +527,8 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 .section .data
 
 beeBlackColour: .word	0x000000
+beeStingColour:	.word	
+beeWingColour:	.word	
 bushColour:	.word
 cursorColour:	.word
 lazerColour:	.word
