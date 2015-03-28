@@ -90,7 +90,7 @@ initSNES:
     bic r1, r2          //clears pin 10 bits
     str r1, [r0]        //write back to GPFSEL1
 
-    bx, lr
+    bx lr
 
 .globl writeClock
     // Write r0 value to Clock
@@ -103,7 +103,7 @@ writeClock:
     streq r3, [r2, #40] //clears if r0=0
     strne r3, [r2, #28] //writes if r0=1
 
-    bx, lr
+    bx lr
 
 
     // Write r0 value to Latch
@@ -117,14 +117,14 @@ writeLatch:
     streq r3, [r2, #40] //clears if r0=0
     strne r3, [r2, #28] //writes if r0=1
 
-    bx, lr
+    bx lr
 
     /*Read from Data, only reads one bit
      *Return: r0 = bit held in data
      */
 .globl readData
 readData:
-    r0 = #10            //sets pin 10
+    mov r0, #10            //sets pin 10
     ldr r2, =GPFSEL0    //sets GPFSEL0
     ldr r1, [r2, #52]   //sets GPLEV0
     mov r3, #1
