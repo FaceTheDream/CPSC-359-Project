@@ -65,19 +65,19 @@ drawTriangleUp(x,y,height,colour) {
 
 drawTriangleDown(x,y,height,colour) {
 	for ( i = 0; i < height; i++) {
-		drawLine(x-i,y-i,1,2*i+1,colour)
+		drawLine(x-i,y-i,1,2*i+1,1,colour)
 	}
 }
 
 drawTriangleLeft(x,y,height,colour) {
 	for ( i = 0; i < height; i++) {
-		drawLine(x+i,y+i,1,2*i+1,colour)
+		drawLine(x+i,y+i,2,2*i+1,1,colour)
 	}
 }
 
 drawTriangleRight(x,y,height,colour) {
 	for ( i = 0; i < height; i++) {
-		drawLine(x-i,y+i,1,2*i+1,colour)
+		drawLine(x-i,y+i,2,2*i+1,1,colour)
 	}
 }
 
