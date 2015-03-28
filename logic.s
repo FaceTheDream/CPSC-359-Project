@@ -42,7 +42,7 @@ npcStuff:
 	ldr r2, [r2] //current clock value
 	mul r2, r3, r2
 	add r2, r3, r2
-	mov r2, r2 MOD 4 //this might not work
+	mov r2, r2 MOD 4 //this might not work, refer to http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.kui0008a/a166_op_mod.htm
 	cmp r2, #0
 	beq //move npc up subroutine
 	cmp r2, #1
@@ -62,7 +62,9 @@ npcStuff:
 	b npcStuff
 	
 afterNpc:
-	//detect collisions
+	//detect collisions:
+	//if bullet is overlapped by player, player is hit
+	//if bullet is overlapped by npc, npc is hit
 	//if player is hit, score - 10
 	//if npc is hit, hp - 1
 	//if npc hp = 0, kill npc and increase score
