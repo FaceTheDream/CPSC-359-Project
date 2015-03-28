@@ -85,33 +85,41 @@ drawTriangleRight(x,y,height,colour) {
 // four-point crown
 drawCrown(x,y,width,height) {
 	
-}
+}//should return max/mins for x/y
 
 drawBee(x,y,colour,size) {
 
-}
+}// should return max/mins for x/y
 
 drawBeePawn(x,y) {
 	drawBee(x,y,yellow,normal)
-}
+}// should return max/mins for x/y
 
 drawBeeKnight(x,y) {
 	drawBee(x,y,red,normal*1.5)
-}
+}//should return max/mins for x/y
 
 drawBeeQueen(x,y) {
 	drawBee(x,y,yellow,normal*2)
 	x = (start point of crown)
 	y = (start point of crown)
 	drawCrown(x,y,queenCWid,queenCHeight)
-}
+}//should return max/mins for x/y
 
-drawBush(x,y) // draws green rectangular 'bush'
+drawBush(x,y)  { // draws green rectangular 'bush'
+	
+} // should return max/mins for x/y
 
-drawPlayer(x,y) // draw brown bear with white helmet, very blocky
+drawPlayer(x,y) {  // draw brown bear with white helmet, very blocky
+	
+}// should return max/mins for x/y
 
-drawLazer(x,y) // red rectangle that is the lazer
+drawLazer(x,y) { // red rectangle that is the lazer
+	drawRect(x,y,red,lazerLenX,lazerLenY);
+} // should return max/mins for x/y
 
-drawBeeSting(x,y,direction) // black triangle that is the bees' bullets
+drawBeeSting(x,y,direction) { // black triangle that is the bees' bullets
+	
+} // should return max/mins for x/y
 
 drawCursor(x,y) // Some colour right-pointing triangle that points to the option to be selected
