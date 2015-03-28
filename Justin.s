@@ -378,7 +378,7 @@ drawTen:
     mov r1, #70
     mov r2, #0
     ldr r3, =0xFFFFFF
-    b drawChar
+    bl drawChar
 
     cmp r4, #9
     moveq r0, #'9'
