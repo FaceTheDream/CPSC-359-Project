@@ -340,3 +340,9 @@ drawLazer: //draws player lazer projectile
 drawBeeSting: //draws bee bullet projectile
 
 drawCursor: //draws cursor for use on pause menu
+
+
+.section .data
+
+beeStingSize:  int   6
+lazerSize:     int   50, 8
