@@ -59,57 +59,57 @@ drawBG: //r0 is the colour to set the background to
 	bx	lr
 	
 drawRect: // in order on stack: {x,y,colour,lenX,lenY}
-	push{r3,r4,r5,r6,r7,r8} 
-	ldr   r7, [sp,#24] //x
-	ldr   r8, [sp,#28] //y
-	ldr   r2, [sp,#32] //colour
-	ldr   r3, [sp,#36] //lenX
-	ldr   r4, [sp,#40] //lenY
-	mov	  r5, #0 //i
+	push{r3,r4,r5,r6,r7,r8} //save registers
+	ldr   r7, [sp,#24] // x
+	ldr   r8, [sp,#28] // y
+	ldr   r2, [sp,#32] // colour
+	ldr   r3, [sp,#36] // lenX
+	ldr   r4, [sp,#40] // lenY
+	mov   r5, #0       // i=0
 	dRFL1s:
-	cmp	  r5, r3
-	bge	  dRFL1e
-	mov   r6, #0 //j
+	cmp	  r5, r3   // compare i and lenX
+	bge	  dRFL1e   // if i>= lenX, the for loop ends
+	mov   r6, #0       // j=0
 	dRFL2s:
-	cmp   r6, r4
-	bge   dRFL2e
-	add   r0, r7, r5
-	add   r1, r8, r6
-	bl     drawPixel
-	add   r6, #1
-	b     dRFL2s
+	cmp   r6, r4       // compares j with lenY
+	bge   dRFL2e	   // if j >= lenY, the loop ends
+	add   r0, r7, r5   // stores x+i in r0
+	add   r1, r8, r6   // stores y+j in r1
+	bl     drawPixel   // calls drawPixel
+	add   r6, #1       // increments j
+	b     dRFL2s       // back to the start of column iterating loop
 	dRFL2e:
-	add   r5, #1
-	b     dRFL1s
+	add   r5, #1       // increments i
+	b     dRFL1s       // back to the start of row iterating loop
 	dRFL1e:
-	pop{r3,r4,r5,r6,r7,r8}
-	bx	lr
+	pop{r3,r4,r5,r6,r7,r8} // restore registers
+	bx	lr         //branch to calling code
 	
 	
 drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagonalD as parameters
-	push(r3-r10)
+	push(r3-r10)      // save registers
 	ldr   r0, [sp,#32] // x
 	ldr   r1, [sp,#36] // y
 	ldr   r2, [sp,#56] // colour
 	ldr   r3, [sp,#48] // length
 	ldr   r4, [sp,#52] // thickness
 	ldr   r5, [sp,#44] // direction
-	sub   r6, r4, #1
-	rsl   r6, #1 // a
-	mov   r7, #0 // i
-	mov   r8, r0 // x (constant)
-	mov   r9, r1 // y (constant)
+	sub   r6, r4, #1   // stores thickness - 1 into r6
+	rsl   r6, #1 	   // stores (thickness-1)/2 into r6 (a)
+	mov   r7, #0       // i
+	mov   r8, r0       // x (constant)
+	mov   r9, r1       // y (constant)
 	dLFL1s:
-	cmp   r7, r3
-	bge   dLFL1e
-	mov   r0, r8
-	mov   r1, r9
-	bl     drawPixel
-	cmp   r4, #1
-	ble   afterif1
-	and   r0, r5, #2
-	srl   r0, #1
-	and   r1, r5, #4
+	cmp   r7, r3       // compares i with length
+	bge   dLFL1e       // end loop if i >= length
+	mov   r0, r8       // store x in r0
+	mov   r1, r9       // store y in r1
+	bl    drawPixel    // draws pixel in (x,y) with colour r2
+	cmp   r4, #1       // compares thickness with 1
+	ble   afterif1     // if thickness <= 1, end loop
+	and   r0, r5, #2   // store r5 & 2 into r0
+	srl   r0, #1       // store 2*r0 into r0
+	and   r1, r5, #4   // 
 	srl   r1, #2
 	orr   r0, r1
 	cmp   r0, #1
