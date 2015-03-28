@@ -38,7 +38,7 @@ endDrawPixel:
 	bx     lr                            //
 
 drawBG: //r0 is the colour to set the background to
-	push{r3-r5}
+	push {r3-r5}
 	mov	r5, r0 //colour
 	mov	r3, #0 //row number
 	rowBGloops:
@@ -58,11 +58,11 @@ drawBG: //r0 is the colour to set the background to
 	add	r3, #1        // increment row
 	b	rowBGloops    //back to start of row loop
 	rowBGloope:
-	pop{r3-r5}            //restore registers
+	pop {r3-r5}            //restore registers
 	bx	lr
 	
 drawRect: // in order on stack: {x,y,colour,lenX,lenY}
-	push{r3,r4,r5,r6,r7,r8} //save registers
+	push {r3,r4,r5,r6,r7,r8} //save registers
 	ldr   r7, [sp,#24] // x
 	ldr   r8, [sp,#28] // y
 	ldr   r2, [sp,#32] // colour
@@ -85,12 +85,12 @@ drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	add   r5, #1       // increments i
 	b     dRFL1s       // back to the start of row iterating loop
 	dRFL1e:
-	pop{r3,r4,r5,r6,r7,r8} // restore registers
+	pop {r3,r4,r5,r6,r7,r8} // restore registers
 	bx	lr         //branch to calling code
 	
 	
 drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagonalD as parameters
-	push(r3-r10)      // save registers
+	push {r3-r10}     // save registers
 	ldr   r0, [sp,#32] // x
 	ldr   r1, [sp,#36] // y
 	ldr   r2, [sp,#56] // colour
@@ -122,40 +122,40 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	sub   r0, r8, r6   // stores x - a in r0
 	mov   r1, r9       // stores y in r1
 	mov   r10, #1      // stores 1 in r10
-	push{r0,r1,r2,r6,r10} // push required parameters onto the stack
+	push {r0,r1,r2,r6,r10} // push required parameters onto the stack
 	bl     drawRect    // call drawRect
-	pop{r0,r1,r2,r6,r10} // remove parameters from stack
+	pop {r0,r1,r2,r6,r10} // remove parameters from stack
 	mov    r0, r8      // store x in r0
-	push{r0,r1,r2,r6,r10} // push required parameters onto the stack
+	push {r0,r1,r2,r6,r10} // push required parameters onto the stack
 	bl     drawRect     // call drawRect
-	pop{r0,r1,r2,r6,r10}  // remove parameters from stack
+	pop {r0,r1,r2,r6,r10}  // remove parameters from stack
 	afterif1:          // after thickness for horizontal
 	and   r0, r5, #1    // 
 	cmp   r0, #1
 	bne   afterif2      // if (direction & 1) != 1, go to else 
 	cmp	  r4, #1
 	ble   afterif3      // if thickness <= 1, go to else
-	push{r4}
+	push {r4}
 	mov   r0, #1
-	push{r0}
-	push{r2}
+	push {r0}
+	push {r2}
 	mov   r0,r8
 	sub   r1,r9,r4
-	push{r0,r1}
+	push {r0,r1}
 	bl     drawRect
-	pop{r0,r1}
-	pop{r0,r1}
-	pop{r0}
-	push{r4}
+	pop {r0,r1}
+	pop {r0,r1}
+	pop {r0}
+	push {r4}
 	mov   r0, #1
-	push{r0}
+	push {r0}
 	mov   r0, r8
 	mov   r1, r9
-	push{r0,r1,r2}
+	push {r0,r1,r2}
 	bl     drawRect
-	pop{r0,r1}
-	pop{r0,r1}
-	pop{r0}
+	pop {r0,r1}
+	pop {r0,r1}
+	pop {r0}
 	afterif3:             //after thickness for vertical line
 	add   r8, #1
 	afterif2:
@@ -170,12 +170,12 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	add  r7, #1
 	b    dLFL1s
 	dLFL1e:	
-	pop(r3-r9)           // restore registers
+	pop {r3-r9}           // restore registers
 	bx	lr           // branch to calling code
 
 
 drawTriangleUp: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-push{r3-r8}
+push {r3-r8}
 mov	r3, r0 //x
 mov	r4, r1 //y
 mov	r5, r2 // height
@@ -184,29 +184,29 @@ mov	r7, #0 // i
 dtufl1start: //draw triangle up for loop 1 start
 cmp	r7, r5
 bge	dtufl1end
-push{r6} 	//push 6th paramter, colour onto stack
+push {r6} 	//push 6th paramter, colour onto stack
 mov	r0, #1
-push{r0} 	//push 5th parameter, thickness (1) onto stack
+push {r0} 	//push 5th parameter, thickness (1) onto stack
 add	r0, r7, r7
 add	r0, #1
-push{r0}	//push 4th parameter, length (2i+1) onto stack
+push {r0}	//push 4th parameter, length (2i+1) onto stack
 mov	r0, #1
-push{r0}	//push 3rd parameter, direction (1)(horizontal) onto stack
+push {r0}	//push 3rd parameter, direction (1)(horizontal) onto stack
 add	r0, r4, r7
-push{r0}	//push 2nd paramteter, (y+i) onto stack
+push {r0}	//push 2nd paramteter, (y+i) onto stack
 sub	r0, r3, r7
-push{r0}	//push 1st paramter, (x-i) onto stack
+push {r0}	//push 1st paramter, (x-i) onto stack
 bl	drawLine
 add	sp, #24
 add	r7, #1
 b	dtufl1start
 dtufl1end:
-pop{r3-r8}
+pop {r3-r8}
 bx	lr
 
 
 drawTriangleDown: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-push{r3-r7}
+push {r3-r7}
 mov	r3, r0 //x
 mov	r4, r1 //y
 mov	r5, r2 // height
@@ -215,29 +215,29 @@ mov	r7, #0 // i
 dtdfl1start: //draw triangle down for loop 1 start
 cmp	r7, r5
 bge	dtdfl1end
-push{r6} 	//push 6th paramter, colour onto stack
+push {r6} 	//push 6th paramter, colour onto stack
 mov	r0, #1
-push{r0} 	//push 5th parameter, thickness (1) onto stack
+push {r0} 	//push 5th parameter, thickness (1) onto stack
 add	r0, r7, r7
 add	r0, #1
-push{r0}	//push 4th parameter, length (2i+1) onto stack
+push {r0}	//push 4th parameter, length (2i+1) onto stack
 mov	r0, #1
-push{r0}	//push 3rd parameter, direction (1)(horizontal) onto stack
+push {r0}	//push 3rd parameter, direction (1)(horizontal) onto stack
 sub	r0, r4, r7
-push{r0}	//push 2nd paramteter, (y-i) onto stack
+push {r0}	//push 2nd paramteter, (y-i) onto stack
 sub	r0, r3, r7
-push{r0}	//push 1st paramter, (x-i) onto stack
+push {r0}	//push 1st paramter, (x-i) onto stack
 bl	drawLine
 add	sp, #24
 add	r7, #1
 b	dtdfl1start
 dtdfl1end:
-pop{r3-r7}
+pop {r3-r7}
 bx	lr
 
 
 drawTriangleLeft: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-push{r3-r7}
+push {r3-r7}
 mov	r3, r0 //x
 mov	r4, r1 //y
 mov	r5, r2 // height
@@ -246,28 +246,28 @@ mov	r7, #0 // i
 dtlfl1start: //draw triangle left for loop 1 start
 cmp	r7, r5
 bge	dtlfl1end
-push{r6} 	//push 6th paramter, colour onto stack
+push {r6} 	//push 6th paramter, colour onto stack
 mov	r0, #1
-push{r0} 	//push 5th parameter, thickness (1) onto stack
+push {r0} 	//push 5th parameter, thickness (1) onto stack
 add	r0, r7, r7
 add	r0, #1
-push{r0}	//push 4th parameter, length (2i+1) onto stack
+push {r0}	//push 4th parameter, length (2i+1) onto stack
 mov	r0, #2
-push{r0}	//push 3rd parameter, direction (2)(vertical) onto stack
+push {r0}	//push 3rd parameter, direction (2)(vertical) onto stack
 add	r0, r4, r7
-push{r0}	//push 2nd paramteter, (y+i) onto stack
+push {r0}	//push 2nd paramteter, (y+i) onto stack
 add	r0, r3, r7
-push{r0}	//push 1st paramter, (x+i) onto stack
+push {r0}	//push 1st paramter, (x+i) onto stack
 bl	drawLine
 add	sp, #24
 add	r7, #1
 b	dtlfl1start
 dtlfl1end:
-pop{r3-r7}
+pop {r3-r7}
 bx	lr
 
 drawTriangleRight: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-push{r3-r7}
+push {r3-r7}
 mov	r3, r0 //x
 mov	r4, r1 //y
 mov	r5, r2 // height
@@ -276,37 +276,37 @@ mov	r7, #0 // i
 dtrfl1start: //draw triangle right for loop 1 start
 cmp	r7, r5
 bge	dtrfl1end
-push{r6} 	//push 6th paramter, colour onto stack
+push {r6} 	//push 6th paramter, colour onto stack
 mov	r0, #1
-push{r0} 	//push 5th parameter, thickness (1) onto stack
+push {r0} 	//push 5th parameter, thickness (1) onto stack
 add	r0, r7, r7
 add	r0, #1
-push{r0}	//push 4th parameter, length (2i+1) onto stack
+push {r0}	//push 4th parameter, length (2i+1) onto stack
 mov	r0, #2
-push{r0}	//push 3rd parameter, direction (2)(vertical) onto stack
+push {r0}	//push 3rd parameter, direction (2)(vertical) onto stack
 add	r0, r4, r7
-push{r0}	//push 2nd paramteter, (y+i) onto stack
+push {r0}	//push 2nd paramteter, (y+i) onto stack
 sub	r0, r3, r7
-push{r0}	//push 1st paramter, (x-i) onto stack
+push {r0}	//push 1st paramter, (x-i) onto stack
 bl	drawLine
 add	sp, #24
 add	r7, #1
 b	dtrfl1start
 dtrfl1end:
-pop{r3-r7}
+pop {r3-r7}
 bx	lr
 
 drawDiamond:
 //r0 is x, r1 is y, r2 is height
 //[sp] is colour
 // (x,y) is the topmost point of the diamond
-push{r3-r6} //save registers to restore after use
+push {r3-r6} //save registers to restore after use
 mov	r3, r0 // x
 mov	r4, r1 // y
 rsl	r2, #1 // divide height in half
 mov	r5, r2 // height/2
 ldr	r6, [sp,#16] // colour
-push{r6}	//push colour onto the stack
+push {r6}	//push colour onto the stack
 bl	drawTriangleUp //draw the top half of the diamond
 add	sp, #4  //remove colour off the stack
 add	r4, r5  
@@ -314,10 +314,10 @@ add	r4, r5 //add the full height to the y coordinate
 mov	r0, r3 //set x for drawing
 mov	r1, r4 // set y for drawing
 mov	r2, r5 // set height for drawing
-push{r6}	//push colour onto the stack
+push {r6}	//push colour onto the stack
 bl	drawTriangleDown //draw the bottom half of the diamond
 add	sp, #4  //remove colour off the stack
-pop{r3-r10}	//restore registers
+pop {r3-r10}	//restore registers
 bx	lr	//branch to calling code
 
 drawBeeBody:
@@ -326,7 +326,7 @@ drawBeeBody:
 	// r2, size multiplier (will be included in a shift operation, ex: 2^r2)
 	// [sp], non-black colour
 	// nine-striped bees
-	push{r3-r8}	     // save registers
+	push {r3-r8}	     // save registers
 	mov	r8, r2       // number of times to multiply size by 2
 	mov	r3, r0       // x
 	mov	r4, r1       // y
@@ -341,22 +341,22 @@ drawBeeBody:
 	lsl	r0, r8        // adjust stripe xlength
 	mov	r1, #90       // init bee height
 	lsl	r1, r8        // adjusted bee height
-	push{r1}              //push p4
-	push{r0}              //push p3
+	push {r1}              //push p4
+	push {r0}              //push p3
 	tst	r5, #1
 	bne	stripecolourelse
-	push{r6}              //push p2
+	push {r6}              //push p2
 	b 	stripecolourafterif
 	stipecolourelse:
-	push{r7}              //push p2
+	push {r7}              //push p2
 	stripecolourafterif:
-	push{r4}              //push p1
-	push{r3}              //push p0
+	push {r4}              //push p1
+	push {r3}              //push p0
 	bl	drawRect
 	add	sp, #20       //remove parameters from stack
 	add	r5, #1        //increment stripe counter
 	endStripBeeLoop:
-	pop{r3-r8}	      // restore registers
+	pop {r3-r8}	      // restore registers
 	bx	lr	      // branch to calling code
 
 drawRectB: //rectangle with border
@@ -367,7 +367,7 @@ drawRectB: //rectangle with border
 	// [sp+4] is main rectangle colour
 	// [sp+8] is length
 	// [sp+12] is width
-	push{r3-r10}
+	push {r3-r10}
 	mov	r3, r0 // x
 	mov	r4, r1 // y
 	mov	r5, r2  //border width
@@ -375,49 +375,49 @@ drawRectB: //rectangle with border
 	mov	r0, r6
 	sub	r0, r5
 	sub	r0, r5
-	push{r0}
+	push {r0}
 	ldr	r7, [sp,#40] //overall length
 	sub	r0, r7, r5
 	sub	r0, r5
-	push{r0}
+	push {r0}
 	ldr	r0, [sp,#36] //main rectangle colour
-	push{r0}
+	push {r0}
 	add	r0, r4, r5
-	push{r0}
+	push {r0}
 	add	r0, r3, r5
-	push{r0}
+	push {r0}
 	bl	drawRect	//draws center rectangle
 	add	sp, #20
-	push{r5, r6}
+	push {r5, r6}
 	ldr	r8, [sp,#32]     //border colour
-	push{r8}
-	push{r3,r4}
+	push {r8}
+	push {r3,r4}
 	bl	drawRect	//draws left portion of border
 	add	sp, #20
-	push{r5}
-	push{r7,r8}
-	push{r3,r4}
+	push {r5}
+	push {r7,r8}
+	push {r3,r4}
 	bl	drawRect	//draws top portion of border
 	add	sp, #20
-	push{r6}
-	push{r5}
-	push{r8}
-	push{r4}
+	push {r6}
+	push {r5}
+	push {r8}
+	push {r4}
 	add	r0, r3, r7
 	sub	r0, r5
-	push{r0}
+	push {r0}
 	bl	drawRect	// draws right portion of border
 	add	sp, #20
-	push{r5}
-	push{r7}
-	push{r8}
+	push {r5}
+	push {r7}
+	push {r8}
 	add	r0, r4, r6
 	sub	r0, r5
-	push{r0}
-	push{r3}
+	push {r0}
+	push {r3}
 	bl	drawRect	// draws bottom portion of border
 	add	sp, #20
-	pop{r3-r10}
+	pop {r3-r10}
 	bx	lr
 	
 
@@ -425,43 +425,43 @@ drawBeeWings: //very boxy wings
 	//r0 is x location
 	//r1 is y location
 	//r2 is size (square-ish)
-	push{r3-r6}
+	push {r3-r6}
 	mov	r3, r0 //x
 	mov	r4, r1 //y
 	mov	r5, r2 //size
 	ldr	r6, =beeWingColour
 	ldr	r6, [r6] //colour
-	push{r5}
-	push{r5}
-	push{r6}
-	push{r4}
-	push{r3}
+	push {r5}
+	push {r5}
+	push {r6}
+	push {r4}
+	push {r3}
 	bl	drawRect //main wing
 	add	sp, #20
 	sub	r4,#1
-	push{r6}
+	push {r6}
 	mov	r0, #1
-	push{r0}
+	push {r0}
 	sub	r1,r2,#2
-	push{r1}
-	push{r0}
+	push {r1}
+	push {r0}
 	add	r1,r3,#1
 	sub	r0,r4,#1
-	push{r0,r1}
+	push {r0,r1}
 	call	drawLine  //hint of wing-curve
 	add	sp, #24
-	pop{r3-r6}
+	pop {r3-r6}
 	bx	lr
 
 drawBeeP: //draws pawn bee (top left)
 	// r0 is the x location
 	// r1 is the y location
 	// make wingLength int in memory (TODO)
-	push{r3-r10}
+	push {r3-r10}
 	mov	r2, #0
 	ldr	r3, =beeYellowColour
 	ldr	r3, [r3]
-	push{r3}
+	push {r3}
 	mov	r4, r0 //top-left x
 	mov	r5, r1 // top-left y
 	bl	drawBeeBody //draw bee body
@@ -479,7 +479,7 @@ drawBeeP: //draws pawn bee (top left)
 	bl	drawBeeWings
 	//now both body and wings are drawn
 	
-	pop{r3-r10}
+	pop {r3-r10}
 	bx	lr
 
 drawBeeK: //draws knight bee
@@ -489,18 +489,18 @@ drawBeeQ: //draws queen bee
 drawPlayer: //draws player at location (x,y) that is the leftmost portion of their helmet
 	//r0 is x location
 	//r1 is y location
-	push{r3-r7}
+	push {r3-r7}
 	mov	r3, r0
 	mov	r4, r1
 	ldr	r5, =playerSize
 	ldr	r5, [r5]
 	ldr	r6, =playerHelmColour
 	ldr	r6, [r6]
-	push{r5}
-	push{r5}
-	push{r6}
-	push{r4}
-	push{r3}
+	push {r5}
+	push {r5}
+	push {r6}
+	push {r4}
+	push {r3}
 	bl	drawRect //draws head
 	add	sp, #20
 	ldr	r6, =playerBodyColour
@@ -510,20 +510,20 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	add	r7, r5 //r7 = 3*r5
 	sub	r0, r3, r5
 	add	r1, r4, r5
-	push{r5}
-	push{r7}
-	push{r6}
-	push{r1}
-	push{r0}
+	push {r5}
+	push {r7}
+	push {r6}
+	push {r1}
+	push {r0}
 	bl	drawRect	//draw body
 	add	sp, #20
 	add	r0, r4, r5
 	add	r0, r5
-	push{r5}
-	push{r5}
-	push{r6}
-	push{r0}
-	push{r3}
+	push {r5}
+	push {r5}
+	push {r6}
+	push {r0}
+	push {r3}
 	bl	drawRect	//draw feet things
 	add	sp, #20
 	add	r0, r4, r5
@@ -533,32 +533,32 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	ldr	r6, =beeBlackColour
 	ldr	r6, [r6]
 	mov	r2, #2
-	push{r6}
-	push{r2}
-	push{r5}
-	push{r2}
-	push{r0}
-	push{r1}
+	push {r6}
+	push {r2}
+	push {r5}
+	push {r2}
+	push {r0}
+	push {r1}
 	call	drawLine
 	add	sp, #24
-	pop{r3-r7}
+	pop {r3-r7}
 	bx	lr
 
 drawBush: //draws "bush" cover
 	//r0 is the x location
 	//r1 is the y location
 	//r2 is the size of the bush (bush is square)
-	push{r3}
+	push {r3}
 	ldr	r3, =bushColour
 	ldr	r3, [r3]
-	push{r2}
-	push{r2}
-	push{r3}
-	push{r1}
-	push{r0}
+	push {r2}
+	push {r2}
+	push {r3}
+	push {r1}
+	push {r0}
 	bl	drawRect
 	add	sp, #20
-	pop{r3}
+	pop {r3}
 	bx	lr
 
 drawLazer: //draws player lazer projectile
@@ -566,7 +566,7 @@ drawLazer: //draws player lazer projectile
 	// r1 is y location
 	// (x,y) is the top left-most location
 	// returns memory location of lazerSize
-	push{r3-r8}
+	push {r3-r8}
 	mov	r3, r0 //x location (xMin)
 	mov	r4, r1 // y location (yMin)
 	ldr	r5, =lazerSize
@@ -575,14 +575,14 @@ drawLazer: //draws player lazer projectile
 	ldr	r5, [r5,#4] //width
 	ldr	r7, =lazerColour
 	ldr	r7, [r7]
-	push{r5}
-	push{r6}
-	push{r7}
-	push{r4}
-	push{r3}
+	push {r5}
+	push {r6}
+	push {r7}
+	push {r4}
+	push {r3}
 	bl	drawRect
 	mov	r0, r8
-	pop{r3-r7}
+	pop {r3-r7}
 	bx	lr
 
 
@@ -592,7 +592,7 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 	// r0 is x location
 	// r1 is y location
 	// (x,y) is the rightmost point
-	push{r3-r6}
+	push {r3-r6}
 	mov	r3, r0
 	mov	r4, r1
 	ldr	r5, =cursorSize
@@ -602,10 +602,10 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 	mov	r0, r3
 	mov	r1, r4
 	mov	r2, r5
-	push{r6}
+	push {r6}
 	bl	drawTriangleRight
 	add	sp, #4 //removes colour from stack
-	pop{r3-r6}
+	pop {r3-r6}
 	bx	lr
 
 .section .data
