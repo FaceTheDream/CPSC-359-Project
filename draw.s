@@ -98,7 +98,7 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	ldr   r4, [sp,#52] // thickness
 	ldr   r5, [sp,#44] // direction
 	sub   r6, r4, #1   // stores thickness - 1 into r6
-	rsl   r6, #1 	   // stores (thickness-1)/2 into r6 (a)
+	lsr   r6, #1 	   // stores (thickness-1)/2 into r6 (a)
 	mov   r7, #0       // i
 	mov   r8, r0       // x (constant)
 	mov   r9, r1       // y (constant)
@@ -111,9 +111,9 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	cmp   r4, #1       // compares thickness with 1
 	ble   afterif1     // if thickness <= 1, end loop
 	and   r0, r5, #2   // store direction & 0x0010 into r0
-	srl   r0, #1       // store r0/2 into r0
+	lsr   r0, #1       // store r0/2 into r0
 	and   r1, r5, #4   // store direction & 0x0100 into r1
-	srl   r1, #2       // store r1/4 into r1
+	lsr   r1, #2       // store r1/4 into r1
 	orr   r0, r1       // set the first bit to be one in r0 if it is so in either r0 , r1
 	ldr   r1, =0xFFFFFFFE
 	bic   r0, r1       // clears every bit in r0 excluding the first bit
@@ -303,7 +303,7 @@ drawDiamond:
 push {r3-r6} //save registers to restore after use
 mov	r3, r0 // x
 mov	r4, r1 // y
-rsl	r2, #1 // divide height in half
+lsr	r2, #1 // divide height in half
 mov	r5, r2 // height/2
 ldr	r6, [sp,#16] // colour
 push {r6}	//push colour onto the stack
@@ -448,7 +448,7 @@ drawBeeWings: //very boxy wings
 	add	r1,r3,#1
 	sub	r0,r4,#1
 	push {r0,r1}
-	call	drawLine  //hint of wing-curve
+	bl	drawLine  //hint of wing-curve
 	add	sp, #24
 	pop {r3-r6}
 	bx	lr
