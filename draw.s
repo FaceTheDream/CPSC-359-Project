@@ -360,8 +360,6 @@ drawBeeBody:
 
 drawRectB: //rectangle with border
 
-drawBG: //draw background colour
-
 drawBee: //draw a bee with size and colour of yellow stripes being variables
 
 drawBeeP: //draws pawn bee
@@ -378,11 +376,30 @@ drawLazer: //draws player lazer projectile
 
 drawBeeSting: //draws bee bullet projectile
 
-drawCursor: //draws cursor for use on pause menu
-
+drawCursor: //draws triangle cursor for use on pause menu always faces right
+	// r0 is x location
+	// r1 is y location
+	// (x,y) is the rightmost point
+	push{r3-r6}
+	mov	r3, r0
+	mov	r4, r1
+	ldr	r5, =cursorSize
+	ldr	r5, [r5]
+	ldr	r6, =cursorColour
+	ldr	r6, [r6]
+	mov	r0, r3
+	mov	r1, r4
+	mov	r2, r5
+	push{r6}
+	bl	drawTriangleRight
+	add	sp, #4 //removes colour from stack
+	pop{r3-r6}
+	bx	lr
 
 .section .data
 
 beeBlackColour: .word	0x000000
+cursorColour:	.word
+cursorSize:	.int	10
 beeStingSize:  .int   6
 lazerSize:     .int   50, 8
