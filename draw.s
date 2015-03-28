@@ -373,6 +373,29 @@ drawPlayer: //draws player
 drawBush: //draws "bush" cover
 
 drawLazer: //draws player lazer projectile
+	// r0 is x location
+	// r1 is y location
+	// (x,y) is the top left-most location
+	// returns memory location of lazerSize
+	push{r3-r8}
+	mov	r3, r0 //x location (xMin)
+	mov	r4, r1 // y location (yMin)
+	ldr	r5, =lazerSize
+	mov	r8, r5
+	ldr	r6, [r5] //length
+	ldr	r5, [r5,#4] //width
+	ldr	r7, =lazerColour
+	ldr	r7, [r7]
+	push{r5}
+	push{r6}
+	push{r7}
+	push{r4}
+	push{r3}
+	bl	drawRect
+	mov	r0, r8
+	pop{r3-r7}
+	bx	lr
+
 
 drawBeeSting: //draws bee bullet projectile
 
@@ -400,6 +423,9 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 
 beeBlackColour: .word	0x000000
 cursorColour:	.word
-cursorSize:	.int	10
+lazerColour:	.word
 beeStingSize:  .int   6
-lazerSize:     .int   50, 8
+bushSize:	.int	120, 120 //rectangle
+playerSize:	.int	
+cursorSize:	.int	10 //triangle height
+lazerSize:     .int   50, 1 //rectangle length by width
