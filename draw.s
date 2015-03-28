@@ -107,25 +107,27 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	bl    drawPixel    // draws pixel in (x,y) with colour r2
 	cmp   r4, #1       // compares thickness with 1
 	ble   afterif1     // if thickness <= 1, end loop
-	and   r0, r5, #2   // store r5 & 2 into r0
-	srl   r0, #1       // store 2*r0 into r0
-	and   r1, r5, #4   // 
-	srl   r1, #2
-	orr   r0, r1
-	cmp   r0, #1
-	bne   afterif1
-	sub   r0, r8, r6
-	mov   r1, r9
-	mov   r10, #1
-	push{r0,r1,r2,r6,r10}
-	bl     drawRect
-	pop{r0,r1,r2,r6,r10}
-	mov    r0, r8
-	push{r0,r1,r2,r6,r10}
-	bl     drawRect
-	pop{r0,r1,r2,r6,r10}
+	and   r0, r5, #2   // store direction & 0x0010 into r0
+	srl   r0, #1       // store r0/2 into r0
+	and   r1, r5, #4   // store direction & 0x0100 into r1
+	srl   r1, #2       // store r1/4 into r1
+	orr   r0, r1       // set the first bit to be one in r0 if it is so in either r0 , r1
+	ldr   r1, =0xFFFFFFFE
+	bic   r0, r1       // clears every bit in r0 excluding the first bit
+	cmp   r0, #1       // checks if either bit 1 or bit 2 of direction is 1
+	bne   afterif1     // if neither are 1, go to the else portion
+	sub   r0, r8, r6   // stores x - a in r0
+	mov   r1, r9       // stores y in r1
+	mov   r10, #1      // stores 1 in r10
+	push{r0,r1,r2,r6,r10} // push required parameters onto the stack
+	bl     drawRect    // call drawRect
+	pop{r0,r1,r2,r6,r10} // remove parameters from stack
+	mov    r0, r8      // store x in r0
+	push{r0,r1,r2,r6,r10} // push required parameters onto the stack
+	bl     drawRect     // call drawRect
+	pop{r0,r1,r2,r6,r10}  // remove parameters from stack
 	afterif1:
-	and   r0, r5, #1
+	and   r0, r5, #1    
 	cmp   r0, #1
 	bne   afterif2
 	cmp	  r4, #1
