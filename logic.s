@@ -6,7 +6,7 @@ oneTurn:
 	ldr r2, [r2]
 	mov r1, #0
 	cmp r1, r2
-	beq //pause menu subroutine
+	bleq //pause menu subroutine
 	//put up button value memory location in r2
 	//put down button value memory location in r3
 	//put left button value memory location in r4
@@ -26,18 +26,19 @@ oneTurn:
 	//put 'a' button value memory location in r2
 	ldr r2, [r2]
 	cmp r1, r2
-	beq //shoot bullet subroutine
+	bleq //shoot bullet subroutine
 	
-	mov r1, #0
+	mov r1, #0	// current npc, add this offset*4 to get current npc's stats
 	mov r0, #17
 npcStuff:
 	mov r4, #0
 	add r1, r1, #1
 	cmp r1, r0
 	bge afterNpc
-	//make r4 = 1 if current npc is dead
-	cmp r4, #1
-	bge npcStuff
+	ldr r5, =npchp
+	ldr r5, [r5, r1, lsl #2]	//r5 = current npc's hp
+	cmp r5, #0			//skip update if hp = 0
+	beq npcStuff
 	//puts random number %4 in r2
 	mov r3, #69069
 	ldr r2, =x20003004
@@ -45,14 +46,16 @@ npcStuff:
 	mul r2, r3, r2
 	add r2, r3, r2
 	mov r2, r2 MOD 4 //this might not work, refer to http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.kui0008a/a166_op_mod.htm
+	ldr r6, =currentnpc
+	str r1, [r6]
 	cmp r2, #0
-	beq //move npc up subroutine
+	bleq npcUp
 	cmp r2, #1
-	beq //move npc down subroutine
+	bleq npcDown
 	cmp r2, #2
-	beq //move npc left subroutine
+	bleq npcLeft
 	cmp r2, #3
-	beq //move npc right subroutine
+	bleq npcRight
 	//puts random number %10 in r2
 	ldr r2, =x20003004
 	ldr r2, [r2] //current clock value
@@ -60,7 +63,7 @@ npcStuff:
 	add r2, r3, r2
 	mov r2, r2 MOD 10 //this might not work
 	cmp r2, #0
-	beq //shoot npc bullet subroutine
+	bleq //shoot npc bullet subroutine
 	b npcStuff
 	
 afterNpc:
@@ -115,6 +118,50 @@ playerRight:
 	str r1, [r0]
 	b endSub
 
+npcUp:
+	ldr r0, =currentnpc
+	ldr r0, [r0]
+	ldr r1, =npcys
+	ldr r2, [r1, r0, lsl #2]
+	cmp r2, #0
+	beq endSub
+	sub r2, r2, #1
+	str r2, [r1, r0, lsl #2]
+	b endSub
+	
+npcDown:
+	ldr r0, =currentnpc
+	ldr r0, [r0]
+	ldr r1, =npcys
+	ldr r2, [r1, r0, lsl #2]
+	cmp r2, #767
+	beq endSub
+	add r2, r2, #1
+	str r2, [r1, r0, lsl #2]
+	b endSub
+	
+npcLeft:
+	ldr r0, =currentnpc
+	ldr r0, [r0]
+	ldr r1, =npcxs
+	ldr r2, [r1, r0, lsl #2]
+	cmp r2, #0
+	beq endSub
+	sub r2, r2, #1
+	str r2, [r1, r0, lsl #2]
+	b endSub
+	
+npcRight:
+	ldr r0, =currentnpc
+	ldr r0, [r0]
+	ldr r1, =npcxs
+	ldr r2, [r1, r0, lsl #2]
+	cmp r2, #1023
+	beq endSub
+	sub r2, r2, #1
+	str r2, [r1, r0, lsl #2]
+	b endSub
+
 endSub:
 	bx lr
 	
@@ -123,3 +170,7 @@ endSub:
 .align 4
 playerx:	.int	0
 playery:	.int	0
+currentnpc:	.int	0
+npcxs:		.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+npcys:		.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+npchp:		.int	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3
