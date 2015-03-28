@@ -65,8 +65,13 @@ afterNpc:
 	//detect collisions:
 	//if bullet is overlapped by player, player is hit
 	//if bullet is overlapped by npc, npc is hit
+	//if bullet is overlapped by obstacle, obstacle is hit
 	//if player is hit, score - 10
 	//if npc is hit, hp - 1
 	//if npc hp = 0, kill npc and increase score
+	//if npc is hit and hp != 0, shrink npc
+	//if obstacle is hit, hp - 1
+	//if obstacle hp = 0, kill obstacle
+	//if obstacle is hit and hp != 0, shrink obstacle
 	//draw screen subroutine
 	b oneTurn
