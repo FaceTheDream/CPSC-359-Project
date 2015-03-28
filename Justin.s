@@ -261,37 +261,37 @@ noPixel$:
 drawScore:
     mov r1, #0
     mov r2, #0
-    mov r3, #0xFFFFFF
+    ldr r3, =0xFFFFFF
     mov r0, #'S'
     bl drawChar
 
     mov r1, #10
     mov r2, #0
-    mov r3, #0xFFFFFF
+    ldr r3, =0xFFFFFF
     mov r0, #'c'
     bl drawChar
 
     mov r1, #20
     mov r2, #0
-    mov r3, #0xFFFFFF
+    ldr r3, =0xFFFFFF
     mov r0, #'o'
     bl drawChar
 
     mov r1, #30
     mov r2, #0
-    mov r3, #0xFFFFFF
+    ldr r3, =0xFFFFFF
     mov r0, #'r'
     bl drawChar
 
     mov r1, #40
     mov r2, #0
-    mov r3, #0xFFFFFF
+    ldr r3, =0xFFFFFF
     mov r0, #'e'
 
     bl drawChar
     mov r1, #50
     mov r2, #0
-    mov r3, #0xFFFFFF
+    ldr r3, =0xFFFFFF
     mov r0, #':'
     bl drawChar
 
@@ -324,7 +324,7 @@ drawScoreNum:
 drawHundred:
     mov r1, #60
     mov r2, #0
-    mov r3, #0xFFFFFF
+    ldr r3, =0xFFFFFF
     b drawChar
 
     cmp r4, #90
@@ -377,7 +377,7 @@ drawHundred:
 drawTen:
     mov r1, #70
     mov r2, #0
-    mov r3, #0xFFFFFF
+    ldr r3, =0xFFFFFF
     b drawChar
 
     cmp r4, #9
@@ -421,7 +421,7 @@ drawTen:
 drawOne:
     mov r1, #80
     mov r2, #0
-    mov r3, #0xFFFFFF
+    ldr r3, =0xFFFFFF
     b drawChar
 
     pop {r4, pc}

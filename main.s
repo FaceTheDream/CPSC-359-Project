@@ -19,7 +19,7 @@ main:
 
     mov		r1, #100
 	mov		r2, #100
-	ldr		r3,	=0xFFFF
+	ldr		r3,	=0xFFFFFF
 	bl		drawPixel
 
 haltLoop:
