@@ -451,6 +451,9 @@ drawBeeWings: //very boxy wings
 	add	sp, #24
 	pop {r3-r6}
 	bx	lr
+	
+drawBeeEye:
+	
 
 drawBeeP: //draws pawn bee (top left)
 	// r0 is the x location
@@ -605,6 +608,12 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 	add	sp, #4 //removes colour from stack
 	pop {r3-r6}
 	bx	lr
+
+drawPauseScreen:
+
+drawGameOverScreen:
+
+
 
 .section .data
 
