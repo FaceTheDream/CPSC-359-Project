@@ -317,8 +317,6 @@ add	sp, #4  //remove colour off the stack
 pop{r3-r10}	//restore registers
 bx	lr	//branch to calling code
 
-drawSquare:
-
 drawBeeBody:
 	// r0, top left x
 	// r1, top left y
@@ -359,6 +357,67 @@ drawBeeBody:
 	bx	lr	      // branch to calling code
 
 drawRectB: //rectangle with border
+	// r0 is x location
+	// r1 is y location
+	// r2 is borderwidth
+	// [sp] is bordercolour
+	// [sp+4] is main rectangle colour
+	// [sp+8] is length
+	// [sp+12] is width
+	push{r3-r10}
+	mov	r3, r0 // x
+	mov	r4, r1 // y
+	mov	r5, r2  //border width
+	ldr	r6, [sp,#44] // overall width
+	mov	r0, r6
+	sub	r0, r5
+	sub	r0, r5
+	push{r0}
+	ldr	r7, [sp,#40] //overall length
+	sub	r0, r7, r5
+	sub	r0, r5
+	push{r0}
+	ldr	r0, [sp,#36] //main rectangle colour
+	push{r0}
+	add	r0, r4, r5
+	push{r0}
+	add	r0, r3, r5
+	push{r0}
+	bl	drawRect	//draws center rectangle
+	add	sp, #20
+	push{r5, r6}
+	ldr	r8, [sp,#32]     //border colour
+	push{r8}
+	push{r3,r4}
+	bl	drawRect	//draws left portion of border
+	add	sp, #20
+	push{r5}
+	push{r7,r8}
+	push{r3,r4}
+	bl	drawRect	//draws top portion of border
+	add	sp, #20
+	push{r6}
+	push{r5}
+	push{r8}
+	push{r4}
+	add	r0, r3, r7
+	sub	r0, r5
+	push{r0}
+	bl	drawRect	// draws right portion of border
+	add	sp, #20
+	push{r5}
+	push{r7}
+	push{r8}
+	add	r0, r4, r6
+	sub	r0, r5
+	push{r0}
+	push{r3}
+	bl	drawRect	// draws bottom portion of border
+	add	sp, #20
+	pop{r3-r10}
+	bx	lr
+	
+
 
 drawBee: //draw a bee with size and colour of yellow stripes being variables
 
@@ -425,7 +484,6 @@ beeBlackColour: .word	0x000000
 cursorColour:	.word
 lazerColour:	.word
 beeStingSize:  .int   6
-bushSize:	.int	120, 120 //rectangle
 playerSize:	.int	
 cursorSize:	.int	10 //triangle height
 lazerSize:     .int   50, 1 //rectangle length by width
