@@ -459,7 +459,63 @@ drawBeeK: //draws knight bee
 
 drawBeeQ: //draws queen bee
 
-drawPlayer: //draws player
+drawPlayer: //draws player at location (x,y) that is the leftmost portion of their helmet
+	//r0 is x location
+	//r1 is y location
+	push{r3-r7}
+	mov	r3, r0
+	mov	r4, r1
+	ldr	r5, =playerSize
+	ldr	r5, [r5]
+	ldr	r6, =playerHelmColour
+	ldr	r6, [r6]
+	push{r5}
+	push{r5}
+	push{r6}
+	push{r4}
+	push{r3}
+	bl	drawRect //draws head
+	add	sp, #20
+	ldr	r6, =playerBodyColour
+	ldr	r6, [r6]
+	mov	r7, r5
+	add	r7, r5
+	add	r7, r5 //r7 = 3*r5
+	sub	r0, r3, r5
+	add	r1, r4, r5
+	push{r5}
+	push{r7}
+	push{r6}
+	push{r1}
+	push{r0}
+	bl	drawRect	//draw body
+	add	sp, #20
+	add	r0, r4, r5
+	add	r0, r5
+	push{r5}
+	push{r5}
+	push{r6}
+	push{r0}
+	push{r3}
+	bl	drawRect	//draw feet things
+	add	sp, #20
+	add	r0, r4, r5
+	add	r0, r5
+	lsr	r1, r5, #1
+	add	r1, r3
+	ldr	r6, =beeBlackColour
+	ldr	r6, [r6]
+	mov	r2, #2
+	push{r6}
+	push{r2}
+	push{r5}
+	push{r2}
+	push{r0}
+	push{r1}
+	call	drawLine
+	add	sp, #24
+	pop{r3-r7}
+	bx	lr
 
 drawBush: //draws "bush" cover
 	//r0 is the x location
@@ -535,6 +591,8 @@ beeWingColour:	.word
 bushColour:	.word
 cursorColour:	.word
 lazerColour:	.word
+playerBodyColour: .word
+playerHelmColour: .word
 beeStingSize:  .int   6
 playerSize:	.int	
 cursorSize:	.int	10 //triangle height
