@@ -11,6 +11,7 @@
 .globl drawBeeWings
 .globl drawBeeP
 .globl drawRectB
+.globl drawBeeSting
 
 .section .text
 
@@ -588,6 +589,36 @@ drawLazer: //draws player lazer projectile
 
 
 drawBeeSting: //draws bee bullet projectile
+	//r2 is bee sting direction
+	//r0 is x location
+	//r1 is y location
+	// 0 is up
+	// 1 is down
+	// 2 is left
+	// 3 is right
+	push   {r3-r4}
+	mov 	r4, r2
+	ldr	r2, =beeStingSize
+	ldr	r2, [r2]
+	ldr	r3, =beeStingColour
+	ldr	r3, [r3]
+	push    {r3}
+	cmp	r4, #0
+	bne	bdsif2
+	bl	drawTriangleUp
+	bdsif2:
+	cmp	r4, #1
+	bne	bdsif3
+	bl	drawTriangleDown
+	bdsif3:
+	cmp	r4, #2
+	bne	bdselse
+	bl	drawTriangleLeft
+	bdselse:
+	bl	drawTriangleRight
+	add	sp, #4
+	pop   {r3-r4}
+	bx	lr
 
 drawCursor: //draws triangle cursor for use on pause menu always faces right
 	// r0 is x location
