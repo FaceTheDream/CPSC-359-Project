@@ -325,38 +325,38 @@ drawBeeBody:
 	// r2, size multiplier (will be included in a shift operation, ex: 2^r2)
 	// [sp], non-black colour
 	// nine-striped bees
-	push{r3-r8}	// save registers
-	mov	r8, r2
-	mov	r3, r0
-	mov	r4, r1
-	mov	r5, #0  // stripe counter initialization
+	push{r3-r8}	     // save registers
+	mov	r8, r2       // number of times to multiply size by 2
+	mov	r3, r0       // x
+	mov	r4, r1       // y
+	mov	r5, #0       // stripe counter initialization
 	ldr	r6, =beeBlackColour
-	ldr	r6, [r6] //black colour
-	ldr	r7, [sp,#24]
+	ldr	r6, [r6]     //black colour
+	ldr	r7, [sp,#24] //other colour
 	startStripBeeLoop:
 	cmp	r5, #10
 	bge	endStripBeeLoop
-	mov	r0, #5 //init stripe xlength
-	lsl	r0, r8 // adjust stripe xlength
-	mov	r1, #90 //init bee height
-	lsl	r1, r8 // adjusted bee height
-	push{r1}
-	push{r0}
-	
-	stripecolourif:
-	
-	
+	mov	r0, #5        // init stripe xlength
+	lsl	r0, r8        // adjust stripe xlength
+	mov	r1, #90       // init bee height
+	lsl	r1, r8        // adjusted bee height
+	push{r1}              //push p4
+	push{r0}              //push p3
+	tst	r5, #1
+	bne	stripecolourelse
+	push{r6}              //push p2
+	b 	stripecolourafterif
 	stipecolourelse:
-	
-	//if r5 mod 2 == 0 {colour=black} else {colour=yellow} then store colour
-	
-	
+	push{r7}              //push p2
+	stripecolourafterif:
+	push{r4}              //push p1
+	push{r3}              //push p0
 	bl	drawRect
-	
-	add	r5, #1	//increment stripe counter
+	add	sp, #20       //remove parameters from stack
+	add	r5, #1        //increment stripe counter
 	endStripBeeLoop:
-	pop{r3-r8}	// restore registers
-	bx	lrq	// branch to calling code
+	pop{r3-r8}	      // restore registers
+	bx	lr	      // branch to calling code
 
 drawRectB: //rectangle with border
 
