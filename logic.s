@@ -64,6 +64,7 @@ npcStuff:
 afterNpc:
 	//detect collisions:
 	//if bullet is overlapped by player, player is hit
+		//make a loop which compares location of each bullet's front pixel to each location of player's drawn shape
 	//if bullet is overlapped by npc, npc is hit
 	//if bullet is overlapped by obstacle, obstacle is hit
 	//if player is hit, score - 10
