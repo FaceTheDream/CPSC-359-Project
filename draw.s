@@ -527,6 +527,8 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 .section .data
 
 beeBlackColour: .word	0x000000
+beeRedColour:	.word
+beeYellowColour: .word
 beeStingColour:	.word	
 beeWingColour:	.word	
 bushColour:	.word
