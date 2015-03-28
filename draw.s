@@ -39,27 +39,27 @@ drawBG: //r0 is the colour to set the background to
 	mov	r5, r0 //colour
 	mov	r3, #0 //row number
 	rowBGloops:
-	cmp	r3, #1024
-	bge	rowBGloope
+	cmp	r3, #1024     //compare row number with 1024
+	bge	rowBGloope    // end if row number >= 1024
 	mov	r4, #0 //column number
 	colBGloops:
-	cmp	r4, #768
-	bge	colBGloope
-	mov	r0, r3	//set x to draw
-	mov	r1, r4 //set y to draw
-	mov	r2, r5 //set colour to draw
-	bl	drawPixel
-	add	r4, #1
-	b	colBGloops
+	cmp	r4, #768      //compare column number with 768
+	bge	colBGloope    //end if column number >= 768
+	mov	r0, r3	      //set x to draw
+	mov	r1, r4        //set y to draw
+	mov	r2, r5        //set colour to draw
+	bl	drawPixel     //draw current pixel
+	add	r4, #1	      //increment column
+	b	colBGloops    //back to start of column loop
 	colBGloope:
-	add	r3, #1
-	b	rowBGloops
+	add	r3, #1        // increment row
+	b	rowBGloops    //back to start of row loop
 	rowBGloope:
-	pop{r3-r5}
+	pop{r3-r5}            //restore registers
 	bx	lr
 	
 drawRect: // in order on stack: {x,y,colour,lenX,lenY}
-	push{r3,r4,r5,r6,r7,r8}
+	push{r3,r4,r5,r6,r7,r8} 
 	ldr   r7, [sp,#24] //x
 	ldr   r8, [sp,#28] //y
 	ldr   r2, [sp,#32] //colour
