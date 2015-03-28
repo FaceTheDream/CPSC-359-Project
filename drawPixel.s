@@ -51,7 +51,7 @@ drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	bge   dRFL2e
 	add   r0, r7, r5
 	add   r1, r8, r6
-	b     drawPixel
+	bl     drawPixel
 	add   r6, #1
 	b     dRFL2s
 	dRFL2e:
@@ -80,7 +80,7 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	bge   dLFL1e
 	mov   r0, r8
 	mov   r1, r9
-	b     drawPixel
+	bl     drawPixel
 	cmp   r4, #1
 	ble   afterif1
 	and   r0, r5, #2
@@ -94,11 +94,11 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	mov   r1, r9
 	mov   r10, #1
 	push{r0,r1,r2,r6,r10}
-	b     drawRect
+	bl     drawRect
 	pop{r0,r1,r2,r6,r10}
 	mov    r0, r8
 	push{r0,r1,r2,r6,r10}
-	b     drawRect
+	bl     drawRect
 	pop{r0,r1,r2,r6,r10}
 	afterif1:
 	and   r0, r5, #1
@@ -113,7 +113,7 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	mov   r0,r8
 	sub   r1,r9,r4
 	push{r0,r1}
-	b     drawRect
+	bl     drawRect
 	pop{r0,r1}
 	pop{r0,r1}
 	pop{r0}
@@ -123,7 +123,7 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	mov   r0, r8
 	mov   r1, r9
 	push{r0,r1,r2}
-	b     drawRect
+	bl     drawRect
 	pop{r0,r1}
 	pop{r0,r1}
 	pop{r0}
@@ -167,7 +167,7 @@ add	r0, r4, r7
 push{r0}	//push 2nd paramteter, (y+i) onto stack
 sub	r0, r3, r7
 push{r0}	//push 1st paramter, (x-i) onto stack
-b	drawLine
+bl	drawLine
 add	r7, #1
 b	dtufl1start
 dtufl1end:
@@ -197,7 +197,7 @@ sub	r0, r4, r7
 push{r0}	//push 2nd paramteter, (y-i) onto stack
 sub	r0, r3, r7
 push{r0}	//push 1st paramter, (x-i) onto stack
-b	drawLine
+bl	drawLine
 add	r7, #1
 b	dtdfl1start
 dtdfl1end:
@@ -227,7 +227,7 @@ add	r0, r4, r7
 push{r0}	//push 2nd paramteter, (y+i) onto stack
 add	r0, r3, r7
 push{r0}	//push 1st paramter, (x+i) onto stack
-b	drawLine
+bl	drawLine
 add	r7, #1
 b	dtlfl1start
 dtlfl1end:
@@ -256,7 +256,7 @@ add	r0, r4, r7
 push{r0}	//push 2nd paramteter, (y+i) onto stack
 sub	r0, r3, r7
 push{r0}	//push 1st paramter, (x-i) onto stack
-b	drawLine
+bl	drawLine
 add	r7, #1
 b	dtrfl1start
 dtrfl1end:
