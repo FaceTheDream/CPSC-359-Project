@@ -61,7 +61,7 @@ drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagonalD as parameters
 	push(r3-r10)
 	ldr   r0, [sp,#40] // x
-	ldr	  r1, [sp,#44] // y
+	ldr   r1, [sp,#44] // y
 	ldr   r2, [sp,#60] // colour
 	ldr   r3, [sp,#52] // length
 	ldr   r4, [sp,#56] // thickness
@@ -142,6 +142,41 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 
 
 drawTriangle:
+
+drawTriangleUp: //r0 is x, r1 is y, r2 is height, colour is sent over stack
+push{r3-r8}
+mov	r3, r0 //x
+mov	r4, r1 //y
+mov	r5, r2 // height
+ldr	r6, [sp,#20] //colour
+mov	r7, #0 // i
+dtufl1start: //draw triangle up for loop 1 start
+cmp	r7, r5
+bge	dtufl1end
+push{r6} 	//push 6th paramter, colour onto stack
+mov	r0, #1
+push{r0} 	//push 5th parameter, thickness (1) onto stack
+add	r0, r7, r7
+add	r0, #1
+push{r0}	//push 4th parameter, length (2i+1) onto stack
+mov	r0, #1
+push{r0}	//push 3rd parameter, direction (1)(horizontal) onto stack
+add	r0, r4, r7
+push{r0}	//push 2nd paramteter, (y+i) onto stack
+sub	r0, r3, r7
+push{r0}	//push 1st paramter, (x-i) onto stack
+add	r7, #1
+b	dtufl1start
+dtufl1end:
+pop{r3-r8}
+bx	lr
+
+
+drawTriangleDown:
+
+drawTriangleLeft:
+
+drawTriangleRight:
 
 drawDiamond:
 
