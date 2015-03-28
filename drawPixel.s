@@ -4,6 +4,10 @@
 .globl drawPixel
 .globl drawRect
 .globl drawLine
+.globl drawTriangleUp
+.globl drawTriangleDown
+.globl drawTriangleLeft
+.globl drawTriangleRight
 
 .section .text
 
@@ -141,8 +145,6 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	bx	lr
 
 
-drawTriangle:
-
 drawTriangleUp: //r0 is x, r1 is y, r2 is height, colour is sent over stack
 push{r3-r8}
 mov	r3, r0 //x
@@ -165,6 +167,7 @@ add	r0, r4, r7
 push{r0}	//push 2nd paramteter, (y+i) onto stack
 sub	r0, r3, r7
 push{r0}	//push 1st paramter, (x-i) onto stack
+b	drawLine
 add	r7, #1
 b	dtufl1start
 dtufl1end:
@@ -173,10 +176,92 @@ bx	lr
 
 
 drawTriangleDown:
+push{r3-r7}
+mov	r3, r0 //x
+mov	r4, r1 //y
+mov	r5, r2 // height
+ldr	r6, [sp,#16] //colour
+mov	r7, #0 // i
+dtdfl1start: //draw triangle down for loop 1 start
+cmp	r7, r5
+bge	dtdfl1end
+push{r6} 	//push 6th paramter, colour onto stack
+mov	r0, #1
+push{r0} 	//push 5th parameter, thickness (1) onto stack
+add	r0, r7, r7
+add	r0, #1
+push{r0}	//push 4th parameter, length (2i+1) onto stack
+mov	r0, #1
+push{r0}	//push 3rd parameter, direction (1)(horizontal) onto stack
+sub	r0, r4, r7
+push{r0}	//push 2nd paramteter, (y-i) onto stack
+sub	r0, r3, r7
+push{r0}	//push 1st paramter, (x-i) onto stack
+b	drawLine
+add	r7, #1
+b	dtdfl1start
+dtdfl1end:
+pop{r3-r7}
+bx	lr
+
 
 drawTriangleLeft:
+push{r3-r7}
+mov	r3, r0 //x
+mov	r4, r1 //y
+mov	r5, r2 // height
+ldr	r6, [sp,#16] //colour
+mov	r7, #0 // i
+dtlfl1start: //draw triangle left for loop 1 start
+cmp	r7, r5
+bge	dtlfl1end
+push{r6} 	//push 6th paramter, colour onto stack
+mov	r0, #1
+push{r0} 	//push 5th parameter, thickness (1) onto stack
+add	r0, r7, r7
+add	r0, #1
+push{r0}	//push 4th parameter, length (2i+1) onto stack
+mov	r0, #2
+push{r0}	//push 3rd parameter, direction (2)(vertical) onto stack
+add	r0, r4, r7
+push{r0}	//push 2nd paramteter, (y+i) onto stack
+add	r0, r3, r7
+push{r0}	//push 1st paramter, (x+i) onto stack
+b	drawLine
+add	r7, #1
+b	dtlfl1start
+dtlfl1end:
+pop{r3-r7}
+bx	lr
 
 drawTriangleRight:
+push{r3-r7}
+mov	r3, r0 //x
+mov	r4, r1 //y
+mov	r5, r2 // height
+ldr	r6, [sp,#16] //colour
+mov	r7, #0 // i
+dtrfl1start: //draw triangle right for loop 1 start
+cmp	r7, r5
+bge	dtrfl1end
+push{r6} 	//push 6th paramter, colour onto stack
+mov	r0, #1
+push{r0} 	//push 5th parameter, thickness (1) onto stack
+add	r0, r7, r7
+add	r0, #1
+push{r0}	//push 4th parameter, length (2i+1) onto stack
+mov	r0, #2
+push{r0}	//push 3rd parameter, direction (2)(vertical) onto stack
+add	r0, r4, r7
+push{r0}	//push 2nd paramteter, (y+i) onto stack
+sub	r0, r3, r7
+push{r0}	//push 1st paramter, (x-i) onto stack
+b	drawLine
+add	r7, #1
+b	dtrfl1start
+dtrfl1end:
+pop{r3-r7}
+bx	lr
 
 drawDiamond:
 
