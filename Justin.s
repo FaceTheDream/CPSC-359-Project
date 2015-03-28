@@ -435,7 +435,7 @@ drawOne:
  *  Returns: r0 - result
  */
 
-.globl InitFrameBuffer
+.globl initFrameBuffer
 initFrameBuffer:
     mailbox .req    r2          //Sets mailbox to R2
     ldr mailbox,    =0x2000B880 //Loads the memory address for the mailbox
