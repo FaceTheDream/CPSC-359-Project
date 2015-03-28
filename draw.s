@@ -449,7 +449,7 @@ drawBeeWings: //very boxy wings
 	sub	r0,r4,#1
 	push{r0,r1}
 	call	drawLine  //hint of wing-curve
-	add	sp, #20
+	add	sp, #24
 	pop{r3-r6}
 	bx	lr
 
