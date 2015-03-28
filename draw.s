@@ -319,6 +319,18 @@ bx	lr	//branch to calling code
 
 drawSquare:
 
+drawBeeBody:
+	// r0, top left x
+	// r1, top left y
+	// r2, size multiplier (will be included in a shift operation, ex: 2^r2)
+	// [sp], non-black colour
+	push{r3-r8}	// save registers
+	
+	
+	
+	pop{r3-r8}	// restore registers
+	bx	lrq	// branch to calling code
+
 drawRectB: //rectangle with border
 
 drawBG: //draw background colour
