@@ -528,7 +528,7 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	add	sp, #20
 	add	r0, r4, r5
 	add	r0, r5
-	lsr	r1, r5, #1
+	lsr	r1, r5, #1     // logical shift right
 	add	r1, r3
 	ldr	r6, =beeBlackColour
 	ldr	r6, [r6]
