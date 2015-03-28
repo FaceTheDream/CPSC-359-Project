@@ -300,7 +300,7 @@ drawScore:
     //Takes in score in r0, and draws it on screen
 .globl drawScoreNum
 drawScoreNum:
-    push {r4,r5, ls}
+    push{r4,r5, lr}
 
     mov r4, r0
 
@@ -372,7 +372,7 @@ drawHundred:
     subhs r4, #10
     bhs drawTen
 
-    mov r0, #'0''
+    mov r0, #'0'
 
 drawTen:
     mov r1, #70
