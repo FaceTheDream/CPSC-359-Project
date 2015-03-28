@@ -296,7 +296,135 @@ drawScore:
 
     bx lr
 
+    //Takes in score in r0, and draws it on screen
+.globl drawScoreNum
+drawScoreNum:
+    push {r4, ls}
 
+    mov r4, r0
+
+    cmp r4, #300
+    movhs r0, #'3'
+    subhs r4, #300
+    bhs drawHundred
+
+    cmp r4, #200
+    movhs r0, #'2'
+    subhs r4, #200
+    bhs drawHundred
+
+    cmp r4, #100
+    movhs r0, #'1'
+    subhs r4, #100
+    bhs drawHundred
+
+    mov r0, #'0'
+
+drawHundred:
+    mov r1, #60
+    mov r2, #0
+    mov r3, #0xFFFFFF
+    b drawChar
+
+    cmp r4, #90
+    movhs r0, #'9'
+    subhs r4, #90
+    bhs drawTen
+
+    cmp r4, #80
+    movhs r0, #'8'
+    subhs r4, #80
+    bhs drawTen
+
+    cmp r4, #70
+    movhs r0, #'7'
+    subhs r4, #70
+    bhs drawTen
+
+    cmp r4, #60
+    movhs r0, #'6'
+    subhs r4, #60
+    bhs drawTen
+
+    cmp r4, #50
+    movhs r0, #'5'
+    subhs r4, #50
+    bhs drawTen
+
+    cmp r4, #40
+    movhs r0, #'4'
+    subhs r4, #40
+    bhs drawTen
+
+    cmp r4, #30
+    movhs r0, #'3'
+    subhs r4, #30
+    bhs drawTen
+
+    cmp r4, #20
+    movhs r0, #'2'
+    subhs r4, #20
+    bhs drawTen
+
+    cmp r4, #10
+    movhs r0, #'1'
+    subhs r4, #10
+    bhs drawTen
+
+    mov r0, #'0''
+
+drawTen:
+    mov r1, #70
+    mov r2, #0
+    mov r3, 0xFFFFFF
+    b drawChar
+
+    cmp r4, #9
+    moveq r0, #'9'
+    beq drawOne
+
+    cmp r4, #8
+    moveq r0, #'8'
+    beq drawOne
+
+    cmp r4, #7
+    moveq r0, #'7'
+    beq drawOne
+
+    cmp r4, #6
+    moveq r0, #'6'
+    beq drawOne
+
+    cmp r4, #5
+    moveq r0, #'5'
+    beq drawOne
+
+    cmp r4, #4
+    moveq r0, #'4'
+    beq drawOne
+
+    cmp r4, #3
+    moveq r0, #'3'
+    beq drawOne
+
+    cmp r4, #2
+    moveq r0, #'2'
+    beq drawOne
+
+    cmp r4, #1
+    moveq r0, #'1'
+    beq drawOne
+
+    mov r0, #'0'
+
+drawOne:
+    mov r1, #80
+    mov r2, #0
+    mov r3, #0xFFFFFF
+    b drawChar
+
+    pop {r4, sp}
+    
 
 
 
