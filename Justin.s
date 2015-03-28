@@ -234,7 +234,7 @@ rowLoop$:
 	tst		row,	mask		// test row byte against the bitmask
 	beq		noPixel$
 
-	bl		DrawPixel16bpp			// draw red pixel at (px, py)
+	bl		drawPixel			// draw red pixel at (px, py)
 
 noPixel$:
 	add		px,		#1			// increment x coordinate by 1
@@ -255,6 +255,7 @@ noPixel$:
 	.unreq	mask
 
 	pop		{r4, r5, pc}
+
 
 .globl drawScore
 drawScore:
@@ -423,7 +424,8 @@ drawOne:
     mov r3, #0xFFFFFF
     b drawChar
 
-    pop {r4, sp}
+    pop {r4, pc}
+
     
 
 
