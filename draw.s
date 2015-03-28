@@ -337,7 +337,7 @@ drawBeeBody:
 	startStripBeeLoop:
 	cmp	r5, #10
 	bge	endStripBeeLoop
-	mov	r0, #5        // init stripe xlength
+	mov	r0, #10        // init stripe xlength
 	lsl	r0, r8        // adjust stripe xlength
 	mov	r1, #90       // init bee height
 	lsl	r1, r8        // adjusted bee height
@@ -453,7 +453,24 @@ drawBeeWings: //very boxy wings
 	pop{r3-r6}
 	bx	lr
 
-drawBeeP: //draws pawn bee
+drawBeeP: //draws pawn bee (top left)
+	// r0 is the x location
+	// r1 is the y location
+	// make wingLength int in memory (TODO)
+	push{r3-r10}
+	mov	r2, #0
+	ldr	r3, =beeYellowColour
+	ldr	r3, [r3]
+	push{r3}
+	mov	r4, r0 //top-left x
+	mov	r5, r1 // top-left y
+	bl	drawBeeBody //draw bee body
+	add	sp, #4
+	mov	r6, r4
+	add	r6, 
+	
+	pop{r3-r10}
+	bx	lr
 
 drawBeeK: //draws knight bee
 
