@@ -300,7 +300,7 @@ drawScore:
     //Takes in score in r0, and draws it on screen
 .globl drawScoreNum
 drawScoreNum:
-    push{r4,r5, lr}
+    push {r4,r5, lr}
 
     mov r4, r0
 
@@ -436,7 +436,7 @@ drawOne:
  */
 
 .globl InitFrameBuffer
-InitFrameBufer:
+initFrameBuffer:
     mailbox .req    r2          //Sets mailbox to R2
     ldr mailbox,    =0x2000B880 //Loads the memory address for the mailbox
 
