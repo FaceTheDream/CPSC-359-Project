@@ -208,6 +208,93 @@ finishReading:
     bx lr
     
 
+/* Draw the character in r0 to (r1, r2)
+ */
+ .globl drawChar
+drawChar:
+    push {r4, r5, lr}
+
+    px      .req    r1
+    py      .req    r2
+    color   .req    r3
+    row     .req    r4
+    chAdr   .req    r5
+    mask    .req    r0
+
+	ldr		chAdr,	=font		// load the address of the font map
+	add		chAdr,	r0, lsl #4	// char address = font base + (char * 16)
+
+charLoop$:
+
+	mov		mask,	#0x01		// set the bitmask to 1 in the LSB
+	
+	ldrb	row,	[chAdr], #1	// load the row byte, post increment chAdr
+
+rowLoop$:
+	tst		row,	mask		// test row byte against the bitmask
+	beq		noPixel$
+
+	bl		DrawPixel16bpp			// draw red pixel at (px, py)
+
+noPixel$:
+	add		px,		#1			// increment x coordinate by 1
+	lsl		mask,	#1			// shift bitmask left by 1
+
+	tst		mask,	#0x100		// test if the bitmask has shifted 8 times (test 9th bit)
+	beq		rowLoop$
+
+	add		py,		#1			// increment y coordinate by 1
+
+	tst		chAdr,	#0xF
+	bne		charLoop$			// loop back to charLoop$, unless address evenly divisibly by 16 (ie: at the next char)
+
+	.unreq	chAdr
+	.unreq	px
+	.unreq	py
+	.unreq	row
+	.unreq	mask
+
+	pop		{r4, r5, pc}
+
+.globl drawScore
+drawScore:
+    mov r1, 0
+    mov r2, 0
+    mov r3, 0xFFFFFF
+    mov r0, #'S'
+    bl drawChar
+
+    mov r1, 10
+    mov r2, 0
+    mov r3, 0xFFFFFF
+    mov r0, #'c'
+    bl drawChar
+
+    mov r1, 20
+    mov r2, 0
+    mov r3, 0xFFFFFF
+    mov r0, #'o'
+    bl drawChar
+
+    mov r1, 30
+    mov r2, 0
+    mov r3, 0xFFFFFF
+    mov r0, #'r'
+    bl drawChar
+
+    mov r1, 40
+    mov r2, 0
+    mov r3, 0xFFFFFF
+    mov r0, #'e'
+
+    bl drawChar
+    mov r1, 50
+    mov r2, 0
+    mov r3, 0xFFFFFF
+    mov r0, #':'
+    bl drawChar
+
+    bx lr
 
 
 
@@ -278,8 +365,12 @@ FrameBufferInfo:
 
 .align 4
 .globl FrameBufferPointer
+
 FrameBufferPointer:
     .int    0
+
+font:
+    .incbin	"font.bin"
 
 /*  interupt stuff
 
