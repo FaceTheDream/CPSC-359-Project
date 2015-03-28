@@ -434,7 +434,18 @@ drawBush: //draws "bush" cover
 	//r0 is the x location
 	//r1 is the y location
 	//r2 is the size of the bush (bush is square)
-	
+	push{r3}
+	ldr	r3, =bushColour
+	ldr	r3, [r3]
+	push{r2}
+	push{r2}
+	push{r3}
+	push{r1}
+	push{r0}
+	bl	drawRect
+	add	sp, #20
+	pop{r3}
+	bx	lr
 
 drawLazer: //draws player lazer projectile
 	// r0 is x location
