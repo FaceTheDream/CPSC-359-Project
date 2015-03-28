@@ -1,3 +1,5 @@
+.section .text
+
 oneTurn:
 	//detect inputs subroutine
 	//put start button value memory location in r2
@@ -14,13 +16,13 @@ oneTurn:
 	ldr r4, [r4]
 	ldr r5, [r5]
 	cmp r1, r2
-	beq //move up subroutine
+	bleq playerUp
 	cmp r1, r3
-	beq //move down subroutine
+	bleq playerDown
 	cmp r1, r4
-	beq //move left subroutine
+	bleq playerLeft
 	cmp r1, r5
-	beq //move right subroutine
+	bleq playerRight
 	//put 'a' button value memory location in r2
 	ldr r2, [r2]
 	cmp r1, r2
@@ -76,3 +78,48 @@ afterNpc:
 	//if obstacle is hit and hp != 0, shrink obstacle
 	//draw screen subroutine
 	b oneTurn
+	
+playerUp:
+	ldr r0, =playery
+	ldr r1, [r0]
+	cmp r1, #0
+	beq endSub
+	sub r1, r1, #1
+	str r1, [r0]
+	b endSub
+	
+playerDown:
+	ldr r0, =playery
+	ldr r1, [r0]
+	cmp r1, #767
+	beq endSub
+	add r1, r1, #1
+	str r1, [r0]
+	b endSub
+	
+playerLeft:
+	ldr r0, =playerx
+	ldr r1, [r0]
+	cmp r1, #0
+	beq endSub
+	sub r1, r1, #1
+	str r1, [r0]
+	b endSub
+	
+playerRight:
+	ldr r0, =playerx
+	ldr r1, [r0]
+	cmp r1, #1023
+	beq endSub
+	add r1, r1, #1
+	str r1, [r0]
+	b endSub
+
+endSub:
+	bx lr
+	
+.section .data
+
+.align 4
+playerx:	.int	0
+playery:	.int	0
