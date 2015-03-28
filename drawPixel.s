@@ -2,6 +2,7 @@
 
 .section .init
 .globl drawPixel
+.globl drawBG
 .globl drawRect
 .globl drawLine
 .globl drawTriangleUp
@@ -87,12 +88,12 @@ drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	
 drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagonalD as parameters
 	push(r3-r10)
-	ldr   r0, [sp,#40] // x
-	ldr   r1, [sp,#44] // y
-	ldr   r2, [sp,#60] // colour
-	ldr   r3, [sp,#52] // length
-	ldr   r4, [sp,#56] // thickness
-	ldr   r5, [sp,#48] // direction
+	ldr   r0, [sp,#32] // x
+	ldr   r1, [sp,#36] // y
+	ldr   r2, [sp,#56] // colour
+	ldr   r3, [sp,#48] // length
+	ldr   r4, [sp,#52] // thickness
+	ldr   r5, [sp,#44] // direction
 	sub   r6, r4, #1
 	rsl   r6, #1 // a
 	mov   r7, #0 // i
@@ -199,7 +200,7 @@ pop{r3-r8}
 bx	lr
 
 
-drawTriangleDown:
+drawTriangleDown: //r0 is x, r1 is y, r2 is height, colour is sent over stack
 push{r3-r7}
 mov	r3, r0 //x
 mov	r4, r1 //y
@@ -230,7 +231,7 @@ pop{r3-r7}
 bx	lr
 
 
-drawTriangleLeft:
+drawTriangleLeft: //r0 is x, r1 is y, r2 is height, colour is sent over stack
 push{r3-r7}
 mov	r3, r0 //x
 mov	r4, r1 //y
@@ -260,7 +261,7 @@ dtlfl1end:
 pop{r3-r7}
 bx	lr
 
-drawTriangleRight:
+drawTriangleRight: //r0 is x, r1 is y, r2 is height, colour is sent over stack
 push{r3-r7}
 mov	r3, r0 //x
 mov	r4, r1 //y
@@ -291,10 +292,30 @@ pop{r3-r7}
 bx	lr
 
 drawDiamond:
+//r0 is x, r1 is y, r2 is height
+//[sp] is colour
+// (x,y) is the topmost point of the diamond
+push{r3-r6} //save registers to restore after use
+mov	r3, r0 // x
+mov	r4, r1 // y
+rsl	r2, #1 // divide height in half
+mov	r5, r2 // height/2
+ldr	r6, [sp,#16] // colour
+push{r6}	//push colour onto the stack
+bl	drawTriangleUp //draw the top half of the diamond
+add	sp, #4  //remove colour off the stack
+add	r4, r5  
+add	r4, r5 //add the full height to the y coordinate
+mov	r0, r3 //set x for drawing
+mov	r1, r4 // set y for drawing
+mov	r2, r5 // set height for drawing
+push{r6}	//push colour onto the stack
+bl	drawTriangleDown //draw the bottom half of the diamond
+add	sp, #4  //remove colour off the stack
+pop{r3-r10}	//restore registers
+bx	lr	//branch to calling code
 
 drawSquare:
-
-drawStripedCircle:
 
 drawRectB: //rectangle with border
 
