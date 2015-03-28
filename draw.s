@@ -540,7 +540,7 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	push {r2}
 	push {r0}
 	push {r1}
-	call	drawLine
+	bl	drawLine    //calls drawLine
 	add	sp, #24
 	pop {r3-r7}
 	bx	lr
