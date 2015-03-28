@@ -168,6 +168,7 @@ push{r0}	//push 2nd paramteter, (y+i) onto stack
 sub	r0, r3, r7
 push{r0}	//push 1st paramter, (x-i) onto stack
 bl	drawLine
+add	sp, #24
 add	r7, #1
 b	dtufl1start
 dtufl1end:
@@ -198,6 +199,7 @@ push{r0}	//push 2nd paramteter, (y-i) onto stack
 sub	r0, r3, r7
 push{r0}	//push 1st paramter, (x-i) onto stack
 bl	drawLine
+add	sp, #24
 add	r7, #1
 b	dtdfl1start
 dtdfl1end:
@@ -228,6 +230,7 @@ push{r0}	//push 2nd paramteter, (y+i) onto stack
 add	r0, r3, r7
 push{r0}	//push 1st paramter, (x+i) onto stack
 bl	drawLine
+add	sp, #24
 add	r7, #1
 b	dtlfl1start
 dtlfl1end:
@@ -257,6 +260,7 @@ push{r0}	//push 2nd paramteter, (y+i) onto stack
 sub	r0, r3, r7
 push{r0}	//push 1st paramter, (x-i) onto stack
 bl	drawLine
+add	sp, #24
 add	r7, #1
 b	dtrfl1start
 dtrfl1end:
