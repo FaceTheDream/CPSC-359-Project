@@ -126,12 +126,12 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	push{r0,r1,r2,r6,r10} // push required parameters onto the stack
 	bl     drawRect     // call drawRect
 	pop{r0,r1,r2,r6,r10}  // remove parameters from stack
-	afterif1:
-	and   r0, r5, #1    
+	afterif1:          // after thickness for horizontal
+	and   r0, r5, #1    // 
 	cmp   r0, #1
-	bne   afterif2
+	bne   afterif2      // if (direction & 1) != 1, go to else 
 	cmp	  r4, #1
-	ble   afterif3
+	ble   afterif3      // if thickness <= 1, go to else
 	push{r4}
 	mov   r0, #1
 	push{r0}
@@ -153,22 +153,22 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	pop{r0,r1}
 	pop{r0,r1}
 	pop{r0}
-	afterif3:
+	afterif3:             //after thickness for vertical line
 	add   r8, #1
 	afterif2:
 	tst  r5, #2
-	bne  ifpart2
-	add  r9, #1
+	bne  ifpart2          // direction & 2 != 1
+	add  r9, #1	      // increment y
 	ifpart2:
 	tst r5, #4
-	bne  afterif4
-	sub  r9, #1
+	bne  afterif4        // direction & 4 != 1
+	sub  r9, #1          // decrement y
 	afterif4:
 	add  r7, #1
 	b    dLFL1s
 	dLFL1e:	
-	pop(r3-r9)
-	bx	lr
+	pop(r3-r9)           // restore registers
+	bx	lr           // branch to calling code
 
 
 drawTriangleUp: //r0 is x, r1 is y, r2 is height, colour is sent over stack
