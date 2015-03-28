@@ -1,12 +1,69 @@
 .section .text
 
+start:
+	ldr r0, =score
+	mov r1, #0
+	str r1, [r0]
+	ldr r0, =playerx
+	mov r1, #382
+	str r1, [r0]
+	ldr r0, =playery
+	mov r1, #512
+	str r1, [r0]
+	mov r1, #1
+	mov r2, #2
+	mov r3, #3
+	ldr r0, =npchp
+	str r1, [r0]
+	str r1, [r0, #4]
+	str r1, [r0, #8]
+	str r1, [r0, #12]
+	str r1, [r0, #16]
+	str r1, [r0, #20]
+	str r1, [r0, #24]
+	str r1, [r0, #28]
+	str r1, [r0, #32]
+	str r1, [r0, #36]
+	str r2, [r0, #40]
+	str r2, [r0, #44]
+	str r2, [r0, #48]
+	str r2, [r0, #52]
+	str r2, [r0, #56]
+	str r3, [r0, #60]
+	str r3, [r0, #64]
+	ldr r0, =crntpause
+	mov r1, #0
+	str r1, [r0]
+	ldr r0, =npcys
+	mov r1, #0
+	mov r2, #0
+	mov r3, #16
+startLoop:
+	cmp r2, r3
+	beq endLoop
+	str r1, [r0, r2, lsl #2]
+	add r2, r2, #1
+	b startLoop
+	
+endLoop:
+	mov r1, #512
+	mov r2, #0
+	mov r3, #16
+	
+nextLoop:
+	cmp r2, r3
+	beq oneTurn
+	str r1, [r0, r2, lsl #2]
+	add r2, r2, #1
+	b nextLoop
+
 oneTurn:
-	//detect inputs subroutine
+	//detect inputs
 	//put start button value memory location in r2
 	ldr r2, [r2]
 	mov r1, #0
 	cmp r1, r2
-	bleq //pause menu subroutine
+	beq pauseMenu
 	//put up button value memory location in r2
 	//put down button value memory location in r3
 	//put left button value memory location in r4
@@ -29,10 +86,9 @@ oneTurn:
 	bleq //shoot bullet subroutine
 	
 	mov r1, #0	// current npc, add this offset*4 to get current npc's stats
-	mov r0, #17
+	mov r0, #16
 npcStuff:
 	mov r4, #0
-	add r1, r1, #1
 	cmp r1, r0
 	bge afterNpc
 	ldr r5, =npchp
@@ -64,6 +120,7 @@ npcStuff:
 	mov r2, r2 MOD 10 //this might not work
 	cmp r2, #0
 	bleq //shoot npc bullet subroutine
+	add r1, r1, #1
 	b npcStuff
 	
 afterNpc:
@@ -82,6 +139,54 @@ afterNpc:
 	//draw screen subroutine
 	b oneTurn
 	
+pauseMenu:
+	//detect inputs
+	//put start button value memory location in r2
+	ldr r2, [r2]
+	mov r1, #0
+	cmp r1, r2
+	b endSub
+	//put up button value memory location in r2
+	//put down button value memory location in r3
+	ldr r2, [r2]
+	ldr r3, [r3]
+	cmp r2, #0
+	bleq pauseUp
+	cmp r3, #0
+	bleq pauseDown
+	//put 'a' button value memory location in r2
+	ldr r2, [r2]
+	cmp r2, #0
+	beq pSelect
+	b pauseMenu
+	
+pauseUp:
+	ldr r0, =crntpause
+	ldr r0, [r0]
+	cmp r0, #1
+	subeq r0, r0, #1
+	cmp r0, #2
+	subeq r0, r0, #1
+	bx lr
+	
+pauseDown:
+	ldr r0, =crntpause
+	ldr r0, [r0]
+	cmp r0, #0
+	addeq r0, r0, #1
+	cmp r0, #1
+	addeq r0, r0, #1
+	bx lr
+	
+pSelect:
+	ldr r0, =crntpause
+	ldr r0, [r0]
+	cmp r0, #0
+	beq endSub
+	cmp r0, #1
+	beq start
+	//QUIT GAME HERE
+	
 playerUp:
 	ldr r0, =playery
 	ldr r1, [r0]
@@ -89,7 +194,7 @@ playerUp:
 	beq endSub
 	sub r1, r1, #1
 	str r1, [r0]
-	b endSub
+	bx lr
 	
 playerDown:
 	ldr r0, =playery
@@ -98,7 +203,7 @@ playerDown:
 	beq endSub
 	add r1, r1, #1
 	str r1, [r0]
-	b endSub
+	bx lr
 	
 playerLeft:
 	ldr r0, =playerx
@@ -107,7 +212,7 @@ playerLeft:
 	beq endSub
 	sub r1, r1, #1
 	str r1, [r0]
-	b endSub
+	bx lr
 	
 playerRight:
 	ldr r0, =playerx
@@ -116,7 +221,7 @@ playerRight:
 	beq endSub
 	add r1, r1, #1
 	str r1, [r0]
-	b endSub
+	bx lr
 
 npcUp:
 	ldr r0, =currentnpc
@@ -127,7 +232,7 @@ npcUp:
 	beq endSub
 	sub r2, r2, #1
 	str r2, [r1, r0, lsl #2]
-	b endSub
+	bx lr
 	
 npcDown:
 	ldr r0, =currentnpc
@@ -138,7 +243,7 @@ npcDown:
 	beq endSub
 	add r2, r2, #1
 	str r2, [r1, r0, lsl #2]
-	b endSub
+	bx lr
 	
 npcLeft:
 	ldr r0, =currentnpc
@@ -160,7 +265,7 @@ npcRight:
 	beq endSub
 	sub r2, r2, #1
 	str r2, [r1, r0, lsl #2]
-	b endSub
+	bx lr
 
 endSub:
 	bx lr
@@ -168,9 +273,11 @@ endSub:
 .section .data
 
 .align 4
+score:		.int	0
 playerx:	.int	0
 playery:	.int	0
 currentnpc:	.int	0
 npcxs:		.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 npcys:		.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 npchp:		.int	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3
+crntpause:	.int	0 //0 = resume game, 1 = restart game, 2 = quit game
