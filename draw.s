@@ -754,6 +754,8 @@ drawBush: //draws "bush" cover
 //r0 is the x location
 //r1 is the y location
 //r2 is the size of the bush (bush is square)
+	cmp	r2, #0
+	ble	endOfDrawBush	//skips drawing the bush if size is less than or equal to 0
 	push {r3}
 	ldr	r3, =bushColour
 	ldr	r3, [r3]
@@ -765,6 +767,7 @@ drawBush: //draws "bush" cover
 	bl	drawRect
 	add	sp, #20		//remove drawRect parameters from stack
 	pop {r3}		//restore registers
+endOfDrawBush:
 	bx	lr		//branch to calling code
 
 drawLazer: //draws player lazer projectile
