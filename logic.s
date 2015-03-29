@@ -138,10 +138,10 @@ oneTurn5:
 oneTurn6:
 	ldr r3, =0x100		// 100000000 = 'a' button
 	tst r0, r3
-	beq oneTurn6
+	beq oneTurn7
 	bl playerShoot
 	
-oneTurn6:
+oneTurn7:
 	mov r1, #0	// current npc, add this offset*4 to get current npc's stats
 	mov r0, #16
 npcStuff:
