@@ -29,8 +29,8 @@
 			// r2 is borderwidth
 			// [sp] is bordercolour
 			// [sp+4] is main rectangle colour
-			// [sp+8] is length
-			// [sp+12] is width
+			// [sp+8] is length (x-dist)
+			// [sp+12] is width (y-dist)
 .globl drawTriangleUp
 .globl drawTriangleDown
 .globl drawTriangleLeft
@@ -712,9 +712,163 @@ drawPauseScreen:
 	// 2 indicates Quit
 	push	{r4-r10}
 	
-	//pause menu will be drawn with top-left-most coordinates (0, 100)
+	//pause menu will be drawn with top-left-most coordinates (100, 0)
 	//1024 pixels wide, 550 pixels long, border width of 30 pixels
+	//a newline will be 20 pixels tall
+	mov	r4, r0	//r4 is now the option selected
 	
+	mov	r0, #100	//x
+	mov	r1, #0		//y
+	mov	r2, #30
+	mov	r5, #1024
+	push	{r5}
+	mov	r5, #550
+	push	{r5}
+	ldr	r5, =pauseMenuMC
+	ldr	r5, [r5]
+	push	{r5}
+	ldr	r5, =pauseMenuBC
+	ldr	r5, [r5]
+	push	{r5}
+	bl	drawRectB
+	add	sp, #16
+	
+	mov	r5, #20		//r5 is now the newline distance
+	//start writing words at (150,50)
+	mov	r6, #150	//x
+	mov	r7, #50		//y
+	ldr	r8, =0xFFFFFF	//white text for pause menu
+	
+	//starts with the word "Resume"
+	add 	r1, r6, #0	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'R'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #10	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'e'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #20	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'s'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #30	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'u'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #40	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'m'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #50	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'e'	//draw character
+	bl 	drawChar	//call to subroutine
+	add	r7, r5		//adds the newline distance
+	
+	//Next is "Restart Game"
+	add 	r1, r6, #0	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'R'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #20	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'e'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #30	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'s'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #40	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'t'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #50	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'a'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #60	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'r'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #70	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'t'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #90	//draw x skips one character slot for space
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'G'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #100	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'a'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #0	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'m'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #0	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'e'	//draw character
+	bl 	drawChar	//call to subroutine
+	add	r7, r5		//adds the newline distance
+	
+	//third word is "Quit"
+	add 	r1, r6, #0	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'Q'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #10	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'u'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #20	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'i'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r6, #30	//draw x
+	mov 	r2, r7	        //draw y
+	mov 	r3, r8		//draw colour
+	mov 	r0, #'t'	//draw character
+	bl 	drawChar	//call to subroutine
+	
+	mov	r6, #150 	//x
+	
+	cmp	r4, #0
+	bne	ifPauseNotResume
+	mov	r0, r6
+	mov	r1, #60
+	b	afterPauseIfs
+	ifPauseNotResume:
+	cmp	r4, #1
+	bne	ifPauseElse
+	mov	r0, r6
+	mov	r1, #80
+	b	afterPauseIfs
+	ifPauseElse:
+	mov	r0, r6
+	mov	r1, #100
+	afterPauseIfs:
 	
 	pop	{r4-r10}
 	bx	lr
