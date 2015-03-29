@@ -477,7 +477,7 @@ pointerWait:
 
 .section    .data
 
-.align 12
+.align 4
 FrameBufferInfo:
     .int    1024    // 0 - Width
     .int    768     // 4 - Height

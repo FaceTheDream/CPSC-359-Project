@@ -76,17 +76,18 @@ drawPixel: //r0 is assumed to be the x location, r1 is assumed to be the y locat
 	
 	cmp    r0,    #1024                  //check max x
 	bge    endDrawPixel                  // if x >= 1024, don't draw
-	cmp    r0,    0                      //check min x
+	cmp    r0,    #0                      //check min x
 	blt    endDrawPixel                  // if x < 0, don't draw
 	cmp    r1,    #768                   //check max y
 	bge    endDrawPixel                  // if y >= 768, don't draw
-	cmp    r1,    0                      //check min y
+	cmp    r1,    #0                      //check min y
 	blt    endDrawPixel                  // if y < 0, don't draw
 	
-	mul    r1,    #1024                  //row-major r1 <- (y*1024)
+    mov    r3,    #1024
+	mul    r1,    r3                 //row-major r1 <- (y*1024)
 	add    r0,    r1                     //r0 <- (y*1024) + x
 	lsl    r0,    #1                     //16-bit colour assumed
-	ldr    r1,    =frameBufferPointer    // should get frameBuffer location from file that contains frameBuffer information
+	ldr    r1,    =FrameBufferPointer    // should get frameBuffer location from file that contains frameBuffer information
 	add    r1,    r0                     // add offset
 	strh   r2,    [r1]                   // stores the colour into the FrameBuffer location
 endDrawPixel:				     // end of drawPixel
