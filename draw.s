@@ -466,7 +466,39 @@ drawBeeWings: //very boxy wings
 	bx	lr
 	
 drawBeeEye:
-	bx	lr
+	//r0 is x
+	//r1 is y
+	push	{r4-r10}	//make room for local registers
+	sub	sp, #8 		//make room for two local variables on the stack
+	mov	r4, #13		//default inner eye length
+	mov	r5, #26		//default outer-eye length
+	mov	r6, #20	 	//default inner-eye width
+	mov	r7, #40 	//default outer-eye width
+	mov	r8, #0		//default inner-eye colour
+	ldr	r9, =0xFFFFFFF	//default outer-eye colour
+	str	r0, [sp,#4]	//saves x as a local variable (sp+4)
+	str	r1, [sp]	//saves y as a local variable (sp)
+	push	{r5,r7}		//push lenX, lenY onto stack
+	push	{r0,r1,r9}	//push x,y,colour onto stack
+	bl	drawRect	//draws outer-eye
+	add	sp, #20		//removes paramters of outer-eye off of the stack
+	ldr	r0, [sp,#4]	//load x from local storage
+	lsl	r7, #2		//divide outer length by 4
+	add	r0, r7		//add (oLen/4) to x
+	str	r0, [sp, #4]	//save the changes to x
+	ldr	r1, [sp]	//load y from local storage
+	lsl	r5, #2		//divide outer width by 4
+	add	r1, r5		//add (oWid/4) to y
+	str	r1, [sp]	//save changes to y
+	ldr	r0, [sp, #4]	//load x from the stack
+	ldr	r1, [sp]	//load y from the stack
+	push	{r4,r6}		//push lenX, lenY onto the stack
+	push	{r0,r1,r8}	//push x,y,colour onto the stack
+	bl	drawRect	//draw the inner-eye (pupil)
+	add	sp, #20		//remove parameters left on stack
+	add	sp, #8		//remove local variables from the stack
+	pop	{r4-r10}	//restore original registers
+	bx	lr		//branch to calling code
 	
 
 drawBeeP: //draws pawn bee (top left)
@@ -550,15 +582,15 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	ldr	r6, =beeBlackColour
 	ldr	r6, [r6]
 	mov	r2, #2
-	push {r6}
-	push {r2}
-	push {r5}
-	push {r2}
-	push {r0}
-	push {r1}
+	push 	{r6}
+	push 	{r2}
+	push	{r5}
+	pus	{r2}
+	push	{r0}
+	push 	{r1}
 	bl	drawLine    //calls drawLine
 	add	sp, #24
-	pop {r3-r7}
+	pop 	{r3-r7}
 	bx	lr
 
 drawBush: //draws "bush" cover
