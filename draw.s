@@ -41,12 +41,11 @@ drawPixel: //r0 is assumed to be the x location, r1 is assumed to be the y locat
 	
 	mul    r1,    #1024                  //row-major
 	add    r0,    r1                     //
-	lsl    r0,    #5                     //32-bit colour assumed
+	lsl    r0,    #4                     //16-bit colour assumed
 	ldr    r1,    =frameBufferPointer    // should get frameBuffer location from file that contains frameBuffer information
 	ldr    r1,    [r1]                   //
 	add    r1,    r0                     // add offset
-	strh   r2,   [r1]                    //
-	
+	strh   r2,    [r1]                   // stores the colour into the FrameBuffer location
 endDrawPixel:
 	bx     lr                            //
 
@@ -661,6 +660,7 @@ drawPauseScreen:
 	bx	lr
 
 drawGameOverScreen:
+	
 	bx	lr
 
 refreshGameScreen:
