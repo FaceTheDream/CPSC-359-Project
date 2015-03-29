@@ -769,16 +769,16 @@ drawPauseScreen:
 	push	{r4-r10}
 	
 	//pause menu will be drawn with top-left-most coordinates (100, 0)
-	//1024 pixels wide, 550 pixels long, border width of 30 pixels
+	//768 pixels wide, 600 pixels long, border width of 30 pixels
 	//a newline will be 20 pixels tall
 	mov	r4, r0	//r4 is now the option selected
 	
 	mov	r0, #100	//x
 	mov	r1, #0		//y
 	mov	r2, #30
-	mov	r5, #1024
+	mov	r5, #768
 	push	{r5}
-	mov	r5, #550
+	mov	r5, #600
 	push	{r5}
 	ldr	r5, =pauseMenuMC
 	ldr	r5, [r5]
