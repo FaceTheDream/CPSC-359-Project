@@ -44,9 +44,15 @@
 .globl drawTriangleUp	//draws an isosceles triangle pointing upwards
 			// (x,y) is the topmost tip of the triangle
 			//r0 is x, r1 is y, r2 is height, colour is sent over stack
-.globl drawTriangleDown
-.globl drawTriangleLeft
-.globl drawTriangleRight
+.globl drawTriangleDown	//draws an isosceles triangle pointing downwards
+			// (x,y) is the bottommost tip of the triangle
+			//r0 is x, r1 is y, r2 is height, colour is sent over stack
+.globl drawTriangleLeft	//draws an isosceles triangle pointing leftwards
+			// (x,y) is the leftmost tip of the triangle
+			//r0 is x, r1 is y, r2 is height, colour is sent over stack
+.globl drawTriangleRight //draws an isosceles triangle pointing rightwards
+			// (x,y) is the rightmost tip of the triangle
+			//r0 is x, r1 is y, r2 is height, colour is sent over stack
 .globl drawVictoryScreen
 .globl refreshGameScreen
 .globl setBeeStingerSize
