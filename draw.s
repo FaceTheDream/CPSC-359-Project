@@ -1235,9 +1235,201 @@ drawAuthorNames:
 
 drawGameTitle:
 	bx	lr
+	
+drawKyleBuettner:
+	//r0 is x location
+	//r1 is y location
+	//colour is authorTextColour in .data section
+	push	{r4-r6}
+	ldr	r4, =authorTextColour
+	ldr	r4, [r4]
+	mov	r5, r0
+	mov	r6, r1
+	add 	r1, r5, #0	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'K'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #10	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'y'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #20	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'l'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #30	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'e'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #50	//draw x skip one due to space
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'B'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #60	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'u'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #70	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'e'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #80	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'t'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #90	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'t'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #100	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'n'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #110	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'e'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #120	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'r'	//draw character
+	bl 	drawChar	//call to subroutine
+	pop	{r4-r6}
+	bx	lr
+
+drawDavidKenny:
+	//r0 is x location
+	//r1 is y location
+	//colour is authorTextColour in .data section
+	push	{r4-r6}
+	ldr	r4, =authorTextColour
+	ldr	r4, [r4]
+	mov	r5, r0
+	mov	r6, r1
+	add 	r1, r5, #0	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'D'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #10	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'a'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #20	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'v'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #30	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'i'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #40	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'d'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #60	//draw x, skips one due to space
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'K'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #70	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'e'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #80	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'n'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #90	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'n'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #100	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'y'	//draw character
+	bl 	drawChar	//call to subroutine
+	pop	{r4-r6}
+	bx	lr
+
+drawJustinChu:
+	//r0 is x location
+	//r1 is y location
+	//colour is authorTextColour in .data section
+	push	{r4-r6}
+	ldr	r4, =authorTextColour
+	ldr	r4, [r4]
+	mov	r5, r0
+	mov	r6, r1
+	add 	r1, r5, #0	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'J'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #10	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'u'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #20	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'s'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #30	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'t'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #40	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'i'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #50	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'n'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #70	//draw x, skips one due to space
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'C'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #80	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'h'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r5, #90	//draw x
+	mov 	r2, r6	        //draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'u'	//draw character
+	bl 	drawChar	//call to subroutine
+	pop	{r4-r6}
+	bx	lr
 
 .section .data
 // Colour codes from http://www.nthelp.com/colorcodes.htm
+authorTextColour: .word	
 beeBlackColour: .word	0x000000	//black
 beeRedColour:	.word	0xFF6600	//lightish red
 beeYellowColour: .word	0xFFFF00	//yellow
