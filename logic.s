@@ -54,6 +54,9 @@ start:
 	mov r1, #768
 	str r1, [r0, #4]
 	str r1, [r0, #12]
+	ldr r0, =crntbullet
+	mov r1, #0
+	str r1, [r0]
 	ldr r0, =npcys
 	mov r1, #0
 	mov r2, #0
@@ -76,6 +79,19 @@ nextLoop:
 	str r1, [r0, r2, lsl #2]
 	add r2, r2, #1
 	b nextLoop
+	
+finaLoop:
+	mov r0, #5
+	mov r1, #0
+	mov r2, #14
+	
+finaLoop2:
+	cmp r1, r2
+	beq oneTurn
+	ldr r3, =bulletfaces
+	str r0, [r3, r1, lsl #2]
+	add r1, r1, #1
+	b finaLoop2
 
 oneTurn:
 	//detect inputs
@@ -103,7 +119,7 @@ oneTurn:
 	//put 'a' button value memory location in r2
 	ldr r2, [r2]
 	cmp r1, r2
-	bleq //shoot bullet subroutine
+	bleq playerShoot
 	
 	mov r1, #0	// current npc, add this offset*4 to get current npc's stats
 	mov r0, #16
@@ -139,13 +155,98 @@ npcStuff:
 	add r2, r3, r2
 	mov r2, r2 MOD 10 //this might not work
 	cmp r2, #0
-	bleq //shoot npc bullet subroutine
+	bleq npcShoot
 	add r1, r1, #1
 	b npcStuff
 	
 afterNpc:
 	//detect collisions:
 	//if bullet is overlapped by player, player is hit
+	mov r4, #0
+	mov r5, #14
+	
+movBulls:
+	ldr r7, =crntbullet
+	str r4, [r7]
+	//make each bullet continue moving
+	cmp r4, r5
+	beq afterBulls
+	ldr r0, =bulletfaces
+	ldr r0, [r0, r4, lsl #2]
+	cmp r0, #5
+	bge skipBull
+	ldr r1, =bulletxs
+	ldr r1, [r1, r4, lsl #2]
+	ldr r2, =bulletys
+	ldr r2, [r2, r4, lsl #2]
+	cmp r0, #0
+	beq bullUp
+	cmp r0, #1
+	beq bullDown
+	cmp r0, #2
+	beq bullLeft
+	cmp r0, #3
+	beq bullRight
+	add r4, r4, #1
+	b movBulls
+	
+bullUp:
+	ldr r0, =crntbullet
+	ldr r0, [r0]
+	ldr r2, =bulletys
+	ldr r2, [r2, r0, lsl #2]
+	sub r2, r2, #1
+	str r2, [r2, r0, lsl #2]
+	ldr r1, =bulletfaces
+	ldr r3, [r1, r0, lsl #2]
+	cmp r2, #0
+	moveq r3, #5
+	str r3, [r1, r0, lsl #2]
+
+bullDown:
+	ldr r0, =crntbullet
+	ldr r0, [r0]
+	ldr r2, =bulletys
+	ldr r2, [r2, r0, lsl #2]
+	add r2, r2, #1
+	str r2, [r2, r0, lsl #2]
+	ldr r1, =bulletfaces
+	ldr r3, [r1, r0, lsl #2]
+	cmp r2, #767
+	moveq r3, #5
+	str r3, [r1, r0, lsl #2]
+
+bullLeft:
+	ldr r0, =crntbullet
+	ldr r0, [r0]
+	ldr r2, =bulletxs
+	ldr r2, [r2, r0, lsl #2]
+	sub r2, r2, #1
+	str r2, [r2, r0, lsl #2]
+	ldr r1, =bulletfaces
+	ldr r3, [r1, r0, lsl #2]
+	cmp r2, #0
+	moveq r3, #5
+	str r3, [r1, r0, lsl #2]
+
+bullRight:
+	ldr r0, =crntbullet
+	ldr r0, [r0]
+	ldr r2, =bulletxs
+	ldr r2, [r2, r0, lsl #2]
+	add r2, r2, #1
+	str r2, [r2, r0, lsl #2]
+	ldr r1, =bulletfaces
+	ldr r3, [r1, r0, lsl #2]
+	cmp r2, #1023
+	moveq r3, #5
+	str r3, [r1, r0, lsl #2]
+	
+skipBull:
+	add r4, r4, #1
+	b movBulls
+	
+afterBulls:
 	mov r4, #0	//bullet#
 	mov r5, #14	//max bullets
 	
@@ -338,6 +439,9 @@ pSelect:
 	//QUIT GAME HERE
 	
 playerUp:
+	ldr r0, =playerface
+	mov r1, #0
+	str r1, [r0]
 	ldr r0, =playery
 	ldr r1, [r0]
 	cmp r1, #0
@@ -347,6 +451,9 @@ playerUp:
 	bx lr
 	
 playerDown:
+	ldr r0, =playerface
+	mov r1, #1
+	str r1, [r0]
 	ldr r0, =playery
 	ldr r1, [r0]
 	cmp r1, #767
@@ -356,6 +463,9 @@ playerDown:
 	bx lr
 	
 playerLeft:
+	ldr r0, =playerface
+	mov r1, #2
+	str r1, [r0]
 	ldr r0, =playerx
 	ldr r1, [r0]
 	cmp r1, #0
@@ -365,6 +475,9 @@ playerLeft:
 	bx lr
 	
 playerRight:
+	ldr r0, =playerface
+	mov r1, #3
+	str r1, [r0]
 	ldr r0, =playerx
 	ldr r1, [r0]
 	cmp r1, #1023
@@ -372,8 +485,33 @@ playerRight:
 	add r1, r1, #1
 	str r1, [r0]
 	bx lr
+	
+playerShoot:
+	ldr r0, =playerface
+	ldr r0, [r0]
+	ldr r1, =playerx
+	ldr r1, [r1]
+	ldr r2, =playery
+	ldr r2, [r2]
+	ldr r3, =crntbullet
+	ldr r4, [r3]
+	cmp r4, #14
+	moveq r4, #0
+	cmp r4, #14
+	addlt r4, r4, #1
+	str r4, [r3]
+	ldr r3, =bulletfaces
+	str r0, [r3, r4, lsl #2]
+	ldr r3, =bulletxs
+	str r1, [r3, r4, lsl #2]
+	ldr r3, =bulletys
+	str r2, [r3, r4, lsl #2]
+	bx lr
 
 npcUp:
+	ldr r0, =currentnpcface
+	mov r1, #0
+	str r1, [r0]
 	ldr r0, =currentnpc
 	ldr r0, [r0]
 	ldr r1, =npcys
@@ -385,6 +523,9 @@ npcUp:
 	bx lr
 	
 npcDown:
+	ldr r0, =currentnpcface
+	mov r1, #1
+	str r1, [r0]
 	ldr r0, =currentnpc
 	ldr r0, [r0]
 	ldr r1, =npcys
@@ -396,6 +537,9 @@ npcDown:
 	bx lr
 	
 npcLeft:
+	ldr r0, =currentnpcface
+	mov r1, #2
+	str r1, [r0]
 	ldr r0, =currentnpc
 	ldr r0, [r0]
 	ldr r1, =npcxs
@@ -407,6 +551,9 @@ npcLeft:
 	b endSub
 	
 npcRight:
+	ldr r0, =currentnpcface
+	mov r1, #3
+	str r1, [r0]
 	ldr r0, =currentnpc
 	ldr r0, [r0]
 	ldr r1, =npcxs
@@ -415,6 +562,30 @@ npcRight:
 	beq endSub
 	sub r2, r2, #1
 	str r2, [r1, r0, lsl #2]
+	bx lr
+	
+npcShoot:
+	ldr r5, =currentnpc
+	ldr r5, [r5]
+	ldr r0, =currentnpcface
+	ldr r0, [r0]
+	ldr r1, =npcxs
+	ldr r1, [r1, r5, lsl #2]
+	ldr r2, =npcys
+	ldr r2, [r2, r5, lsl #2]
+	ldr r3, =crntbullet
+	ldr r4, [r3]
+	cmp r4, #14
+	moveq r4, #0
+	cmp r4, #14
+	addlt r4, r4, #1
+	str r4, [r3]
+	ldr r3, =bulletfaces
+	str r0, [r3, r4, lsl #2]
+	ldr r3, =bulletxs
+	str r1, [r3, r4, lsl #2]
+	ldr r3, =bulletys
+	str r2, [r3, r4, lsl #2]
 	bx lr
 
 gameOver:
@@ -435,13 +606,17 @@ endSub:
 score:		.int	0
 playerx:	.int	0
 playery:	.int	0
+playerface:	.int	0 //0 = up, 1 = down, 2 = left, 3 = right
 currentnpc:	.int	0
+currentnpcface:	.int	0 //0 = up, 1 = down, 2 = left, 3 = right
 npcxs:		.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 npcys:		.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 npchp:		.int	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3
 crntpause:	.int	0 //0 = resume game, 1 = restart game, 2 = quit game
 bulletxs:	.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 bulletys:	.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+bulletfaces:	.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 //0 = up, 1 = down, 2 = left, 3 = right
+crntbullet:	.int	0
 obstaclexs:	.int	0, 0, 0, 0, 0
 obstacleys:	.int	0, 0, 0, 0, 0
 obstaclehp:	.int	0, 0, 0, 0, 0
