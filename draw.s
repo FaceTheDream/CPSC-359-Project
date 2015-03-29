@@ -1286,7 +1286,7 @@ drawAuthorNames: //draws the author names in the top right corner of the screen
 drawGameTitle: //Moon Bees
 	//should draw on top left corver of the screen
 	push	{r4-r6}
-	mov	r4, #933
+	ldr	r4, =0x3A5	//933 into r4
 	mov	r5, #0
 	ldr	r6, =authorTextColour
 	ldr	r6, [r6]
