@@ -708,7 +708,7 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	ldr	r6, [r6]
 	mov	r7, r5
 	add	r7, r5
-	add	r7, r5 //r7 = 3*r5
+	add	r7, r5 		//r7 = 3*r5
 	sub	r0, r3, r5
 	add	r1, r4, r5
 	push {r5}
@@ -768,7 +768,7 @@ drawLazer: //draws player lazer projectile
 // (x,y) is the top left-most location
 // returns memory location of lazerSize
 	push 	{r3-r8}
-	mov	r3, r0 		//x location (xMin)
+	mov	r3, r0 		// x location (xMin)
 	mov	r4, r1 		// y location (yMin)
 	ldr	r5, =lazerSize
 	mov	r8, r5
