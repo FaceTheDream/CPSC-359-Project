@@ -87,11 +87,14 @@ finaLoop:
 	
 finaLoop2:
 	cmp r1, r2
-	beq oneTurn
+	beq finaLoop3
 	ldr r3, =bulletfaces
 	str r0, [r3, r1, lsl #2]
 	add r1, r1, #1
 	b finaLoop2
+	
+finaLoop3:
+	//draw screen
 
 oneTurn:
 	//detect inputs
