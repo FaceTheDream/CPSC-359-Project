@@ -88,7 +88,8 @@ drawPixel: //r0 is assumed to be the x location, r1 is assumed to be the y locat
 	add    r0,    r1                     //r0 <- (y*1024) + x
 	lsl    r0,    #1                     //16-bit colour assumed
 	ldr    r1,    =FrameBufferPointer    // should get frameBuffer location from file that contains frameBuffer information
-	add    r1,    r0                     // add offset
+	ldr    r1,    [r1]
+    add    r1,    r0                     // add offset
 	strh   r2,    [r1]                   // stores the colour into the FrameBuffer location
 endDrawPixel:				     // end of drawPixel
 	bx     lr                            // branch to calling code
