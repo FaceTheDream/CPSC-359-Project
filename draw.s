@@ -1226,6 +1226,7 @@ refreshGameScreen:
 //[r0+436] to be the address of obstacleys (5)
 //[r0+456] to be the address of obstaclehp (5)
 //[r0+474] to be the last element of obstaclehp
+	
 	bx	lr
 
 setPlayerSize:
@@ -1262,7 +1263,7 @@ endOfSetLazerDirection:
 drawAuthorNames:
 	bx	lr
 
-drawGameTitle:
+drawGameTitle: //WhtvrYWnt
 	bx	lr
 	
 drawKyleBuettner:
