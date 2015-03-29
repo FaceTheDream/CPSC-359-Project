@@ -197,7 +197,7 @@ dLFL1s:
 	push 	{r0,r1,r2,r6,r10} // push required parameters onto the stack
 	bl     	drawRect    	  // call drawRect
 	pop 	{r0,r1,r2,r6,r10} // remove parameters from stack
-	mo    	r0, r8      	  // store x in r0
+	mov    	r0, r8      	  // store x in r0
 	push 	{r0,r1,r2,r6,r10} // push required parameters onto the stack
 	bl	drawRect     	  // call drawRect
 	pop 	{r0,r1,r2,r6,r10} // remove parameters from stack
@@ -750,7 +750,7 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	push 	{r6}
 	push 	{r2}
 	push	{r5}
-	pus	{r2}
+	push	{r2}
 	push	{r0}
 	push 	{r1}
 	bl	drawLine    	//calls drawLine
