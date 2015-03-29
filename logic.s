@@ -158,7 +158,14 @@ npcStuff:
 	ldr r2, [r2]		//current clock value
 	mul r2, r3, r2
 	add r2, r3, r2
-	mov r2, r2 MOD 4	//this might not work, refer to http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.kui0008a/a166_op_mod.htm
+modLoop:
+	sub r2, r2, #4		//r2 mod 4
+	cmp r2, #0
+	blt modLoopE
+	b modLoop
+	
+modLoopE:
+	add r2, r2, #4
 	ldr r6, =currentnpc
 	str r1, [r6]
 	cmp r2, #0
@@ -174,7 +181,15 @@ npcStuff:
 	ldr r2, [r2]		//current clock value
 	mul r2, r3, r2
 	add r2, r3, r2
-	mov r2, r2 MOD 10		//this might not work
+	
+modLoop2:
+	sub r2, r2, #10		//r2 mod 10
+	cmp r2, #0
+	blt modLoop2E
+	b modLoop2
+	
+modLoop2E:
+	add r2, r2, #10
 	cmp r2, #0
 	bleq npcShoot
 	add r1, r1, #1
