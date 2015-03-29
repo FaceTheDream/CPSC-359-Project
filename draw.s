@@ -21,7 +21,8 @@
 			// r1 is y
 			// r2 is colour
 .globl drawPlayer
-.globl drawPauseScreen
+.globl drawPauseScreen	//the pause screen (colours currently unselected)
+			//r0 indicates 0 (Resume), 1 (Restart Game), or 2 (Quit)
 .globl drawRect
 .globl drawRectB 	//rectangle with border
 			// r0 is x location
@@ -991,7 +992,7 @@ lazerColour:	.word	0xFF0000	//red
 losingColour:	.word	0x000099	//dark blue
 losWordColour:	.word	0xFFCCFF	//pink
 pauseMenuMC:	.word	
-pauseMenuBC:	.word
+pauseMenuBC:	.word	
 playerBodyColour: .word	0x996600	//brown
 playerHelmColour: .word	0xCCFFFF	//white-ish
 beeStingSize:  .int   6		//
