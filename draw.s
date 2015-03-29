@@ -729,6 +729,37 @@ refreshGameScreen:
 	//r0 will be the memory address for all toDraws
 	bx	lr
 
+setPlayerSize:
+	//r0 is the new size
+	ldr	r1, =playerSize
+	str	r0, [r1]
+	bx	lr
+
+setBeeStingerSize:
+	//r0 is the new "height"
+	ldr	r1, =beeStingSize
+	str	r1, [r0]
+	bx	lr
+
+setLazerDirection:
+	//r0 is direction
+	//0 is horizontal
+	//anything else is vertical
+	mov	r1, #50		//hard-coded length of lazer
+	mov	r2, #1		//hard-coded width of lazer
+	cmp	r0, #0
+	bne	makeLazerVertical
+	ldr	r0, =lazerSize
+	str	r1, [r0]
+	str	r2, [r0,#4]
+	b	endOfSetLazerDirection
+	makeLazerVertical:
+	ldr	r0, =lazerSize
+	str	r1, [r0,#4]
+	str	r2, [r0]
+	endOfSetLazerDirection:
+	bx	lr
+	
 
 .section .data
 // Colour codes from http://www.nthelp.com/colorcodes.htm
@@ -742,6 +773,8 @@ cursorColour:	.word	0xFFFFFF	//white
 lazerColour:	.word	0xFF0000	//red
 losingColour:	.word	0x000099	//dark blue
 losWordColour:	.word	0xFFCCFF	//pink
+pauseMenuMC:	.word	
+pauseMenuBC:	.word
 playerBodyColour: .word	0x996600	//brown
 playerHelmColour: .word	0xCCFFFF	//white-ish
 beeStingSize:  .int   6		//
