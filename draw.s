@@ -96,7 +96,13 @@ drawBG: //r0 is the colour to set the background to
 	//NOTE although the max for x is 1024 and the max for y is 768, 
 	//	the maximum amount of rows is 768 and the maximum amount of columns is 1024
 	//	this is due to the fact that when you change rows you travel along the y axis and vice versa
+	//if the colour is 1, then the inGameBGColour should be used
 	push 	{r3-r5}	      //push registers onto stack so as not to alter them
+	cmp	r0, #1
+	bne	usualBGDrawing
+	ldr	r0, =inGameBGColour
+	ldr	r0, [r0]
+usualBGDrawing:
 	mov	r5, r0 	      //colour
 	mov	r3, #0        //initialize row number
 	rowBGloops:	      // loop through all the rows on the screen
