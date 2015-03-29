@@ -99,32 +99,38 @@ drawBG: //r0 is the colour to set the background to
 	//	the maximum amount of rows is 768 and the maximum amount of columns is 1024
 	//	this is due to the fact that when you change rows you travel along the y axis and vice versa
 	//if the colour is 1, then the inGameBGColour should be used
-	push 	{r3-r5}	      //push registers onto stack so as not to alter them
+	push 	{r4-r6}	      //push registers onto stack so as not to alter them
 	cmp	r0, #1
 	bne	usualBGDrawing
 	ldr	r0, =inGameBGColour
 	ldr	r0, [r0]
 usualBGDrawing:
 	mov	r5, r0 	      //colour
-	mov	r3, #0        //initialize row number
-	rowBGloops:	      // loop through all the rows on the screen
-	cmp	r3, #768      //compare row number with 768
+	mov	r4, #0        //initialize row number
+
+rowBGloops:	      // loop through all the rows on the screen
+	cmp	r4, #768      //compare row number with 768
 	bge	rowBGloope    // end if row number >= 768
-	mov	r4, #0        //initialize column number
-	colBGloops:	      //loop through all the columns on the screen
-	cmp	r4, #1024     //compare column number with 1024
+	mov	r5, #0        //initialize column number
+
+colBGloops:	      //loop through all the columns on the screen
+	cmp	r5, #1024     //compare column number with 1024
 	bge	colBGloope    //end if column number >= 1024
-	mov	r0, r3	      //set x to draw
-	mov	r1, r4        //set y to draw
-	mov	r2, r5        //set colour to draw
+
+	mov	r0, r4	      //set x to draw
+	mov	r1, r5        //set y to draw
+	mov	r2, r6        //set colour to draw
 	bl	drawPixel     //draw current pixel
-	add	r4, #1	      //increment column
+
+	add	r5, #1	      //increment column
 	b	colBGloops    //back to start of column loop
-	colBGloope:	      // end of column loop
-	add	r3, #1        // increment row
+
+colBGloope:	      // end of column loop
+	add	r4, #1        // increment row
 	b	rowBGloops    //back to start of row loop
-	rowBGloope:	      // end of row loop
-	pop {r3-r5}           //restore registers
+
+rowBGloope:	      // end of row loop
+	pop {r4-r6}           //restore registers
 	bx	lr	      //branch to calling code
 	
 drawRect: // in order on stack: {x,y,colour,lenX,lenY}
