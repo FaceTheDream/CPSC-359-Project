@@ -1,30 +1,35 @@
 .section .init
+
+.globl drawBeeBody
+.globl drawBeeK
+.globl drawBeeP
+.globl drawBeeQ
+.globl drawBeeSting
+.globl drawBeeWings
+.globl drawBG
+.globl drawBush
+.globl drawCursor
+.globl drawDiamond
+.globl drawGameOverScreen
+.globl drawLazer
+.globl drawLine
 .globl drawPixel	// draws a pixel at location (x,y)
 			// r0 is x
 			// r1 is y
 			// r2 is colour
-.globl drawBG
+.globl drawPlayer
+.globl drawPauseScreen
 .globl drawRect
-.globl drawLine
+.globl drawRectB
 .globl drawTriangleUp
 .globl drawTriangleDown
 .globl drawTriangleLeft
 .globl drawTriangleRight
-.globl drawDiamond
-.globl drawBeeBody
-.globl drawBeeWings
-.globl drawBeeP
-.globl drawBeeK
-.globl drawBeeQ
-.globl drawPlayer
-.globl drawRectB
-.globl drawBeeSting
-.globl drawBush
-.globl drawLazer
-.globl drawCursor
-.globl drawPauseScreen
-.globl drawGameOverScreen
+.globl drawVictoryScreen
 .globl refreshGameScreen
+.globl setBeeStingerSize
+.globl setLazerDirection
+.globl setPlayerSize
 
 .section .text
 
@@ -692,6 +697,7 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 
 drawPauseScreen:
 	//r0 will indicate which option is selected
+	// 0 indicates 
 	bx	lr
 
 drawGameOverScreen:
@@ -703,6 +709,9 @@ drawGameOverScreen:
 	mov	r0, #400	//set first character x
 	mov	r1, #380	//set first character y
 	bl	drawGameOverWords
+	bx	lr
+	
+drawVictoryScreen:
 	bx	lr
 
 drawGameOverWords:
