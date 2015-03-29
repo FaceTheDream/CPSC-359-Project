@@ -342,6 +342,20 @@ npcHit2:
 	b colLoop2x
 	
 colLoop3:
+	mov r4, #0 //npc counter
+	mov r5, #14 //npc max
+	
+vicLoop:
+	ldr r6, =npchp
+	ldr r6, [r6, r4, lsl #2]
+	cmp r6, #0
+	bne colLoop3s
+	cmp r4, r5
+	beq victory
+	add r4, r4, #1
+	b vicLoop
+	
+colLoop3s:
 	mov r4, #0	//bullet#
 	mov r5, #0	//obstacle#
 	mov r6, #14	//max bullets
@@ -589,6 +603,7 @@ npcShoot:
 	bx lr
 
 gameOver:
+	//display game over screen
 	//detect inputs
 	//put start button value memory location in r2
 	ldr r2, [r2]
@@ -596,6 +611,16 @@ gameOver:
 	cmp r1, r2
 	beq start
 	b gameOver
+	
+victory:
+	//display victory screen
+	//detect inputs
+	//put start button value memory location in r2
+	ldr r2, [r2]
+	mov r1, #0
+	cmp r1, r2
+	beq start
+	b victory
 	
 endSub:
 	bx lr
