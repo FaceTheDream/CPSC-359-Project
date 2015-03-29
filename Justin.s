@@ -208,23 +208,29 @@ finishReading:
     bx lr
     
 
-/* Draw the character in r0 to (r1, r2)
+/* Draw the character in r0 to (r1, r2) with colour r3
  */
  .globl drawChar
 drawChar:
-    push {r4, r5, lr}
+    push {r4-r9 lr}
 
-    px      .req    r1
-    py      .req    r2
-    color   .req    r3
-    row     .req    r4
-    chAdr   .req    r5
-    mask    .req    r0
+    chAdr	.req	r4
+	px		.req	r5
+	py		.req	r6
+    colour  .req    r7
+	row		.req	r8
+	mask	.req	r9
+
+    mov     px, r1
+    mov     py, r2
+    mov     colour, r3
 
 	ldr		chAdr,	=font		// load the address of the font map
 	add		chAdr,	r0, lsl #4	// char address = font base + (char * 16)
 
 charLoop$:
+
+    mov     px, #0
 
 	mov		mask,	#0x01		// set the bitmask to 1 in the LSB
 	
@@ -234,6 +240,9 @@ rowLoop$:
 	tst		row,	mask		// test row byte against the bitmask
 	beq		noPixel$
 
+    mov     r0, px
+    mov     r1, py
+    mov     r2, colour
 	bl		drawPixel			// draw red pixel at (px, py)
 
 noPixel$:
@@ -287,8 +296,8 @@ drawScore:
     mov r2, #0
     ldr r3, =0xFFFF
     mov r0, #'e'
-
     bl drawChar
+
     mov r1, #50
     mov r2, #0
     ldr r3, =0xFFFF
@@ -467,7 +476,7 @@ pointerWait:
     beq pointerWait             //Branches if the pointer is still 0
 
     ldr r4, =FrameBufferPointer //Sets r4 to [FrameBufferPointer]
-    str r1, [r4]                //Stores framebuffer pointer
+    str r0, [r4]                //Stores framebuffer pointer
 
     .unreq mailbox              //Unregisters mailbox
     .unreq  fbinfo              //Unregisters fbinfo
@@ -477,7 +486,7 @@ pointerWait:
 
 .section    .data
 
-.align 4
+.align 12
 FrameBufferInfo:
     .int    1024    // 0 - Width
     .int    768     // 4 - Height
@@ -495,7 +504,7 @@ FrameBufferInfo:
 
 FrameBufferPointer:
     .int    0
-
+.globl font
 font:
     .incbin	"font.bin"
 
