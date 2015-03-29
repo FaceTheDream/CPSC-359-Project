@@ -234,157 +234,157 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 
 
 drawTriangleUp: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-push {r3-r8}
-mov	r3, r0       //x
-mov	r4, r1       //y
-mov	r5, r2       // height
-ldr	r6, [sp,#24] //colour
-mov	r7, #0       // i
+	pus	{r3-r8}
+	mov	r3, r0       //x
+	mov	r4, r1       //y
+	mov	r5, r2       // height
+	ldr	r6, [sp,#24] //colour
+	mov	r7, #0       // i
 dtufl1start:         //draw triangle up for loop 1 start
-cmp	r7, r5       
-bge	dtufl1end   
-push	 {r6} 	     //push 6th paramter, colour onto stack
-mov	r0, #1
-push	 {r0} 	     //push 5th parameter, thickness (1) onto stack
-add	r0, r7, r7
-add	r0, #1
-pus	 {r0}	     //push 4th parameter, length (2i+1) onto stack
-mov	r0, #1
-push 	{r0}	     //push 3rd parameter, direction (1)(horizontal) onto stack
-add	r0, r4, r7
-push 	{r0}	     //push 2nd paramteter, (y+i) onto stack
-sub	r0, r3, r7
-push    {r0}	     //push 1st paramter, (x-i) onto stack
-bl	drawLine
-add	sp, #24
-add	r7, #1
-b	dtufl1start
+	cmp	r7, r5       
+	bge	dtufl1end   
+	push	{r6} 	     //push 6th paramter, colour onto stack
+	mov	r0, #1
+	push	{r0} 	     //push 5th parameter, thickness (1) onto stack
+	add	r0, r7, r7
+	add	r0, #1
+	push	{r0}	     //push 4th parameter, length (2i+1) onto stack
+	mov	r0, #1
+	push 	{r0}	     //push 3rd parameter, direction (1)(horizontal) onto stack
+	add	r0, r4, r7
+	push 	{r0}	     //push 2nd paramteter, (y+i) onto stack
+	sub	r0, r3, r7
+	push    {r0}	     //push 1st paramter, (x-i) onto stack
+	bl	drawLine
+	add	sp, #24
+	add	r7, #1
+	b	dtufl1start
 dtufl1end:
-pop    {r3-r8}
-bx	lr
+	pop    {r3-r8}
+	bx	lr
 
 
 drawTriangleDown: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-push {r3-r7}
-mov	r3, r0 //x
-mov	r4, r1 //y
-mov	r5, r2 // height
-ldr	r6, [sp,#20] //colour
-mov	r7, #0 // i
-dtdfl1start: //draw triangle down for loop 1 start
-cmp	r7, r5
-bge	dtdfl1end
-push {r6} 	//push 6th paramter, colour onto stack
-mov	r0, #1
-push {r0} 	//push 5th parameter, thickness (1) onto stack
-add	r0, r7, r7
-add	r0, #1
-push {r0}	//push 4th parameter, length (2i+1) onto stack
-mov	r0, #1
-push {r0}	//push 3rd parameter, direction (1)(horizontal) onto stack
-sub	r0, r4, r7
-push {r0}	//push 2nd paramteter, (y-i) onto stack
-sub	r0, r3, r7
-push {r0}	//push 1st paramter, (x-i) onto stack
-bl	drawLine
-add	sp, #24
-add	r7, #1
-b	dtdfl1start
+	push	{r3-r7}
+	mov	r3, r0 	//x
+	mov	r4, r1 	//y
+	mov	r5, r2 	// height
+	ldr	r6, [sp,#20] //colour
+	mov	r7, #0 	// i
+dtdfl1start: 		//draw triangle down for loop 1 start
+	cmp	r7, r5
+	bge	dtdfl1end
+	push 	{r6} 	//push 6th paramter, colour onto stack
+	mov	r0, #1
+	pus	{r0} 	//push 5th parameter, thickness (1) onto stack
+	add	r0, r7, r7
+	add	r0, #1
+	push 	{r0}	//push 4th parameter, length (2i+1) onto stack
+	mov	r0, #1
+	push 	{r0}	//push 3rd parameter, direction (1)(horizontal) onto stack
+	sub	r0, r4, r7
+	push 	{r0}	//push 2nd paramteter, (y-i) onto stack
+	sub	r0, r3, r7
+	push 	{r0}	//push 1st paramter, (x-i) onto stack
+	bl	drawLine
+	add	sp, #24
+	add	r7, #1
+	b	dtdfl1start
 dtdfl1end:
-pop {r3-r7}
-bx	lr
+	pop {r3-r7}
+	bx	lr
 
 
 drawTriangleLeft: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-push {r3-r7}
-mov	r3, r0 //x
-mov	r4, r1 //y
-mov	r5, r2 // height
-ldr	r6, [sp,#20] //colour
-mov	r7, #0 // i
+	push 	{r3-r7}
+	mov	r3, r0 //x
+	mov	r4, r1 //y
+	mov	r5, r2 // height
+	ldr	r6, [sp,#20] //colour
+	mov	r7, #0 // i
 dtlfl1start: //draw triangle left for loop 1 start
-cmp	r7, r5
-bge	dtlfl1end
-push {r6} 	//push 6th paramter, colour onto stack
-mov	r0, #1
-push {r0} 	//push 5th parameter, thickness (1) onto stack
-add	r0, r7, r7
-add	r0, #1
-push {r0}	//push 4th parameter, length (2i+1) onto stack
-mov	r0, #2
-push {r0}	//push 3rd parameter, direction (2)(vertical) onto stack
-add	r0, r4, r7
-push {r0}	//push 2nd paramteter, (y+i) onto stack
-add	r0, r3, r7
-push {r0}	//push 1st paramter, (x+i) onto stack
-bl	drawLine
-add	sp, #24
-add	r7, #1
-b	dtlfl1start
+	cmp	r7, r5
+	bge	dtlfl1end
+	push 	{r6} 	//push 6th paramter, colour onto stack
+	mov	r0, #1
+	push 	{r0} 	//push 5th parameter, thickness (1) onto stack
+	add	r0, r7, r7
+	add	r0, #1
+	push 	{r0}	//push 4th parameter, length (2i+1) onto stack
+	mov	r0, #2
+	push 	{r0}	//push 3rd parameter, direction (2)(vertical) onto stack
+	add	r0, r4, r7
+	push 	{r0}	//push 2nd paramteter, (y+i) onto stack
+	add	r0, r3, r7
+	push 	{r0}	//push 1st paramter, (x+i) onto stack
+	bl	drawLine
+	add	sp, #24
+	add	r7, #1
+	b	dtlfl1start
 dtlfl1end:
-pop {r3-r7}
-bx	lr
+	pop {r3-r7}
+	bx	lr
 
 drawTriangleRight: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-push {r3-r7}
-mov	r3, r0 //x
-mov	r4, r1 //y
-mov	r5, r2 // height
-ldr	r6, [sp,#20] //colour
-mov	r7, #0 // i
+	push 	{r3-r7}
+	mov	r3, r0 //x
+	mov	r4, r1 //y
+	mov	r5, r2 // height
+	ldr	r6, [sp,#20] //colour
+	mov	r7, #0 // i
 dtrfl1start: //draw triangle right for loop 1 start
-cmp	r7, r5
-bge	dtrfl1end
-push {r6} 	//push 6th paramter, colour onto stack
-mov	r0, #1
-push {r0} 	//push 5th parameter, thickness (1) onto stack
-add	r0, r7, r7
-add	r0, #1
-push {r0}	//push 4th parameter, length (2i+1) onto stack
-mov	r0, #2
-push {r0}	//push 3rd parameter, direction (2)(vertical) onto stack
-add	r0, r4, r7
-push {r0}	//push 2nd paramteter, (y+i) onto stack
-sub	r0, r3, r7
-push {r0}	//push 1st paramter, (x-i) onto stack
-bl	drawLine
-add	sp, #24
-add	r7, #1
-b	dtrfl1start
+	cmp	r7, r5
+	bge	dtrfl1end
+	push 	{r6} 	//push 6th paramter, colour onto stack
+	mov	r0, #1
+	push	{r0} 	//push 5th parameter, thickness (1) onto stack
+	add	r0, r7, r7
+	add	r0, #1
+	push 	{r0}	//push 4th parameter, length (2i+1) onto stack
+	mov	r0, #2
+	push 	{r0}	//push 3rd parameter, direction (2)(vertical) onto stack
+	add	r0, r4, r7
+	push 	{r0}	//push 2nd paramteter, (y+i) onto stack
+	sub	r0, r3, r7
+	push 	{r0}	//push 1st paramter, (x-i) onto stack
+	bl	drawLine
+	add	sp, #24
+	add	r7, #1
+	b	dtrfl1start
 dtrfl1end:
-pop {r3-r7}
-bx	lr
+	pop {r3-r7}
+	bx	lr
 
 drawDiamond:
 //r0 is x, r1 is y, r2 is height
 //[sp] is colour
 // (x,y) is the topmost point of the diamond
-push {r3-r6}    //save registers to restore after use
-mov	r3, r0  // x
-mov	r4, r1  // y
-lsr	r2, #1  // divide height in half
-mov	r5, r2  // height/2
-ldr	r6, [sp,#16] // colour
-push {r6}	//push colour onto the stack
-bl	drawTriangleUp //draw the top half of the diamond
-add	sp, #4  //remove colour off the stack
-add	r4, r5  
-add	r4, r5  //add the full height to the y coordinate
-mov	r0, r3  //set x for drawing
-mov	r1, r4  // set y for drawing
-mov	r2, r5  // set height for drawing
-push {r6}	//push colour onto the stack
-bl	drawTriangleDown //draw the bottom half of the diamond
-add	sp, #4  //remove colour off the stack
-pop {r3-r10}	//restore registers
-bx	lr	//branch to calling code
+	push 	{r3-r6}    	//save registers to restore after use
+	mov	r3, r0 		// x
+	mov	r4, r1  	// y
+	lsr	r2, #1  	// divide height in half
+	mov	r5, r2  	// height/2
+	ldr	r6, [sp,#16] 	// colour
+	push 	{r6}		//push colour onto the stack
+	bl	drawTriangleUp 	//draw the top half of the diamond
+	add	sp, #4  	//remove colour off the stack
+	add	r4, r5  	//see next line's comment
+	add	r4, r5  	//add the full height to the y coordinate
+	mov	r0, r3  	//set x for drawing
+	mov	r1, r4  	// set y for drawing
+	mov	r2, r5  	// set height for drawing
+	push 	{r6}		//push colour onto the stack
+	bl	drawTriangleDown //draw the bottom half of the diamond
+	add	sp, #4  	//remove colour off the stack
+	pop 	{r3-r10}	//restore registers
+	bx	lr		//branch to calling code
 
 drawBeeBody:
-	// r0, top left x
-	// r1, top left y
-	// r2, size multiplier (will be included in a shift operation, ex: 2^r2)
-	// [sp], non-black colour
-	// nine-striped bees
+// r0, top left x
+// r1, top left y
+// r2, size multiplier (will be included in a shift operation, ex: 2^r2)
+// [sp], non-black colour
+// nine-striped bees
 	push {r3-r8}	     // save registers
 	mov	r8, r2       // number of times to multiply size by 2
 	mov	r3, r0       // x
@@ -393,7 +393,7 @@ drawBeeBody:
 	ldr	r6, =beeBlackColour
 	ldr	r6, [r6]     //black colour
 	ldr	r7, [sp,#24] //other colour
-	startStripBeeLoop:
+startStripBeeLoop:
 	cmp	r5, #10
 	bge	endStripBeeLoop
 	mov	r0, #10        // init stripe xlength
@@ -419,14 +419,14 @@ drawBeeBody:
 	bx	lr	      // branch to calling code
 
 drawRectB: //rectangle with border
-	// r0 is x location
-	// r1 is y location
-	// r2 is borderwidth
-	// [sp] is bordercolour
-	// [sp+4] is main rectangle colour
-	// [sp+8] is length
-	// [sp+12] is width
-	push {r3-r10}
+// r0 is x location
+// r1 is y location
+// r2 is borderwidth
+// [sp] is bordercolour
+// [sp+4] is main rectangle colour
+// [sp+8] is length
+// [sp+12] is width
+	push 	{r3-r10}
 	mov	r3, r0 // x
 	mov	r4, r1 // y
 	mov	r5, r2  //border width
@@ -434,56 +434,56 @@ drawRectB: //rectangle with border
 	mov	r0, r6
 	sub	r0, r5
 	sub	r0, r5
-	push {r0}
+	push 	{r0}
 	ldr	r7, [sp,#40] //overall length
 	sub	r0, r7, r5
 	sub	r0, r5
-	push {r0}
+	push 	{r0}
 	ldr	r0, [sp,#36] //main rectangle colour
-	push {r0}
+	push 	{r0}
 	add	r0, r4, r5
-	push {r0}
+	push 	{r0}
 	add	r0, r3, r5
-	push {r0}
+	push 	{r0}
 	bl	drawRect	//draws center rectangle
 	add	sp, #20
-	push {r5, r6}
+	push 	{r5, r6}
 	ldr	r8, [sp,#32]     //border colour
-	push {r8}
-	push {r3,r4}
+	push 	{r8}
+	push 	{r3,r4}
 	bl	drawRect	//draws left portion of border
 	add	sp, #20
-	push {r5}
-	push {r7,r8}
-	push {r3,r4}
+	push 	{r5}
+	push 	{r7,r8}
+	push 	{r3,r4}
 	bl	drawRect	//draws top portion of border
 	add	sp, #20
-	push {r6}
-	push {r5}
-	push {r8}
-	push {r4}
+	push 	{r6}
+	push 	{r5}
+	push 	{r8}
+	push 	{r4}
 	add	r0, r3, r7
 	sub	r0, r5
-	push {r0}
+	push 	{r0}
 	bl	drawRect	// draws right portion of border
 	add	sp, #20
-	push {r5}
-	push {r7}
-	push {r8}
+	push 	{r5}
+	push 	{r7}
+	push 	{r8}
 	add	r0, r4, r6
 	sub	r0, r5
-	push {r0}
-	push {r3}
+	push 	{r0}
+	push 	{r3}
 	bl	drawRect	// draws bottom portion of border
 	add	sp, #20
-	pop {r3-r10}
+	pop 	{r3-r10}
 	bx	lr
 	
 
 drawBeeWings: //very boxy wings
-	//r0 is x location
-	//r1 is y location
-	//r2 is size (square-ish)
+//r0 is x location
+//r1 is y location
+//r2 is size (square-ish)
 	push 	{r3-r6}
 	mov	r3, r0 //x
 	mov	r4, r1 //y
@@ -513,8 +513,8 @@ drawBeeWings: //very boxy wings
 	bx	lr
 	
 drawBeeEye:
-	//r0 is x
-	//r1 is y
+//r0 is x
+//r1 is y
 	push	{r4-r10}	//make room for local registers
 	sub	sp, #8 		//make room for two local variables on the stack
 	mov	r4, #13		//default inner eye length
@@ -549,8 +549,8 @@ drawBeeEye:
 	
 
 drawBeeP: //draws pawn bee (top left)
-	// r0 is the x location
-	// r1 is the y location
+// r0 is the x location
+// r1 is the y location
 	push 	{r3-r10}
 	mov	r2, #0
 	ldr	r3, =beeYellowColour
@@ -579,9 +579,9 @@ drawBeeP: //draws pawn bee (top left)
 	bx	lr		//branch to calling code
 
 drawBeeK:
-	//draws knight bee (top left)
-	// r0 is the x location
-	// r1 is the y location
+//draws knight bee (top left)
+// r0 is the x location
+// r1 is the y location
 	push 	{r3-r10}
 	mov	r2, #1
 	ldr	r3, =beeRedColour
@@ -610,8 +610,8 @@ drawBeeK:
 	bx	lr		//branch to calling code
 
 drawBeeQ: //draws queen bee (top left)
-	// r0 is the x location
-	// r1 is the y location
+// r0 is the x location
+// r1 is the y location
 	push 	{r3-r10}
 	mov	r2, #1
 	ldr	r3, =beeYellowColour
@@ -644,13 +644,13 @@ drawBeeQ: //draws queen bee (top left)
 	bx	lr
 
 drawCrown:	//draws the crown that the queen bee shall wear
-	//r0 is the x at the top left of the crown's rectangular base
-	//r1 is the y at the top left of the crown's rectangular base
-	//crownColour is stored in the data section of this file
-	//height of base is 25 pixels
-	//length of base is 50 pixels
-	//height of triangles is 15 pixels
-	//total crown height is 25+15=40 pixels
+//r0 is the x at the top left of the crown's rectangular base
+//r1 is the y at the top left of the crown's rectangular base
+//crownColour is stored in the data section of this file
+//height of base is 25 pixels
+//length of base is 50 pixels
+//height of triangles is 15 pixels
+//total crown height is 25+15=40 pixels
 	push	{r4-r10}
 	mov	r4, r0		//x
 	mov	r5, r1		//y
@@ -689,8 +689,8 @@ drawCrown:	//draws the crown that the queen bee shall wear
 	bx	lr
 
 drawPlayer: //draws player at location (x,y) that is the leftmost portion of their helmet
-	//r0 is x location
-	//r1 is y location
+//r0 is x location
+//r1 is y location
 	push {r3-r7}
 	mov	r3, r0
 	mov	r4, r1
@@ -747,9 +747,9 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	bx	lr
 
 drawBush: //draws "bush" cover
-	//r0 is the x location
-	//r1 is the y location
-	//r2 is the size of the bush (bush is square)
+//r0 is the x location
+//r1 is the y location
+//r2 is the size of the bush (bush is square)
 	push {r3}
 	ldr	r3, =bushColour
 	ldr	r3, [r3]
@@ -764,10 +764,10 @@ drawBush: //draws "bush" cover
 	bx	lr
 
 drawLazer: //draws player lazer projectile
-	// r0 is x location
-	// r1 is y location
-	// (x,y) is the top left-most location
-	// returns memory location of lazerSize
+// r0 is x location
+// r1 is y location
+// (x,y) is the top left-most location
+// returns memory location of lazerSize
 	push 	{r3-r8}
 	mov	r3, r0 //x location (xMin)
 	mov	r4, r1 // y location (yMin)
@@ -789,13 +789,13 @@ drawLazer: //draws player lazer projectile
 
 
 drawBeeSting: //draws bee bullet projectile
-	//r2 is bee sting direction
-	//r0 is x location
-	//r1 is y location
-	// 0 is up
-	// 1 is down
-	// 2 is left
-	// 3 is right
+//r2 is bee sting direction
+//r0 is x location
+//r1 is y location
+// 0 is up
+// 1 is down
+// 2 is left
+// 3 is right
 	push   {r3-r4}
 	mov 	r4, r2
 	ldr	r2, =beeStingSize
@@ -806,24 +806,24 @@ drawBeeSting: //draws bee bullet projectile
 	cmp	r4, #0
 	bne	bdsif2
 	bl	drawTriangleUp
-	bdsif2:
+bdsif2:
 	cmp	r4, #1
 	bne	bdsif3
 	bl	drawTriangleDown
-	bdsif3:
+bdsif3:
 	cmp	r4, #2
 	bne	bdselse
 	bl	drawTriangleLeft
-	bdselse:
+bdselse:
 	bl	drawTriangleRight
 	add	sp, #4
 	pop   	{r3-r4}
 	bx	lr
 
 drawCursor: //draws triangle cursor for use on pause menu always faces right
-	// r0 is x location
-	// r1 is y location
-	// (x,y) is the rightmost point
+// r0 is x location
+// r1 is y location
+// (x,y) is the rightmost point
 	push 	{r3-r6}
 	mov	r3, r0
 	mov	r4, r1
@@ -841,10 +841,10 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 	bx	lr
 
 drawPauseScreen:
-	//r0 will indicate which option is selected
-	// 0 indicates Resume
-	// 1 indicates Restart Game
-	// 2 indicates Quit
+//r0 will indicate which option is selected
+// 0 indicates Resume
+// 1 indicates Restart Game
+// 2 indicates Quit
 	push	{r4-r10}
 	
 	//pause menu will be drawn with top-left-most coordinates (100, 0)
@@ -994,23 +994,22 @@ drawPauseScreen:
 	mov	r0, r6
 	mov	r1, #60
 	b	afterPauseIfs
-	ifPauseNotResume:
+ifPauseNotResume:
 	cmp	r4, #1
 	bne	ifPauseElse
 	mov	r0, r6
 	mov	r1, #80
 	b	afterPauseIfs
-	ifPauseElse:
+ifPauseElse:
 	mov	r0, r6
 	mov	r1, #100
-	afterPauseIfs:
-	
+afterPauseIfs:
 	pop	{r4-r10}
 	bx	lr
 
 drawGameOverScreen: //in the "loss" situation
-	// background colour will be initialized to losingColour
-	// "GAME OVER!" at ( 400 , 380)
+// background colour will be initialized to losingColour
+// "GAME OVER!" at ( 400 , 380)
 	ldr	r0, =losingColour
 	ldr	r0, [r0]
 	bl	drawBG
@@ -1020,9 +1019,9 @@ drawGameOverScreen: //in the "loss" situation
 	bx	lr
 	
 drawVictoryScreen:
-	// background colour will be initialized to winningColour
-	// "VICTORY!" at (400, 380)
-	// "Congratulations!" at (370,400)
+// background colour will be initialized to winningColour
+// "VICTORY!" at (400, 380)
+// "Congratulations!" at (370,400)
 	push	{r4}
 	ldr	r0, =victoryBGColour
 	ldr	r0, [r0]
@@ -1151,11 +1150,11 @@ drawVictoryScreen:
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'!'	//draw character
 	bl 	drawChar	//call to subroutine
-	pop	{r4}
-	bx	lr
+	pop	{r4}		//restore registers
+	bx	lr		//branch to calling code
 
 drawGameOverWords:
-	// should draw "GAME OVER!" at start location ( x=r0 , y=r1)
+// should draw "GAME OVER!" at start location ( x=r0 , y=r1)
 	push	{r4-r6}
 	mov	r4, r0
 	mov	r5, r1
@@ -1206,29 +1205,29 @@ drawGameOverWords:
 	mov 	r3, r6		//draw colour
 	mov 	r0, #'!'	//draw character
 	bl 	drawChar	//call to subroutine
-	pop	{r4-r6}
-	bx	lr
+	pop	{r4-r6}		//restore registers
+	bx	lr		//branch to calling code
 
 refreshGameScreen:
-	//r0 will be the memory address for all toDraws
+//r0 will be the memory address for all toDraws
 	bx	lr
 
 setPlayerSize:
-	//r0 is the new size
+//r0 is the new size
 	ldr	r1, =playerSize
 	str	r0, [r1]
 	bx	lr
 
 setBeeStingerSize:
-	//r0 is the new "height"
+//r0 is the new "height"
 	ldr	r1, =beeStingSize
 	str	r1, [r0]
 	bx	lr
 
 setLazerDirection:
-	//r0 is direction
-	//0 is horizontal
-	//anything else is vertical
+//r0 is direction
+//0 is horizontal
+//anything else is vertical
 	mov	r1, #50		//hard-coded length of lazer
 	mov	r2, #1		//hard-coded width of lazer
 	cmp	r0, #0
@@ -1237,12 +1236,12 @@ setLazerDirection:
 	str	r1, [r0]
 	str	r2, [r0,#4]
 	b	endOfSetLazerDirection
-	makeLazerVertical:
+makeLazerVertical:
 	ldr	r0, =lazerSize
 	str	r1, [r0,#4]
 	str	r2, [r0]
-	endOfSetLazerDirection:
-	bx	lr
+endOfSetLazerDirection:
+	bx	lr		//branch to calling code
 
 drawAuthorNames:
 	bx	lr
@@ -1251,9 +1250,9 @@ drawGameTitle:
 	bx	lr
 	
 drawKyleBuettner:
-	//r0 is x location
-	//r1 is y location
-	//colour is authorTextColour in .data section
+//r0 is x location
+//r1 is y location
+//colour is authorTextColour in .data section
 	push	{r4-r6}
 	ldr	r4, =authorTextColour
 	ldr	r4, [r4]
@@ -1323,9 +1322,9 @@ drawKyleBuettner:
 	bx	lr
 
 drawDavidKenny:
-	//r0 is x location
-	//r1 is y location
-	//colour is authorTextColour in .data section
+//r0 is x location
+//r1 is y location
+//colour is authorTextColour in .data section
 	push	{r4-r6}
 	ldr	r4, =authorTextColour
 	ldr	r4, [r4]
@@ -1385,9 +1384,9 @@ drawDavidKenny:
 	bx	lr
 
 drawJustinChu:
-	//r0 is x location
-	//r1 is y location
-	//colour is authorTextColour in .data section
+//r0 is x location
+//r1 is y location
+//colour is authorTextColour in .data section
 	push	{r4-r6}
 	ldr	r4, =authorTextColour
 	ldr	r4, [r4]
