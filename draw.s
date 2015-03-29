@@ -1259,8 +1259,17 @@ makeLazerVertical:
 endOfSetLazerDirection:
 	bx	lr		//branch to calling code
 
-drawAuthorNames:
-	
+drawAuthorNames: //draws the author names in the top right corner of the screen
+		//takes no arguments
+	mov	r0, #893
+	mov	r1, #0
+	bl	drawKyleBuettner
+	mov	r0, #923
+	mov	r1, #30
+	bl	drawJustinChu
+	mov	r0, #913
+	mov	r1, #45
+	bl	drawDavidKenny
 	bx	lr
 
 drawGameTitle: //Moon Bees
@@ -1310,8 +1319,8 @@ drawGameTitle: //Moon Bees
 	mov 	r3, r6		//draw colour
 	mov 	r0, #'s'	//draw character
 	bl 	drawChar	//call to subroutine
-	pop	{r4-r6}
-	bx	lr
+	pop	{r4-r6}		//restore registers
+	bx	lr		//branch to calling code
 	
 drawKyleBuettner:
 //r0 is x location
