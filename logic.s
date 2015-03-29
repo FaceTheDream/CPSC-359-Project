@@ -629,6 +629,7 @@ npcShoot:
 	bx lr
 	
 drawScreen:
+	mov r0, #0
 	bl drawBG
 	bl drawAuthorNames
 	bl drawGameTitle
