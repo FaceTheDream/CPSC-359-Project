@@ -1,5 +1,8 @@
 .section .init
-.globl drawPixel
+.globl drawPixel	// draws a pixel at location (x,y)
+			// r0 is x
+			// r1 is y
+			// r2 is colour
 .globl drawBG
 .globl drawRect
 .globl drawLine
@@ -49,12 +52,12 @@ endDrawPixel:
 
 drawBG: //r0 is the colour to set the background to
 	push {r3-r5}
-	mov	r5, r0 //colour
-	mov	r3, #0 //row number
+	mov	r5, r0 	      //colour
+	mov	r3, #0        //row number
 	rowBGloops:
 	cmp	r3, #1024     //compare row number with 1024
 	bge	rowBGloope    // end if row number >= 1024
-	mov	r4, #0 //column number
+	mov	r4, #0        //column number
 	colBGloops:
 	cmp	r4, #768      //compare column number with 768
 	bge	colBGloope    //end if column number >= 768
@@ -100,7 +103,7 @@ drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	
 	
 drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagonalD as parameters
-	push {r3-r10}     // save registers
+	push  {r3-r10}     // save registers
 	ldr   r0, [sp,#32] // x
 	ldr   r1, [sp,#36] // y
 	ldr   r2, [sp,#56] // colour
@@ -145,18 +148,18 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	bne   afterif2      // if (direction & 1) != 1, go to else 
 	cmp	  r4, #1
 	ble   afterif3      // if thickness <= 1, go to else
-	push {r4}
+	push  {r4}
 	mov   r0, #1
-	push {r0}
-	push {r2}
+	push  {r0}
+	push  {r2}
 	mov   r0,r8
 	sub   r1,r9,r4
-	push {r0,r1}
+	push  {r0,r1}
 	bl     drawRect
-	pop {r0,r1}
-	pop {r0,r1}
-	pop {r0}
-	push {r4}
+	pop  {r0,r1}
+	pop  {r0,r1}
+	pop   {r0}
+	push  {r4}
 	mov   r0, #1
 	push {r0}
 	mov   r0, r8
@@ -186,32 +189,32 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 
 drawTriangleUp: //r0 is x, r1 is y, r2 is height, colour is sent over stack
 push {r3-r8}
-mov	r3, r0 //x
-mov	r4, r1 //y
-mov	r5, r2 // height
+mov	r3, r0       //x
+mov	r4, r1       //y
+mov	r5, r2       // height
 ldr	r6, [sp,#24] //colour
-mov	r7, #0 // i
-dtufl1start: //draw triangle up for loop 1 start
-cmp	r7, r5
-bge	dtufl1end
-push {r6} 	//push 6th paramter, colour onto stack
+mov	r7, #0       // i
+dtufl1start:         //draw triangle up for loop 1 start
+cmp	r7, r5       
+bge	dtufl1end   
+push	 {r6} 	     //push 6th paramter, colour onto stack
 mov	r0, #1
-push {r0} 	//push 5th parameter, thickness (1) onto stack
+push	 {r0} 	     //push 5th parameter, thickness (1) onto stack
 add	r0, r7, r7
 add	r0, #1
-push {r0}	//push 4th parameter, length (2i+1) onto stack
+pus	 {r0}	     //push 4th parameter, length (2i+1) onto stack
 mov	r0, #1
-push {r0}	//push 3rd parameter, direction (1)(horizontal) onto stack
+push 	{r0}	     //push 3rd parameter, direction (1)(horizontal) onto stack
 add	r0, r4, r7
-push {r0}	//push 2nd paramteter, (y+i) onto stack
+push 	{r0}	     //push 2nd paramteter, (y+i) onto stack
 sub	r0, r3, r7
-push {r0}	//push 1st paramter, (x-i) onto stack
+push    {r0}	     //push 1st paramter, (x-i) onto stack
 bl	drawLine
 add	sp, #24
 add	r7, #1
 b	dtufl1start
 dtufl1end:
-pop {r3-r8}
+pop    {r3-r8}
 bx	lr
 
 
@@ -310,20 +313,20 @@ drawDiamond:
 //r0 is x, r1 is y, r2 is height
 //[sp] is colour
 // (x,y) is the topmost point of the diamond
-push {r3-r6} //save registers to restore after use
-mov	r3, r0 // x
-mov	r4, r1 // y
-lsr	r2, #1 // divide height in half
-mov	r5, r2 // height/2
+push {r3-r6}    //save registers to restore after use
+mov	r3, r0  // x
+mov	r4, r1  // y
+lsr	r2, #1  // divide height in half
+mov	r5, r2  // height/2
 ldr	r6, [sp,#16] // colour
 push {r6}	//push colour onto the stack
 bl	drawTriangleUp //draw the top half of the diamond
 add	sp, #4  //remove colour off the stack
 add	r4, r5  
-add	r4, r5 //add the full height to the y coordinate
-mov	r0, r3 //set x for drawing
-mov	r1, r4 // set y for drawing
-mov	r2, r5 // set height for drawing
+add	r4, r5  //add the full height to the y coordinate
+mov	r0, r3  //set x for drawing
+mov	r1, r4  // set y for drawing
+mov	r2, r5  // set height for drawing
 push {r6}	//push colour onto the stack
 bl	drawTriangleDown //draw the bottom half of the diamond
 add	sp, #4  //remove colour off the stack
