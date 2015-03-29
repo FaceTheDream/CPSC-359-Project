@@ -1,10 +1,10 @@
 .section .text
 
-start:
-	ldr r0, =score
+start:	//start up the game
+	ldr r0, =score	//set score to 0
 	mov r1, #0
 	str r1, [r0]
-	ldr r0, =playerx
+	ldr r0, =playerx	//move player to middle of screen
 	mov r1, #382
 	str r1, [r0]
 	ldr r0, =playery
@@ -13,7 +13,7 @@ start:
 	mov r1, #1
 	mov r2, #2
 	mov r3, #3
-	ldr r0, =npchp
+	ldr r0, =npchp	//set each npc's hp
 	str r1, [r0]
 	str r1, [r0, #4]
 	str r1, [r0, #8]
@@ -31,10 +31,10 @@ start:
 	str r2, [r0, #56]
 	str r3, [r0, #60]
 	str r3, [r0, #64]
-	ldr r0, =crntpause
+	ldr r0, =crntpause	//reset pause cursor
 	mov r1, #0
 	str r1, [r0]
-	ldr r0, =obstaclexs
+	ldr r0, =obstaclexs	//set each obstacle's position
 	mov r1, #128
 	str r1, [r0]
 	mov r1, #256
@@ -54,17 +54,17 @@ start:
 	mov r1, #768
 	str r1, [r0, #4]
 	str r1, [r0, #12]
-	ldr r0, =obstaclehp
+	ldr r0, =obstaclehp	//set each obstacle's hp
 	mov r1, #3
 	str r1, [r0]
 	str r1, [r0, #4]
 	str r1, [r0, #8]
 	str r1, [r0, #12]
 	str r1, [r0, #16]
-	ldr r0, =crntbullet
+	ldr r0, =crntbullet	//reset bullet counter
 	mov r1, #0
 	str r1, [r0]
-	ldr r0, =npcys
+	ldr r0, =npcys		//set each npc's y position
 	mov r1, #0
 	mov r2, #0
 	mov r3, #16
@@ -76,6 +76,7 @@ startLoop:
 	b startLoop
 	
 endLoop:
+	ldr r0, =npcxs		//set each npc's x position
 	mov r1, #512
 	mov r2, #0
 	mov r3, #16
@@ -88,7 +89,7 @@ nextLoop:
 	b nextLoop
 	
 finaLoop:
-	mov r0, #5
+	mov r0, #5		//set each bullet to inactive
 	mov r1, #0
 	mov r2, #14
 	
@@ -104,40 +105,38 @@ finaLoop3:
 	bl drawScreen
 
 oneTurn:
-	//detect inputs
-	bl readSNES
-	ldr r3, =0x8 //1000 = start button
+	bl readSNES		//detect inputs
+	ldr r3, =0x8		//1000 = start button
 	tst r0, r3
 	beq oneTurn2
 	b pauseMenu
 	
 oneTurn2:
-	ldr r3, =0x10 // 10000 = up button
+	ldr r3, =0x10		// 10000 = up button
 	tst r0, r3
 	beq oneTurn3
 	bl playerUp
 	
 oneTurn3:
-	ldr r3, =0x20 // 100000 = down button
+	ldr r3, =0x20		// 100000 = down button
 	tst r0, r3
 	beq oneTurn4
 	bl playerDown
 	
 oneTurn4:
-	ldr r3, =0x40 // 1000000 = left button
+	ldr r3, =0x40		// 1000000 = left button
 	tst r0, r3
 	beq oneTurn5
 	bl playerLeft
 	
 oneTurn5:
-	ldr r3, =0x80 // 10000000 = right button
+	ldr r3, =0x80		// 10000000 = right button
 	tst r0, r3
 	beq oneTurn5
 	bl playerRight
 	
 oneTurn6:
-	//put 'a' button value memory location in r2
-	ldr r3, =0x100 // 100000000 = 'a' button
+	ldr r3, =0x100		// 100000000 = 'a' button
 	tst r0, r3
 	beq oneTurn6
 	bl playerShoot
@@ -156,10 +155,10 @@ npcStuff:
 	//puts random number %4 in r2
 	mov r3, #69069
 	ldr r2, =x20003004
-	ldr r2, [r2] //current clock value
+	ldr r2, [r2]		//current clock value
 	mul r2, r3, r2
 	add r2, r3, r2
-	mov r2, r2 MOD 4 //this might not work, refer to http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.kui0008a/a166_op_mod.htm
+	mov r2, r2 MOD 4	//this might not work, refer to http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.kui0008a/a166_op_mod.htm
 	ldr r6, =currentnpc
 	str r1, [r6]
 	cmp r2, #0
@@ -172,10 +171,10 @@ npcStuff:
 	bleq npcRight
 	//puts random number %10 in r2
 	ldr r2, =x20003004
-	ldr r2, [r2] //current clock value
+	ldr r2, [r2]		//current clock value
 	mul r2, r3, r2
 	add r2, r3, r2
-	mov r2, r2 MOD 10 //this might not work
+	mov r2, r2 MOD 10		//this might not work
 	cmp r2, #0
 	bleq npcShoot
 	add r1, r1, #1
@@ -773,20 +772,20 @@ endSub:
 .section .data
 
 .align 4
-score:		.int	0
-playerx:	.int	0
-playery:	.int	0
-playerface:	.int	0 //0 = up, 1 = down, 2 = left, 3 = right
-currentnpc:	.int	0
-currentnpcface:	.int	0 //0 = up, 1 = down, 2 = left, 3 = right
-npcxs:		.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-npcys:		.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-npchp:		.int	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3
-crntpause:	.int	0 //0 = resume game, 1 = restart game, 2 = quit game
-bulletxs:	.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-bulletys:	.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-bulletfaces:	.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 //0 = up, 1 = down, 2 = left, 3 = right
-crntbullet:	.int	0
-obstaclexs:	.int	0, 0, 0, 0, 0
-obstacleys:	.int	0, 0, 0, 0, 0
-obstaclehp:	.int	0, 0, 0, 0, 0
+score:		.int	0	//obvious
+playerx:	.int	0	//player's x position
+playery:	.int	0	//player's y position
+playerface:	.int	0 	//direction player is facing 0 = up, 1 = down, 2 = left, 3 = right
+currentnpc:	.int	0	//keep track of certain npc in loops
+currentnpcface:	.int	0 	//direction current npc is facing 0 = up, 1 = down, 2 = left, 3 = right
+npcxs:		.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	//each npc's x position
+npcys:		.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	//each npc's y position
+npchp:		.int	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3	//each npc's hp
+crntpause:	.int	0 	//current pause cursor position 0 = resume game, 1 = restart game, 2 = quit game
+bulletxs:	.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	//each bullet's x position
+bulletys:	.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	//each bullet's y position
+bulletfaces:	.int	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 	//direction each bullet is facing 0 = up, 1 = down, 2 = left, 3 = right 5 = inactive
+crntbullet:	.int	0	//keep track of certain bullet in loops
+obstaclexs:	.int	0, 0, 0, 0, 0	//each obstacle's x position
+obstacleys:	.int	0, 0, 0, 0, 0	//each obstacle's y position
+obstaclehp:	.int	0, 0, 0, 0, 0	//each obstacle's hp
