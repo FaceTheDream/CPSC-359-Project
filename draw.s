@@ -30,7 +30,9 @@
 .globl drawPlayer
 .globl drawPauseScreen	//the pause screen (colours currently unselected)
 			//r0 indicates 0 (Resume), 1 (Restart Game), or 2 (Quit)
-.globl drawRect
+.globl drawRect		//draws a rectangle when given the top left point (x,y) 
+			// where the right/left sides have length lenY and the top/bottom sides have length lenX
+			// in order on stack: {x,y,colour,lenX,lenY}
 .globl drawRectB 	//rectangle with border
 			// r0 is x location
 			// r1 is y location
@@ -586,6 +588,25 @@ drawBeeK: //draws knight bee
 	bx	lr		//branch to calling code
 
 drawBeeQ: //draws queen bee
+	
+	bx	lr
+
+drawCrown:	//draws the crown that the queen bee shall wear
+	//r0 is the x at the top left of the crown's rectangular base
+	//r1 is the y at the top left of the crown's rectangular base
+	//crownColour is stored in the data section of this file
+	//height of base is 25 pixels
+	//length of base is 50 pixels
+	//height of triangles is 15 pixels
+	//total crown height is 25+15=40 pixels
+	push	{r4-r10}
+	mov	r4, r0		//x
+	mov	r5, r1		//y
+	ldr	r6, =crownColour //colour address 
+	ldr	r6, [r6]	//colour
+	
+	
+	pop	{r4-r10}
 	bx	lr
 
 drawPlayer: //draws player at location (x,y) that is the leftmost portion of their helmet
@@ -1153,6 +1174,7 @@ beeYellowColour: .word	0xFFFF00	//yellow
 beeStingColour:	.word	0x003300	//almost-black
 beeWingColour:	.word	0xFFFFCC	//white-ish (different white-ish from helmet)
 bushColour:	.word	0x33CC00	//green
+crownColour:	.word	
 cursorColour:	.word	0xFFFFFF	//white
 lazerColour:	.word	0xFF0000	//red
 losingColour:	.word	0x000099	//dark blue
