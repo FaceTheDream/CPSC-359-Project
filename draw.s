@@ -1164,7 +1164,12 @@ setLazerDirection:
 	str	r2, [r0]
 	endOfSetLazerDirection:
 	bx	lr
-	
+
+drawAuthorNames:
+	bx	lr
+
+drawGameTitle:
+	bx	lr
 
 .section .data
 // Colour codes from http://www.nthelp.com/colorcodes.htm
@@ -1179,6 +1184,7 @@ cursorColour:	.word	0xFFFFFF	//white
 lazerColour:	.word	0xFF0000	//red
 losingColour:	.word	0x000099	//dark blue
 losWordColour:	.word	0xFFCCFF	//pink
+inGameBGColour:	.word
 pauseMenuMC:	.word	
 pauseMenuBC:	.word	
 playerBodyColour: .word	0x996600	//brown
