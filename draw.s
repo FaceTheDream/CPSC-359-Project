@@ -555,7 +555,7 @@ drawBeeP: //draws pawn bee (top left)
 	bx	lr		//branch to calling code
 
 drawBeeK: //draws knight bee
-	//draws pawn bee (top left)
+	//draws knight bee (top left)
 	// r0 is the x location
 	// r1 is the y location
 	push 	{r3-r10}
@@ -568,8 +568,8 @@ drawBeeK: //draws knight bee
 	bl	drawBeeBody //draw bee body
 	add	sp, #4
 	mov	r6, r4
-	add	r6, #90 //add in bee body width (will probably need to be changed later)
-	sub	r6, #5 //breathing room
+	add	r6, #180 //add in bee body width (will probably need to be changed later)
+	sub	r6, #10 //breathing room
 	ldr	r7, =wingLength
 	ldr	r7, [r7]
 	sub	r6, r7
@@ -584,7 +584,6 @@ drawBeeK: //draws knight bee
 	//now both body and wings are drawn along with the eye
 	pop 	{r3-r10}	//restore registers
 	bx	lr		//branch to calling code
-	bx	lr
 
 drawBeeQ: //draws queen bee
 	bx	lr
