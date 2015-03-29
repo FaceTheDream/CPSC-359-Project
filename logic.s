@@ -105,32 +105,44 @@ finaLoop3:
 
 oneTurn:
 	//detect inputs
-	//put start button value memory location in r2
-	ldr r2, [r2]
-	mov r1, #0
-	cmp r1, r2
-	beq pauseMenu
-	//put up button value memory location in r2
-	//put down button value memory location in r3
-	//put left button value memory location in r4
-	//put right button value memory location in r5
-	ldr r2, [r2]
-	ldr r3, [r3]
-	ldr r4, [r4]
-	ldr r5, [r5]
-	cmp r1, r2
-	bleq playerUp
-	cmp r1, r3
-	bleq playerDown
-	cmp r1, r4
-	bleq playerLeft
-	cmp r1, r5
-	bleq playerRight
-	//put 'a' button value memory location in r2
-	ldr r2, [r2]
-	cmp r1, r2
-	bleq playerShoot
+	bl readSNES
+	ldr r3, =0x8 //1000 = start button
+	tst r0, r3
+	beq oneTurn2
+	b pauseMenu
 	
+oneTurn2:
+	ldr r3, =0x10 // 10000 = up button
+	tst r0, r3
+	beq oneTurn3
+	bl playerUp
+	
+oneTurn3:
+	ldr r3, =0x20 // 100000 = down button
+	tst r0, r3
+	beq oneTurn4
+	bl playerDown
+	
+oneTurn4:
+	ldr r3, =0x40 // 1000000 = left button
+	tst r0, r3
+	beq oneTurn5
+	bl playerLeft
+	
+oneTurn5:
+	ldr r3, =0x80 // 10000000 = right button
+	tst r0, r3
+	beq oneTurn5
+	bl playerRight
+	
+oneTurn6:
+	//put 'a' button value memory location in r2
+	ldr r3, =0x100 // 100000000 = 'a' button
+	tst r0, r3
+	beq oneTurn6
+	bl playerShoot
+	
+oneTurn6:
 	mov r1, #0	// current npc, add this offset*4 to get current npc's stats
 	mov r0, #16
 npcStuff:
@@ -416,23 +428,26 @@ colEnd:
 	
 pauseMenu:
 	bl drawPauseScreen
-	//detect inputs
-	//put start button value memory location in r2
-	ldr r2, [r2]
-	mov r1, #0
-	cmp r1, r2
-	beq endSub
+	bl readSNES
+	ldr r3, =0x8 //1000 = start button
+	tst r0, r3
+	beq pauseMenu2
+	b endSub
+	
+pauseMenu2:
 	//put up button value memory location in r2
 	//put down button value memory location in r3
-	ldr r2, [r2]
-	ldr r3, [r3]
-	cmp r2, #0
+	ldr r3, =0x10 //10000 = up button
+	tst r0, r3
 	bleq pauseUp
-	cmp r3, #0
+	
+pauseMenu3:
+	ldr r3, =0x20 //100000 = down button
+	tst r0, r3
 	bleq pauseDown
 	//put 'a' button value memory location in r2
-	ldr r2, [r2]
-	cmp r2, #0
+	ldr r3, =0x100 // 'a' button
+	tst r0, r3
 	beq pSelect
 	b pauseMenu
 	
@@ -737,21 +752,17 @@ drawScreen:
 
 gameOver:
 	bl drawGameOverScreen
-	//detect inputs
-	//put start button value memory location in r2
-	ldr r2, [r2]
-	mov r1, #0
-	cmp r1, r2
+	bl readSNES
+	ldr r3, =0x8 //1000 = start button
+	tst r0, r3
 	beq start
 	b gameOver
 	
 victory:
 	bl drawVictoryScreen
-	//detect inputs
-	//put start button value memory location in r2
-	ldr r2, [r2]
-	mov r1, #0
-	cmp r1, r2
+	bl readSNES
+	ldr r3, =0x8 //1000 = start button
+	tst r0, r3
 	beq start
 	b victory
 	
