@@ -75,56 +75,59 @@
 drawPixel: //r0 is assumed to be the x location, r1 is assumed to be the y location, r2 is assumed to be the colour data
 	
 	cmp    r0,    #1024                  //check max x
-	bge    endDrawPixel                  //
+	bge    endDrawPixel                  // if x >= 1024, don't draw
 	cmp    r0,    0                      //check min x
-	blt    endDrawPixel                  //
+	blt    endDrawPixel                  // if x < 0, don't draw
 	cmp    r1,    #768                   //check max y
-	bge    endDrawPixel                  //
+	bge    endDrawPixel                  // if y >= 768, don't draw
 	cmp    r1,    0                      //check min y
-	blt    endDrawPixel                  //
+	blt    endDrawPixel                  // if y < 0, don't draw
 	
-	mul    r1,    #1024                  //row-major
-	add    r0,    r1                     //
+	mul    r1,    #1024                  //row-major r1 <- (y*1024)
+	add    r0,    r1                     //r0 <- (y*1024) + x
 	lsl    r0,    #4                     //16-bit colour assumed
 	ldr    r1,    =frameBufferPointer    // should get frameBuffer location from file that contains frameBuffer information
-	ldr    r1,    [r1]                   //
+	ldr    r1,    [r1]                   //load the frameBuffer
 	add    r1,    r0                     // add offset
 	strh   r2,    [r1]                   // stores the colour into the FrameBuffer location
-endDrawPixel:
+endDrawPixel:				     // end of drawPixel
 	bx     lr                            // branch to calling code
 
 drawBG: //r0 is the colour to set the background to
-	push {r3-r5}
+	//NOTE although the max for x is 1024 and the max for y is 768, 
+	//	the maximum amount of rows is 768 and the maximum amount of columns is 1024
+	//	this is due to the fact that when you change rows you travel along the y axis and vice versa
+	push 	{r3-r5}	      //push registers onto stack so as not to alter them
 	mov	r5, r0 	      //colour
-	mov	r3, #0        //row number
-	rowBGloops:
-	cmp	r3, #1024     //compare row number with 1024
-	bge	rowBGloope    // end if row number >= 1024
-	mov	r4, #0        //column number
-	colBGloops:
-	cmp	r4, #768      //compare column number with 768
-	bge	colBGloope    //end if column number >= 768
+	mov	r3, #0        //initialize row number
+	rowBGloops:	      // loop through all the rows on the screen
+	cmp	r3, #768      //compare row number with 768
+	bge	rowBGloope    // end if row number >= 768
+	mov	r4, #0        //initialize column number
+	colBGloops:	      //loop through all the columns on the screen
+	cmp	r4, #1024     //compare column number with 1024
+	bge	colBGloope    //end if column number >= 1024
 	mov	r0, r3	      //set x to draw
 	mov	r1, r4        //set y to draw
 	mov	r2, r5        //set colour to draw
 	bl	drawPixel     //draw current pixel
 	add	r4, #1	      //increment column
 	b	colBGloops    //back to start of column loop
-	colBGloope:
+	colBGloope:	      // end of column loop
 	add	r3, #1        // increment row
 	b	rowBGloops    //back to start of row loop
-	rowBGloope:
+	rowBGloope:	      // end of row loop
 	pop {r3-r5}           //restore registers
 	bx	lr	      //branch to calling code
 	
 drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	push {r3,r4,r5,r6,r7,r8} //save registers
-	ldr   r7, [sp,#24] // x
-	ldr   r8, [sp,#28] // y
-	ldr   r2, [sp,#32] // colour
-	ldr   r3, [sp,#36] // lenX
-	ldr   r4, [sp,#40] // lenY
-	mov   r5, #0       // i=0
+	ldr   r7, [sp,#24] 	// x
+	ldr   r8, [sp,#28] 	// y
+	ldr   r2, [sp,#32] 	// colour
+	ldr   r3, [sp,#36] 	// lenX
+	ldr   r4, [sp,#40] 	// lenY
+	mov   r5, #0       	// i=0
 	dRFL1s:
 	cmp	  r5, r3   // compare i and lenX
 	bge	  dRFL1e   // if i>= lenX, the for loop ends
@@ -146,87 +149,87 @@ drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	
 	
 drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagonalD as parameters
-	push  {r3-r10}     // save registers
-	ldr   r0, [sp,#32] // x
-	ldr   r1, [sp,#36] // y
-	ldr   r2, [sp,#56] // colour
-	ldr   r3, [sp,#48] // length
-	ldr   r4, [sp,#52] // thickness
-	ldr   r5, [sp,#44] // direction
-	sub   r6, r4, #1   // stores thickness - 1 into r6
-	lsr   r6, #1 	   // stores (thickness-1)/2 into r6 (a)
-	mov   r7, #0       // i
-	mov   r8, r0       // x (constant)
-	mov   r9, r1       // y (constant)
+	push  	{r3-r10}     // save registers
+	ldr   	r0, [sp,#32] // x
+	ldr   	r1, [sp,#36] // y
+	ldr   	r2, [sp,#56] // colour
+	ldr   	r3, [sp,#48] // length
+	ldr   	r4, [sp,#52] // thickness
+	ldr   	r5, [sp,#44] // direction
+	sub   	r6, r4, #1   // stores thickness - 1 into r6
+	lsr   	r6, #1 	   // stores (thickness-1)/2 into r6 (a)
+	mov   	r7, #0       // i
+	mov   	r8, r0       // x (constant)
+	mov   	r9, r1       // y (constant)
 	dLFL1s:
-	cmp   r7, r3       // compares i with length
-	bge   dLFL1e       // end loop if i >= length
-	mov   r0, r8       // store x in r0
-	mov   r1, r9       // store y in r1
-	bl    drawPixel    // draws pixel in (x,y) with colour r2
-	cmp   r4, #1       // compares thickness with 1
-	ble   afterif1     // if thickness <= 1, end loop
-	and   r0, r5, #2   // store direction & 0x0010 into r0
-	lsr   r0, #1       // store r0/2 into r0
-	and   r1, r5, #4   // store direction & 0x0100 into r1
-	lsr   r1, #2       // store r1/4 into r1
-	orr   r0, r1       // set the first bit to be one in r0 if it is so in either r0 , r1
-	ldr   r1, =0xFFFFFFFE
-	bic   r0, r1       // clears every bit in r0 excluding the first bit
-	cmp   r0, #1       // checks if either bit 1 or bit 2 of direction is 1
-	bne   afterif1     // if neither are 1, go to the else portion
-	sub   r0, r8, r6   // stores x - a in r0
-	mov   r1, r9       // stores y in r1
-	mov   r10, #1      // stores 1 in r10
-	push {r0,r1,r2,r6,r10} // push required parameters onto the stack
-	bl     drawRect    // call drawRect
-	pop {r0,r1,r2,r6,r10} // remove parameters from stack
-	mov    r0, r8      // store x in r0
-	push {r0,r1,r2,r6,r10} // push required parameters onto the stack
-	bl     drawRect     // call drawRect
-	pop {r0,r1,r2,r6,r10}  // remove parameters from stack
+	cmp   	r7, r3       // compares i with length
+	bge   	dLFL1e       // end loop if i >= length
+	mov   	r0, r8       // store x in r0
+	mov   	r1, r9       // store y in r1
+	bl    	drawPixel    // draws pixel in (x,y) with colour r2
+	cmp   	r4, #1       // compares thickness with 1
+	ble   	afterif1     // if thickness <= 1, end loop
+	and   	r0, r5, #2   // store direction & 0x0010 into r0
+	lsr   	r0, #1       // store r0/2 into r0
+	and   	r1, r5, #4   // store direction & 0x0100 into r1
+	lsr   	r1, #2       // store r1/4 into r1
+	orr   	r0, r1       // set the first bit to be one in r0 if it is so in either r0 , r1
+	ldr   	r1, =0xFFFFFFFE
+	bic   	r0, r1       // clears every bit in r0 excluding the first bit
+	cmp   	r0, #1       // checks if either bit 1 or bit 2 of direction is 1
+	bne   	afterif1     // if neither are 1, go to the else portion
+	sub   	r0, r8, r6   // stores x - a in r0
+	mov   	r1, r9       // stores y in r1
+	mov   	r10, #1      // stores 1 in r10
+	push 	{r0,r1,r2,r6,r10} // push required parameters onto the stack
+	bl     	drawRect    // call drawRect
+	pop 	{r0,r1,r2,r6,r10} // remove parameters from stack
+	mo    	r0, r8      // store x in r0
+	push 	{r0,r1,r2,r6,r10} // push required parameters onto the stack
+	bl	drawRect     // call drawRect
+	pop 	{r0,r1,r2,r6,r10}  // remove parameters from stack
 	afterif1:          // after thickness for horizontal
-	and   r0, r5, #1    // 
-	cmp   r0, #1
-	bne   afterif2      // if (direction & 1) != 1, go to else 
-	cmp	  r4, #1
-	ble   afterif3      // if thickness <= 1, go to else
-	push  {r4}
-	mov   r0, #1
-	push  {r0}
-	push  {r2}
-	mov   r0,r8
-	sub   r1,r9,r4
-	push  {r0,r1}
-	bl     drawRect	    //vertical above-line thickness
-	pop  {r0,r1}
-	pop  {r0,r1}
-	pop   {r0}
-	push  {r4}
-	mov   r0, #1
-	push {r0}
-	mov   r0, r8
-	mov   r1, r9
-	push {r0,r1,r2}
-	bl     drawRect	      //vertical below-line thickness
-	pop {r0,r1}
-	pop {r0,r1}
-	pop {r0}
+	and   	r0, r5, #1    // 
+	cmp   	r0, #1
+	bne   	afterif2      // if (direction & 1) != 1, go to else 
+	cmp	r4, #1
+	ble   	afterif3      // if thickness <= 1, go to else
+	push  	{r4}		//the following pushes are to send parameters to drawRect
+	mov   	r0, #1
+	push  	{r0}
+	push  	{r2}
+	mov   	r0,r8
+	sub   	r1,r9,r4
+	push  	{r0,r1}		// the previous pushes were to send parameters to drawRect
+	bl     	drawRect	    //vertical above-line thickness
+	pop  	{r0,r1}
+	pop  	{r0,r1}
+	pop   	{r0}
+	push  	{r4}
+	mov   	r0, #1
+	push 	{r0}
+	mov   	r0, r8
+	mov   	r1, r9
+	push 	{r0,r1,r2}
+	bl     	drawRect	      //vertical below-line thickness
+	pop 	{r0,r1}
+	pop 	{r0,r1}
+	pop 	{r0}
 	afterif3:             //after thickness for vertical line
-	add   r8, #1
+	add   	r8, #1
 	afterif2:
-	tst  r5, #2
-	bne  ifpart2          // direction & 2 != 1
-	add  r9, #1	      // increment y
+	tst  	r5, #2
+	bne  	ifpart2          // direction & 2 != 1
+	add  	r9, #1	      // increment y
 	ifpart2:
-	tst r5, #4
-	bne  afterif4        // direction & 4 != 1
-	sub  r9, #1          // decrement y
+	tst 	r5, #4
+	bne  	afterif4        // direction & 4 != 1
+	sub  	r9, #1          // decrement y
 	afterif4:
-	add  r7, #1
-	b    dLFL1s
+	add  	r7, #1
+	b    	dLFL1s
 	dLFL1e:	
-	pop {r3-r9}           // restore registers
+	pop 	{r3-r9}           // restore registers
 	bx	lr           // branch to calling code
 
 
