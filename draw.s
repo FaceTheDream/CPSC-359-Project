@@ -1208,7 +1208,24 @@ drawGameOverWords:
 	bx	lr		//branch to calling code
 
 refreshGameScreen:
-//r0 will be the memory address for all toDraws
+//expects r0 to be the address of score
+//[r0+4] to be the address of playerx
+//[r0+8] to be the address of playery
+//[r0+12] to be the address of playerface
+//[r0+16] to be the address of currentnpc
+//[r0+20] to be the address of currentnpcface
+//[r0+24] to be the address of npcxs (17)
+//[r0+92] to be the address of npcys (17)
+//[r0+160] to be the address of npchp (17)
+//[r0+228] to be the address of crntpause
+//[r0+232] to be the address of bulletxs (15)
+//[r0+292] to be the address of bulletys (15)
+//[r0+352] to be the address of bulletfaces (15)
+//[r0+412] to be the address of crntbullet
+//[r0+416] to be the address of obstaclexs (5)
+//[r0+436] to be the address of obstacleys (5)
+//[r0+456] to be the address of obstaclehp (5)
+//[r0+474] to be the last element of obstaclehp
 	bx	lr
 
 setPlayerSize:
