@@ -515,7 +515,7 @@ drawBeeP: //draws pawn bee (top left)
 	bl	drawBeeBody //draw bee body
 	add	sp, #4
 	mov	r6, r4
-	add	r6, #90 //add in bee body width (will probably need to be changed later) POTENTIAL DISEMBODIED WING ERROR
+	add	r6, #90 //add in bee body width (will probably need to be changed later)
 	sub	r6, #5 //breathing room
 	ldr	r7, =wingLength
 	ldr	r7, [r7]
@@ -523,11 +523,14 @@ drawBeeP: //draws pawn bee (top left)
 	mov	r0, r6
 	mov	r1, r5
 	add	r1, #15 //more natural looking wings
-	mov	r2, r7
-	bl	drawBeeWings
-	//now both body and wings are drawn
-	pop {r3-r10}
-	bx	lr
+	mov	r2, r7	//store wingLength so it may be used by drawBeeWings
+	bl	drawBeeWings	//call drawBeeWings
+	add	r0, r4, #12	// make the drawing position for the bee's eye (x)
+	add	r1, r5, #7	// make the drawing position for the bee's eye (y)
+	bl	drawBeeEye	// draw the bee's eye
+	//now both body and wings are drawn along with the eye
+	pop {r3-r10}		//restore registers
+	bx	lr		//branch to calling code
 
 drawBeeK: //draws knight bee
 	bx	lr
