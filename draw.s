@@ -712,6 +712,8 @@ drawPauseScreen:
 	// 2 indicates Quit
 	push	{r4-r10}
 	
+	//pause menu will be drawn with top-left-most coordinates (0, 100)
+	//1024 pixels wide, 550 pixels long, border width of 30 pixels
 	
 	
 	pop	{r4-r10}
