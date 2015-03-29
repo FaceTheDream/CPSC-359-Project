@@ -559,7 +559,7 @@ drawBeeK: //draws knight bee
 	// r0 is the x location
 	// r1 is the y location
 	push 	{r3-r10}
-	mov	r2, #0
+	mov	r2, #1
 	ldr	r3, =beeRedColour
 	ldr	r3, [r3]
 	push 	{r3}
