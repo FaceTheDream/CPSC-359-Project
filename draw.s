@@ -1260,9 +1260,57 @@ endOfSetLazerDirection:
 	bx	lr		//branch to calling code
 
 drawAuthorNames:
+	
 	bx	lr
 
-drawGameTitle: //WhtvrYWnt
+drawGameTitle: //Moon Bees
+	//should draw on top left corver of the screen
+	push	{r4-r6}
+	mov	r4, #933
+	mov	r5, #0
+	ldr	r6, =authorTextColour
+	ldr	r6, [r6]
+	add 	r1, r4, #0	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'M'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #10	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'o'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #20	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'o'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #30	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'n'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #50	//draw x, skips one due to space
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'B'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #60	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'e'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #70	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'e'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #80	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'s'	//draw character
+	bl 	drawChar	//call to subroutine
+	pop	{r4-r6}
 	bx	lr
 	
 drawKyleBuettner:
