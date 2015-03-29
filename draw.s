@@ -1,5 +1,6 @@
 .section .init
 
+.globl drawAuthorNames	//draws the names of the authors of the game (Kyle Buettner, David Kenny, Justin Chu)
 .globl drawBeeBody 	//has 9 vertical stripes of equal size upon the body
 			// base stripe size is currently 10 pixels
 			// base bee height is currently 90 pixels
@@ -7,27 +8,37 @@
 			// r1, top left y
 			// r2, size multiplier (will be included in a shift operation, ex: 2^r2)
 			// [sp], non-black colour
-.globl drawBeeK
-.globl drawBeeP
-.globl drawBeeQ
-.globl drawBeeSting
-.globl drawBeeWings
+.globl drawBeeK		//draws a knight bee at location (x,y)
+			//(x,y) is the location at the top left of the body
+			//r0 is the x location
+			//r1 is the y location
+.globl drawBeeP		//draws a pawn bee at location (x,y)
+			//(x,y) is the location at the top left of the body
+			//r0 is the x location
+			//r1 is the y location
+.globl drawBeeQ		//draws a queen bee at location (x,y)
+			//(x,y) is the location at the top left of the body
+			//r0 is the x location
+			//r1 is the y location
+.globl drawBeeSting	//draws the bee projectile
+.globl drawBeeWings	//draws the wing portion of the bees
 .globl drawBG		//fills in the entire screen with a colour
 			//r0 is that colour
-.globl drawBush
+.globl drawBush		//draws the bush cover
 .globl drawCursor 	//draws triangle cursor for use on pause menu always faces right
 			// r0 is x location
 			// r1 is y location
 			// (x,y) is the rightmost point
-.globl drawDiamond
-.globl drawGameOverScreen
-.globl drawLazer
-.globl drawLine
+.globl drawDiamond	//draws a diamond
+.globl drawGameOverScreen //draws the game over screen, does not take any arguments
+.globl drawGameTitle	//draws the title of the game
+.globl drawLazer	//draws the player projectile
+.globl drawLine		//draws a line
 .globl drawPixel	// draws a pixel at location (x,y)
 			// r0 is x
 			// r1 is y
 			// r2 is colour
-.globl drawPlayer
+.globl drawPlayer	//draws the player
 .globl drawPauseScreen	//the pause screen (colours currently unselected)
 			//r0 indicates 0 (Resume), 1 (Restart Game), or 2 (Quit)
 .globl drawRect		//draws a rectangle when given the top left point (x,y) 
@@ -53,11 +64,11 @@
 .globl drawTriangleRight //draws an isosceles triangle pointing rightwards
 			// (x,y) is the rightmost tip of the triangle
 			//r0 is x, r1 is y, r2 is height, colour is sent over stack
-.globl drawVictoryScreen
-.globl refreshGameScreen
-.globl setBeeStingerSize
-.globl setLazerDirection
-.globl setPlayerSize
+.globl drawVictoryScreen //draws the victory screen. Doesn't take any arguments
+.globl refreshGameScreen //draws the game screen. Takes the array of object locations as an argument in r0
+.globl setBeeStingerSize //allows the game to change bee projectile size if necessary
+.globl setLazerDirection //allows the game to change the direction the lazer is moving in if necessary
+.globl setPlayerSize	// allows the game to change the player size if necessary
 
 .section .text
 
