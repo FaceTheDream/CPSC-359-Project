@@ -669,19 +669,19 @@ refreshGameScreen:
 
 
 .section .data
-
+// Colour codes from http://www.nthelp.com/colorcodes.htm
 beeBlackColour: .word	0x000000
-beeRedColour:	.word
-beeYellowColour: .word
-beeStingColour:	.word	
-beeWingColour:	.word	
-bushColour:	.word
-cursorColour:	.word
-lazerColour:	.word
-playerBodyColour: .word
-playerHelmColour: .word
-beeStingSize:  .int   6
-playerSize:	.int	
-cursorSize:	.int	10 //triangle height
-lazerSize:     .int   50, 1 //rectangle length by width
+beeRedColour:	.word	0xFF6600
+beeYellowColour: .word	0xFFFF00
+beeStingColour:	.word	0x003300
+beeWingColour:	.word	0xFFFFCC
+bushColour:	.word	0x33CC00
+cursorColour:	.word	0xFFFFFF
+lazerColour:	.word	0xFF0000
+playerBodyColour: .word	0x996600
+playerHelmColour: .word	0xCCFFFF
+beeStingSize:  .int   6		//
+playerSize:	.int	75	//
+cursorSize:	.int	10 	//triangle height
+lazerSize:     .int   50, 1 	//rectangle length by width
 font:	.incbin		"font.bin"
