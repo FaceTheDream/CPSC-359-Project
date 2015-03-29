@@ -54,6 +54,13 @@ start:
 	mov r1, #768
 	str r1, [r0, #4]
 	str r1, [r0, #12]
+	ldr r0, =obstaclehp
+	mov r1, #3
+	str r1, [r0]
+	str r1, [r0, #4]
+	str r1, [r0, #8]
+	str r1, [r0, #12]
+	str r1, [r0, #16]
 	ldr r0, =crntbullet
 	mov r1, #0
 	str r1, [r0]
@@ -75,7 +82,7 @@ endLoop:
 	
 nextLoop:
 	cmp r2, r3
-	beq oneTurn
+	beq finaLoop
 	str r1, [r0, r2, lsl #2]
 	add r2, r2, #1
 	b nextLoop
@@ -94,7 +101,7 @@ finaLoop2:
 	b finaLoop2
 	
 finaLoop3:
-	//draw screen
+	bl drawScreen
 
 oneTurn:
 	//detect inputs
@@ -404,10 +411,11 @@ obsHit:
 	b colLoop3x
 	
 colEnd:
-	//DRAW SCREEN NOW
+	bl drawScreen
 	b oneTurn
 	
 pauseMenu:
+	bl drawPauseScreen
 	//detect inputs
 	//put start button value memory location in r2
 	ldr r2, [r2]
@@ -604,9 +612,131 @@ npcShoot:
 	ldr r3, =bulletys
 	str r2, [r3, r4, lsl #2]
 	bx lr
+	
+drawScreen:
+	bl drawBG
+	bl drawAuthorNames
+	bl drawGameTitle
+	ldr r2, =npcx
+	ldr r3, =npcy
+	ldr r4, =npchp
+	ldr r0, [r2]
+	ldr r1, [r3]
+	ldr r5, [r4]
+	cmp r5, #0
+	blne drawBeeP
+	ldr r0, [r2, #4]
+	ldr r1, [r3, #4]
+	ldr r5, [r4, #4]
+	cmp r5, #0
+	blne DrawBeeP
+	ldr r0, [r2, #8]
+	ldr r1, [r3, #8]
+	ldr r5, [r4, #8]
+	cmp r5, #0
+	blne DrawBeeP
+	ldr r0, [r2, #12]
+	ldr r1, [r3, #12]
+	ldr r5, [r4, #12]
+	cmp r5, #0
+	blne DrawBeeP
+	ldr r0, [r2, #16]
+	ldr r1, [r3, #16]
+	ldr r5, [r4, #16]
+	cmp r5, #0
+	blne DrawBeeP
+	ldr r0, [r2, #20]
+	ldr r1, [r3, #20]
+	ldr r5, [r4, #20]
+	cmp r5, #0
+	blne DrawBeeP
+	ldr r0, [r2, #24]
+	ldr r1, [r3, #24]
+	ldr r5, [r4, #24]
+	cmp r5, #0
+	blne DrawBeeP
+	ldr r0, [r2, #28]
+	ldr r1, [r3, #28]
+	ldr r5, [r4, #28]
+	cmp r5, #0
+	blne DrawBeeP
+	ldr r0, [r2, #32]
+	ldr r1, [r3, #32]
+	ldr r5, [r4, #32]
+	cmp r5, #0
+	blne DrawBeeP
+	ldr r0, [r2, #36]
+	ldr r1, [r3, #36]
+	ldr r5, [r4, #36]
+	cmp r5, #0
+	blne DrawBeeP
+	ldr r0, [r2, #40]
+	ldr r1, [r3, #40]
+	ldr r5, [r4, #40]
+	cmp r5, #0
+	blne DrawBeeK
+	ldr r0, [r2, #44]
+	ldr r1, [r3, #44]
+	ldr r5, [r4, #44]
+	cmp r5, #0
+	blne DrawBeeK
+	ldr r0, [r2, #48]
+	ldr r1, [r3, #48]
+	ldr r5, [r4, #48]
+	cmp r5, #0
+	blne DrawBeeK
+	ldr r0, [r2, #52]
+	ldr r1, [r3, #52]
+	ldr r5, [r4, #52]
+	cmp r5, #0
+	blne DrawBeeK
+	ldr r0, [r2, #56]
+	ldr r1, [r3, #56]
+	ldr r5, [r4, #56]
+	cmp r5, #0
+	blne DrawBeeK
+	ldr r0, [r2, #60]
+	ldr r1, [r3, #60]
+	ldr r5, [r4, #60]
+	cmp r5, #0
+	blne DrawBeeQ
+	ldr r0, [r2, #64]
+	ldr r1, [r3, #64]
+	ldr r5, [r4, #64]
+	cmp r5, #0
+	blne DrawBeeQ
+	ldr r3, =obstaclexs
+	ldr r4, =obstacleys
+	ldr r5, =obstaclesize
+	ldr r0, [r3]
+	ldr r1, [r4]
+	ldr r2, [r5]
+	bl drawBush
+	ldr r0, [r3, #4]
+	ldr r1, [r4, #4]
+	ldr r2, [r5, #4]
+	bl drawBush
+	ldr r0, [r3, #8]
+	ldr r1, [r4, #8]
+	ldr r2, [r5, #8]
+	bl drawBush
+	ldr r0, [r3, #8]
+	ldr r1, [r4, #8]
+	ldr r2, [r5, #8]
+	bl drawBush
+	ldr r0, [r3, #8]
+	ldr r1, [r4, #8]
+	ldr r2, [r5, #8]
+	bl drawBush
+	ldr r2, =playerx
+	ldr r3, =playery
+	ldr r0, [r2]
+	ldr r1, [r3]
+	bl drawPlayer
+	bx lr
 
 gameOver:
-	//display game over screen
+	bl drawGameOverScreen
 	//detect inputs
 	//put start button value memory location in r2
 	ldr r2, [r2]
@@ -616,7 +746,7 @@ gameOver:
 	b gameOver
 	
 victory:
-	//display victory screen
+	bl drawVictoryScreen
 	//detect inputs
 	//put start button value memory location in r2
 	ldr r2, [r2]
