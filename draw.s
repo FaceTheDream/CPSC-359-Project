@@ -890,116 +890,116 @@ drawPauseScreen:
 	ldr	r8, =0xFFFFFF	//white text for pause menu
 	
 	//starts with the word "Resume"
-	add 	r1, r6, #0	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #0	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'R'	//draw character
+	mov 	r2, #'R'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #10	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #10	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'e'	//draw character
+	mov 	r2, #'e'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #20	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #20	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'s'	//draw character
+	mov 	r2, #'s'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #30	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #30	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'u'	//draw character
+	mov 	r2, #'u'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #40	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #40	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'m'	//draw character
+	mov 	r2, #'m'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #50	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #50	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'e'	//draw character
+	mov 	r2, #'e'	//draw character
 	bl 	drawChar	//call to subroutine
 	add	r7, r5		//adds the newline distance
 	
 	//Next is "Restart Game"
-	add 	r1, r6, #0	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #0	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'R'	//draw character
+	mov 	r2, #'R'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #20	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #20	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'e'	//draw character
+	mov 	r2, #'e'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #30	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #30	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'s'	//draw character
+	mov 	r2, #'s'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #40	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #40	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'t'	//draw character
+	mov 	r2, #'t'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #50	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #50	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'a'	//draw character
+	mov 	r2, #'a'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #60	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #60	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'r'	//draw character
+	mov 	r2, #'r'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #70	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #70	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'t'	//draw character
+	mov 	r2, #'t'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #90	//draw x skips one character slot for space
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #90	//draw x skips one character slot for space
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'G'	//draw character
+	mov 	r2, #'G'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #100	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #100	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'a'	//draw character
+	mov 	r2, #'a'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #0	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #0	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'m'	//draw character
+	mov 	r2, #'m'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #0	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #0	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'e'	//draw character
+	mov 	r2, #'e'	//draw character
 	bl 	drawChar	//call to subroutine
 	add	r7, r5		//adds the newline distance
 	
 	//third word is "Quit"
-	add 	r1, r6, #0	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #0	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'Q'	//draw character
+	mov 	r2, #'Q'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #10	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #10	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'u'	//draw character
+	mov 	r2, #'u'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #20	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #20	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'i'	//draw character
+	mov 	r2, #'i'	//draw character
 	bl 	drawChar	//call to subroutine
-	add 	r1, r6, #30	//draw x
-	mov 	r2, r7	        //draw y
+	add 	r0, r6, #30	//draw x
+	mov 	r1, r7	        //draw y
 	mov 	r3, r8		//draw colour
-	mov 	r0, #'t'	//draw character
+	mov 	r2, #'t'	//draw character
 	bl 	drawChar	//call to subroutine
 	
 	mov	r6, #150 	//x
