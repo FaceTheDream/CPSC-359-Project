@@ -42,6 +42,7 @@
 			// [sp+8] is length (x-dist)
 			// [sp+12] is width (y-dist)
 .globl drawTriangleUp	//draws an isosceles triangle pointing upwards
+			// (x,y) is the topmost tip of the triangle
 			//r0 is x, r1 is y, r2 is height, colour is sent over stack
 .globl drawTriangleDown
 .globl drawTriangleLeft
@@ -603,6 +604,7 @@ drawCrown:	//draws the crown that the queen bee shall wear
 	push	{r4-r10}
 	mov	r4, r0		//x
 	mov	r5, r1		//y
+	mov	r7, #15		//triangle height
 	ldr	r6, =crownColour //colour address 
 	ldr	r6, [r6]	//colour
 	mov	r1, #25
@@ -612,9 +614,27 @@ drawCrown:	//draws the crown that the queen bee shall wear
 	bl	drawRect	//draw rectangular base of crown
 	add	sp, #20
 	add	r4, #12		//add roughly 1/4th of the base's length to x
-	add	r5, #15		//add the triangle's height to y
-	
-	
+	add	r5, r7		//add the triangle's height to y
+	mov	r0, r4
+	mov	r1, r5
+	mov	r2, r7		//move height of triangle into r2
+	push	{r6}
+	bl	drawTriangleUp
+	add	sp, #4
+	add	r4, #13		//add roughly 1/4th of the base's length to x
+	mov	r0, r4
+	mov	r1, r5
+	mov	r2, r7
+	push	{r6}
+	bl	drawTriangleUp
+	add	sp, #4
+	add	r4, #13		//add roughly 1/4th of the base's length to x
+	mov	r0, r4
+	mov	r1, r5
+	mov	r2, r7
+	push	{r6}
+	bl	drawTriangleUp
+	add	sp, #4
 	pop	{r4-r10}
 	bx	lr
 
