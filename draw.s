@@ -662,3 +662,4 @@ beeStingSize:  .int   6
 playerSize:	.int	
 cursorSize:	.int	10 //triangle height
 lazerSize:     .int   50, 1 //rectangle length by width
+font:	.incbin		"font.bin"
