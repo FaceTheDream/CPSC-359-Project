@@ -8,7 +8,10 @@
 .globl drawBeeWings
 .globl drawBG
 .globl drawBush
-.globl drawCursor
+.globl drawCursor 	//draws triangle cursor for use on pause menu always faces right
+			// r0 is x location
+			// r1 is y location
+			// (x,y) is the rightmost point
 .globl drawDiamond
 .globl drawGameOverScreen
 .globl drawLazer
@@ -20,7 +23,14 @@
 .globl drawPlayer
 .globl drawPauseScreen
 .globl drawRect
-.globl drawRectB
+.globl drawRectB 	//rectangle with border
+			// r0 is x location
+			// r1 is y location
+			// r2 is borderwidth
+			// [sp] is bordercolour
+			// [sp+4] is main rectangle colour
+			// [sp+8] is length
+			// [sp+12] is width
 .globl drawTriangleUp
 .globl drawTriangleDown
 .globl drawTriangleLeft
@@ -52,7 +62,7 @@ drawPixel: //r0 is assumed to be the x location, r1 is assumed to be the y locat
 	add    r1,    r0                     // add offset
 	strh   r2,    [r1]                   // stores the colour into the FrameBuffer location
 endDrawPixel:
-	bx     lr                            //
+	bx     lr                            // branch to calling code
 
 drawBG: //r0 is the colour to set the background to
 	push {r3-r5}
@@ -75,8 +85,8 @@ drawBG: //r0 is the colour to set the background to
 	add	r3, #1        // increment row
 	b	rowBGloops    //back to start of row loop
 	rowBGloope:
-	pop {r3-r5}            //restore registers
-	bx	lr
+	pop {r3-r5}           //restore registers
+	bx	lr	      //branch to calling code
 	
 drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	push {r3,r4,r5,r6,r7,r8} //save registers
@@ -159,7 +169,7 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	mov   r0,r8
 	sub   r1,r9,r4
 	push  {r0,r1}
-	bl     drawRect
+	bl     drawRect	    //vertical above-line thickness
 	pop  {r0,r1}
 	pop  {r0,r1}
 	pop   {r0}
@@ -169,7 +179,7 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 	mov   r0, r8
 	mov   r1, r9
 	push {r0,r1,r2}
-	bl     drawRect
+	bl     drawRect	      //vertical below-line thickness
 	pop {r0,r1}
 	pop {r0,r1}
 	pop {r0}
@@ -442,32 +452,32 @@ drawBeeWings: //very boxy wings
 	//r0 is x location
 	//r1 is y location
 	//r2 is size (square-ish)
-	push {r3-r6}
+	push 	{r3-r6}
 	mov	r3, r0 //x
 	mov	r4, r1 //y
 	mov	r5, r2 //size
 	ldr	r6, =beeWingColour
 	ldr	r6, [r6] //colour
-	push {r5}
-	push {r5}
-	push {r6}
-	push {r4}
-	push {r3}
+	push    {r5}
+	push    {r5}
+	push    {r6}
+	push 	{r4}
+	push 	{r3}
 	bl	drawRect //main wing
 	add	sp, #20
 	sub	r4,#1
-	push {r6}
+	push 	{r6}
 	mov	r0, #1
-	push {r0}
+	push 	{r0}
 	sub	r1,r2,#2
-	push {r1}
-	push {r0}
+	push 	{r1}
+	push 	{r0}
 	add	r1,r3,#1
 	sub	r0,r4,#1
-	push {r0,r1}
+	push 	{r0,r1}
 	bl	drawLine  //hint of wing-curve
 	add	sp, #24
-	pop {r3-r6}
+	pop 	{r3-r6}
 	bx	lr
 	
 drawBeeEye:
@@ -510,11 +520,11 @@ drawBeeP: //draws pawn bee (top left)
 	// r0 is the x location
 	// r1 is the y location
 	// make wingLength int in memory (TODO)
-	push {r3-r10}
+	push 	{r3-r10}
 	mov	r2, #0
 	ldr	r3, =beeYellowColour
 	ldr	r3, [r3]
-	push {r3}
+	push 	{r3}
 	mov	r4, r0 //top-left x
 	mov	r5, r1 // top-left y
 	bl	drawBeeBody //draw bee body
@@ -534,7 +544,7 @@ drawBeeP: //draws pawn bee (top left)
 	add	r1, r5, #7	// make the drawing position for the bee's eye (y)
 	bl	drawBeeEye	// draw the bee's eye
 	//now both body and wings are drawn along with the eye
-	pop {r3-r10}		//restore registers
+	pop 	{r3-r10}	//restore registers
 	bx	lr		//branch to calling code
 
 drawBeeK: //draws knight bee
@@ -608,11 +618,11 @@ drawBush: //draws "bush" cover
 	push {r3}
 	ldr	r3, =bushColour
 	ldr	r3, [r3]
-	push {r2}
-	push {r2}
-	push {r3}
-	push {r1}
-	push {r0}
+	push 	{r2}
+	push 	{r2}
+	push 	{r3}
+	push 	{r1}
+	pus	{r0}
 	bl	drawRect
 	add	sp, #20
 	pop {r3}
@@ -623,7 +633,7 @@ drawLazer: //draws player lazer projectile
 	// r1 is y location
 	// (x,y) is the top left-most location
 	// returns memory location of lazerSize
-	push {r3-r8}
+	push 	{r3-r8}
 	mov	r3, r0 //x location (xMin)
 	mov	r4, r1 // y location (yMin)
 	ldr	r5, =lazerSize
@@ -632,14 +642,14 @@ drawLazer: //draws player lazer projectile
 	ldr	r5, [r5,#4] //width
 	ldr	r7, =lazerColour
 	ldr	r7, [r7]
-	push {r5}
-	push {r6}
-	push {r7}
-	push {r4}
-	push {r3}
+	push 	{r5}
+	push 	{r6}
+	push 	{r7}
+	push 	{r4}
+	push 	{r3}
 	bl	drawRect
 	mov	r0, r8
-	pop {r3-r7}
+	pop 	{r3-r7}
 	bx	lr
 
 
@@ -672,14 +682,14 @@ drawBeeSting: //draws bee bullet projectile
 	bdselse:
 	bl	drawTriangleRight
 	add	sp, #4
-	pop   {r3-r4}
+	pop   	{r3-r4}
 	bx	lr
 
 drawCursor: //draws triangle cursor for use on pause menu always faces right
 	// r0 is x location
 	// r1 is y location
 	// (x,y) is the rightmost point
-	push {r3-r6}
+	push 	{r3-r6}
 	mov	r3, r0
 	mov	r4, r1
 	ldr	r5, =cursorSize
@@ -689,15 +699,22 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 	mov	r0, r3
 	mov	r1, r4
 	mov	r2, r5
-	push {r6}
+	push 	{r6}
 	bl	drawTriangleRight
 	add	sp, #4 //removes colour from stack
-	pop {r3-r6}
+	pop 	{r3-r6}
 	bx	lr
 
 drawPauseScreen:
 	//r0 will indicate which option is selected
-	// 0 indicates 
+	// 0 indicates Resume
+	// 1 indicates Restart Game
+	// 2 indicates Quit
+	push	{r4-r10}
+	
+	
+	
+	pop	{r4-r10}
 	bx	lr
 
 drawGameOverScreen:
