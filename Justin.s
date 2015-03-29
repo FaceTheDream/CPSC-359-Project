@@ -261,37 +261,37 @@ noPixel$:
 drawScore:
     mov r1, #0
     mov r2, #0
-    ldr r3, =0xFFFFFF
+    ldr r3, =0xFFFF
     mov r0, #'S'
     bl drawChar
 
     mov r1, #10
     mov r2, #0
-    ldr r3, =0xFFFFFF
+    ldr r3, =0xFFFF
     mov r0, #'c'
     bl drawChar
 
     mov r1, #20
     mov r2, #0
-    ldr r3, =0xFFFFFF
+    ldr r3, =0xFFFF
     mov r0, #'o'
     bl drawChar
 
     mov r1, #30
     mov r2, #0
-    ldr r3, =0xFFFFFF
+    ldr r3, =0xFFFF
     mov r0, #'r'
     bl drawChar
 
     mov r1, #40
     mov r2, #0
-    ldr r3, =0xFFFFFF
+    ldr r3, =0xFFFF
     mov r0, #'e'
 
     bl drawChar
     mov r1, #50
     mov r2, #0
-    ldr r3, =0xFFFFFF
+    ldr r3, =0xFFFF
     mov r0, #':'
     bl drawChar
 
@@ -324,7 +324,7 @@ drawScoreNum:
 drawHundred:
     mov r1, #60
     mov r2, #0
-    ldr r3, =0xFFFFFF
+    ldr r3, =0xFFFF
     b drawChar
 
     cmp r4, #90
@@ -377,7 +377,7 @@ drawHundred:
 drawTen:
     mov r1, #70
     mov r2, #0
-    ldr r3, =0xFFFFFF
+    ldr r3, =0xFFFF
     bl drawChar
 
     cmp r4, #9
@@ -421,12 +421,86 @@ drawTen:
 drawOne:
     mov r1, #80
     mov r2, #0
-    ldr r3, =0xFFFFFF
+    ldr r3, =0xFFFF
     b drawChar
 
     pop {r4, pc}
 
     
+
+/*  Initialize the frame buffer
+ *  Returns: r0 - result
+ */
+
+.globl initFrameBuffer
+initFrameBuffer:
+    mailbox .req    r2          //Sets mailbox to R2
+    ldr mailbox,    =0x2000B880 //Loads the memory address for the mailbox
+
+    fbinfo  .req    r3          //Sets fbinfo to R3
+    ldr fbinfo, =FrameBufferInfo//Loads the memory address for the frame buffer info
+
+mailboxFull:
+    ldr r0, [mailbox, #0x18]    //Checks status of the mailbox
+    tst r0, #0x80000000         //Checks to see if mailbox is currently full
+    bne mailboxFull             //Waits until mailbox is not full
+    add r0, fbinfo, #0x40000000 //r0 = framebufferinfo
+    orr r0, #0b0001             //Sets mailbox channel to 1
+    str r0, [mailbox, #0x20]    //Sets framebufferinfo to write register
+
+mailboxEmpty:
+    ldr r0, [mailbox, #0x18]
+    tst r0, #0x40000000         //Checks to see if mailbox is currently empty
+    bne mailboxFull             //Waits until mailbox is not empty
+    ldr r0, [mailbox, #0x00]    //Reads from the mailbox read register
+    and r1, r0, #0xF            //Extracts the channel information
+    teq r1, #0b0001             //Checks to see if the channel is equal to 1 for the framebuffer channel
+    bne mailboxEmpty            //Loops if the message is not for framebuffer channel
+    bic r1, r0, #0xF            //Extracts high 28 bits (everything minus channel)
+    teq r1, #0                  //Tests to see if the high 28 bits are 0
+    movne r0, #0                //Returns 0 if high 28 bits are not 0
+    bxne    lr                  //Returns if not equal
+
+pointerWait:
+    ldr r0, [fbinfo, #0x20]     //Loads the value of the pointer from the frame buffer info
+    teq r0, #0                  //tests to see if the pointer is 0
+    beq pointerWait             //Branches if the pointer is still 0
+
+    ldr r4, =FrameBufferPointer //Sets r4 to [FrameBufferPointer]
+    str r1, [r4]                //Stores framebuffer pointer
+
+    .unreq mailbox              //Unregisters mailbox
+    .unreq  fbinfo              //Unregisters fbinfo
+
+    bx  lr                      //Returns pointer value to indicate success
+    
+
+.section    .data
+
+.align 12
+FrameBufferInfo:
+    .int    1024    // 0 - Width
+    .int    768     // 4 - Height
+    .int    1024    // 8 - vWidth
+    .int    768*2   // 12 - vHeight
+    .int    0       // 16 - GPU - Pitch
+    .int    16      // 20 - Bit Depth
+    .int    0       // 24 - vX
+    .int    0       // 28 - vY
+    .int    0       // 32 - FB Pointer
+    .int    0       // 36 - FB Size
+
+.align 4
+.globl FrameBufferPointer
+
+FrameBufferPointer:
+    .int    0
+
+font:
+    .incbin	"font.bin"
+
+
+/*
 .globl InitFrameBuffer
 InitFrameBuffer:
     infoAdr .req r4
@@ -495,12 +569,12 @@ wait1$:
     bx		lr
 
 
-/* Read from mailbox
+* Read from mailbox
  * Args:
  *  r0 - channel
  * Return:
  *  r0 - message
- */
+ *
 .globl MailboxRead
 MailboxRead:
     cmp     r0, #15                         // return if invalid channel (> 15)
@@ -538,79 +612,7 @@ wait2$:
     .unreq  mail
     
 	bx		lr
-
-
-
-/*  Initialize the frame buffer
- *  Returns: r0 - result
- */
-/*
-.globl initFrameBuffer
-initFrameBuffer:
-    mailbox .req    r2          //Sets mailbox to R2
-    ldr mailbox,    =0x2000B880 //Loads the memory address for the mailbox
-
-    fbinfo  .req    r3          //Sets fbinfo to R3
-    ldr fbinfo, =FrameBufferInfo//Loads the memory address for the frame buffer info
-
-mailboxFull:
-    ldr r0, [mailbox, #0x18]    //Checks status of the mailbox
-    tst r0, #0x80000000         //Checks to see if mailbox is currently full
-    bne mailboxFull             //Waits until mailbox is not full
-    add r0, fbinfo, #0x40000000 //r0 = framebufferinfo
-    orr r0, #0b0001             //Sets mailbox channel to 1
-    str r0, [mailbox, #0x20]    //Sets framebufferinfo to write register
-
-mailboxEmpty:
-    ldr r0, [mailbox, #0x18]
-    tst r0, #0x40000000         //Checks to see if mailbox is currently empty
-    bne mailboxFull             //Waits until mailbox is not empty
-    ldr r0, [mailbox, #0x00]    //Reads from the mailbox read register
-    and r1, r0, #0xF            //Extracts the channel information
-    teq r1, #0b0001             //Checks to see if the channel is equal to 1 for the framebuffer channel
-    bne mailboxEmpty            //Loops if the message is not for framebuffer channel
-    bic r1, r0, #0xF            //Extracts high 28 bits (everything minus channel)
-    teq r1, #0                  //Tests to see if the high 28 bits are 0
-    movne r0, #0                //Returns 0 if high 28 bits are not 0
-    bxne    lr                  //Returns if not equal
-
-pointerWait:
-    ldr r0, [fbinfo, #0x20]     //Loads the value of the pointer from the frame buffer info
-    teq r0, #0                  //tests to see if the pointer is 0
-    beq pointerWait             //Branches if the pointer is still 0
-
-    ldr r4, =FrameBufferPointer //Sets r4 to [FrameBufferPointer]
-    str r1, [r4]                //Stores framebuffer pointer
-
-    .unreq mailbox              //Unregisters mailbox
-    .unreq  fbinfo              //Unregisters fbinfo
-
-    bx  lr                      //Returns pointer value to indicate success
-    */
-
-.section    .data
-
-.align 12
-FrameBufferInfo:
-    .int    1024    // 0 - Width
-    .int    768     // 4 - Height
-    .int    1024    // 8 - vWidth
-    .int    768*2   // 12 - vHeight
-    .int    0       // 16 - GPU - Pitch
-    .int    8       // 20 - Bit Depth
-    .int    0       // 24 - vX
-    .int    0       // 28 - vY
-    .int    0       // 32 - FB Pointer
-    .int    0       // 36 - FB Size
-
-.align 4
-.globl FrameBufferPointer
-
-FrameBufferPointer:
-    .int    0
-
-font:
-    .incbin	"font.bin"
+*/
 
 /*  interupt stuff
 
