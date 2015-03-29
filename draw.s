@@ -1441,25 +1441,25 @@ drawJustinChu:
 
 .section .data
 // Colour codes from http://www.nthelp.com/colorcodes.htm
-authorTextColour: .word	
+authorTextColour: .word	0x000000	//black
 beeBlackColour: .word	0x000000	//black
 beeRedColour:	.word	0xFF6600	//lightish red
 beeYellowColour: .word	0xFFFF00	//yellow
 beeStingColour:	.word	0x003300	//almost-black
 beeWingColour:	.word	0xFFFFCC	//white-ish (different white-ish from helmet)
 bushColour:	.word	0x33CC00	//green
-crownColour:	.word	
+crownColour:	.word	0xCC33FF	//purple
 cursorColour:	.word	0xFFFFFF	//white
 lazerColour:	.word	0xFF0000	//red
 losingColour:	.word	0x000099	//dark blue
 losWordColour:	.word	0xFFCCFF	//pink
-inGameBGColour:	.word
-pauseMenuMC:	.word	
-pauseMenuBC:	.word	
+inGameBGColour:	.word	0x999999	//gray
+pauseMenuMC:	.word	0x000000	//black
+pauseMenuBC:	.word	0x9999FF	//light blue
 playerBodyColour: .word	0x996600	//brown
 playerHelmColour: .word	0xCCFFFF	//white-ish
-victoryBGColour: .word	
-victoryTextColour: .word 
+victoryBGColour: .word	0x669999	//greenish-turquoise
+victoryTextColour: .word 0x6600CC	//Some sort of dark purple
 beeStingSize:  .int   6		//
 playerSize:	.int	75	//
 cursorSize:	.int	10 	//triangle height
