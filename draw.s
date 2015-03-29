@@ -322,7 +322,7 @@ dtlfl1start: //draw triangle left for loop 1 start
 	add	r7, #1
 	b	dtlfl1start
 dtlfl1end:
-	pop {r3-r7}
+	pop 	{r3-r7}
 	bx	lr
 
 drawTriangleRight: //r0 is x, r1 is y, r2 is height, colour is sent over stack
@@ -352,7 +352,7 @@ dtrfl1start: //draw triangle right for loop 1 start
 	add	r7, #1
 	b	dtrfl1start
 dtrfl1end:
-	pop {r3-r7}
+	pop 	{r3-r7}
 	bx	lr
 
 drawDiamond:
@@ -400,22 +400,22 @@ startStripBeeLoop:
 	lsl	r0, r8        // adjust stripe xlength
 	mov	r1, #90       // init bee height
 	lsl	r1, r8        // adjusted bee height
-	push {r1}              //push p4
-	push {r0}              //push p3
+	push 	{r1}              //push p4
+	push 	{r0}              //push p3
 	tst	r5, #1
 	bne	stripecolourelse
-	push {r6}              //push p2
+	push 	{r6}              //push p2
 	b 	stripecolourafterif
-	stipecolourelse:
-	push {r7}              //push p2
-	stripecolourafterif:
-	push {r4}              //push p1
-	push {r3}              //push p0
+stipecolourelse:
+	push 	{r7}              //push p2
+stripecolourafterif:
+	push 	{r4}              //push p1
+	push 	{r3}              //push p0
 	bl	drawRect
 	add	sp, #20       //remove parameters from stack
 	add	r5, #1        //increment stripe counter
-	endStripBeeLoop:
-	pop {r3-r8}	      // restore registers
+endStripBeeLoop:
+	pop 	{r3-r8}	      // restore registers
 	bx	lr	      // branch to calling code
 
 drawRectB: //rectangle with border
@@ -697,11 +697,11 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	ldr	r5, [r5]
 	ldr	r6, =playerHelmColour
 	ldr	r6, [r6]
-	push {r5}
-	push {r5}
-	push {r6}
-	push {r4}
-	push {r3}
+	push 	{r5}
+	push 	{r5}
+	push 	{r6}
+	push 	{r4}
+	push 	{r3}
 	bl	drawRect 	//draws head
 	add	sp, #20
 	ldr	r6, =playerBodyColour
@@ -711,20 +711,20 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	add	r7, r5 		//r7 = 3*r5
 	sub	r0, r3, r5
 	add	r1, r4, r5
-	push {r5}
-	push {r7}
-	push {r6}
-	push {r1}
-	push {r0}
+	push 	{r5}
+	push 	{r7}
+	push 	{r6}
+	push 	{r1}
+	push 	{r0}
 	bl	drawRect	//draw body
 	add	sp, #20
 	add	r0, r4, r5
 	add	r0, r5
-	push {r5}
-	push {r5}
-	push {r6}
-	push {r0}
-	push {r3}
+	push 	{r5}
+	push 	{r5}
+	push 	{r6}
+	push 	{r0}
+	push 	{r3}
 	bl	drawRect	//draw feet things
 	add	sp, #20
 	add	r0, r4, r5
@@ -795,7 +795,7 @@ drawBeeSting: //draws bee bullet projectile
 // 1 is down
 // 2 is left
 // 3 is right
-	push   {r3-r4}
+	push    {r3-r4}
 	mov 	r4, r2
 	ldr	r2, =beeStingSize
 	ldr	r2, [r2]
