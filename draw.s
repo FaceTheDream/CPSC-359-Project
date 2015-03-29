@@ -619,7 +619,7 @@ drawBeeQ: //draws queen bee (top left)
 	push 	{r3}
 	mov	r4, r0 		//top-left x
 	mov	r5, r1 		// top-left y
-	bl	drawBeeBod	//draw bee body
+	bl	drawBeeBody	//draw bee body
 	add	sp, #4
 	mov	r0, r4
 	mov	r1, r5
