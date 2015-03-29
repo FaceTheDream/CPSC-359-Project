@@ -212,7 +212,7 @@ finishReading:
  */
  .globl drawChar
 drawChar:
-    push {r4-r9 lr}
+    push {r4-r10, lr}
 
     chAdr	.req	r4
 	px		.req	r5
@@ -220,8 +220,10 @@ drawChar:
     colour  .req    r7
 	row		.req	r8
 	mask	.req	r9
+	originalX	.req	r10
 
     mov     px, r1
+    mov     originalX, r1
     mov     py, r2
     mov     colour, r3
 
@@ -230,7 +232,7 @@ drawChar:
 
 charLoop$:
 
-    mov     px, #0
+    mov     px, originalX
 
 	mov		mask,	#0x01		// set the bitmask to 1 in the LSB
 	
@@ -240,7 +242,7 @@ rowLoop$:
 	tst		row,	mask		// test row byte against the bitmask
 	beq		noPixel$
 
-    mov     r0, px
+	mov r0, px
     mov     r1, py
     mov     r2, colour
 	bl		drawPixel			// draw red pixel at (px, py)
@@ -263,7 +265,7 @@ noPixel$:
 	.unreq	row
 	.unreq	mask
 
-	pop		{r4, r5, pc}
+	pop		{r4-r10, pc}
 
 
 .globl drawScore
@@ -440,7 +442,7 @@ drawOne:
 /*  Initialize the frame buffer
  *  Returns: r0 - result
  */
- 
+
 .globl InitFrameBuffer
 InitFrameBuffer:
     mailbox .req    r2          //Sets mailbox to R2

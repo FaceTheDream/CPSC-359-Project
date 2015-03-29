@@ -11,16 +11,14 @@ main:
 	bl		EnableJTAG
 
 
-    bl      initFrameBuffer         // initialize the frame buffer
+    bl      InitFrameBuffer         // initialize the frame buffer
 	bl		initSNES				// initialize the SNES controller
+
     // branch to the halt loop if there was an error initializing the framebuffer
 	cmp		r0, #0
 	beq		haltLoop
 
-    mov		r1, #100
-	mov		r2, #100
-	ldr		r3,	=0xFFFF
-	bl		drawPixel
+	b		drawScore
 
 haltLoop:
 	b		haltLoop
