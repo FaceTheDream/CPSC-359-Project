@@ -890,17 +890,135 @@ drawVictoryScreen:
 	// background colour will be initialized to winningColour
 	// "VICTORY!" at (400, 380)
 	// "Congratulations!" at (370,400)
-	push	{r4-r5}
-	ldr	r4, =VictoryBGColour
+	push	{r4}
+	ldr	r0, =victoryBGColour
+	ldr	r0, [r0]
+	bl	drawBG
+	ldr	r4, =victoryTextColour
 	ldr	r4, [r4]
-	
 	mov 	r1, #400	//draw x
 	mov 	r2, #380	//draw y
-	mov 	r3, r		//draw colour
-	mov 	r0, #'G'	//draw character
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'V'	//draw character
 	bl 	drawChar	//call to subroutine
-	
-	pop	{r4-r5}
+	mov 	r1, #410	//draw x
+	mov 	r2, #380	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'I'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #420	//draw x
+	mov 	r2, #380	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'C'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #430	//draw x
+	mov 	r2, #380	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'T'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #440	//draw x
+	mov 	r2, #380	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'O'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #450	//draw x
+	mov 	r2, #380	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'R'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #460	//draw x
+	mov 	r2, #380	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'Y'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #470	//draw x
+	mov 	r2, #380	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'!'	//draw character
+	bl 	drawChar	//call to subroutine
+	//"VICTORY!" drawn
+	//commence drawing of "Congratulations!"
+	mov 	r1, #370	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'C'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #380	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'o'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #390	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'n'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #400	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'g'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #410	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'r'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #420	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'a'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #430	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'t'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #440	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'u'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #450	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'l'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #460	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'a'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #470	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'t'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #480	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'i'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #490	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'o'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #500	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'n'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #510	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'s'	//draw character
+	bl 	drawChar	//call to subroutine
+	mov 	r1, #520	//draw x
+	mov 	r2, #400	//draw y
+	mov 	r3, r4		//draw colour
+	mov 	r0, #'!'	//draw character
+	bl 	drawChar	//call to subroutine
+	pop	{r4}
 	bx	lr
 
 drawGameOverWords:
