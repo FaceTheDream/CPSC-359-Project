@@ -6,7 +6,8 @@
 .globl drawBeeQ
 .globl drawBeeSting
 .globl drawBeeWings
-.globl drawBG
+.globl drawBG		//fills in the entire screen with a colour
+			//r0 is that colour
 .globl drawBush
 .globl drawCursor 	//draws triangle cursor for use on pause menu always faces right
 			// r0 is x location
@@ -874,9 +875,9 @@ drawPauseScreen:
 	pop	{r4-r10}
 	bx	lr
 
-drawGameOverScreen:
+drawGameOverScreen: //in the "loss" situation
 	// background colour will be initialized to losingColour
-	// game over at ( 400 , 380)
+	// "GAME OVER!" at ( 400 , 380)
 	ldr	r0, =losingColour
 	ldr	r0, [r0]
 	bl	drawBG
@@ -886,6 +887,20 @@ drawGameOverScreen:
 	bx	lr
 	
 drawVictoryScreen:
+	// background colour will be initialized to winningColour
+	// "VICTORY!" at (400, 380)
+	// "Congratulations!" at (370,400)
+	push	{r4-r5}
+	ldr	r4, =VictoryBGColour
+	ldr	r4, [r4]
+	
+	mov 	r1, #400	//draw x
+	mov 	r2, #380	//draw y
+	mov 	r3, r		//draw colour
+	mov 	r0, #'G'	//draw character
+	bl 	drawChar	//call to subroutine
+	
+	pop	{r4-r5}
 	bx	lr
 
 drawGameOverWords:
@@ -995,6 +1010,8 @@ pauseMenuMC:	.word
 pauseMenuBC:	.word	
 playerBodyColour: .word	0x996600	//brown
 playerHelmColour: .word	0xCCFFFF	//white-ish
+victoryBGColour: .word	
+victoryTextColour: .word 
 beeStingSize:  .int   6		//
 playerSize:	.int	75	//
 cursorSize:	.int	10 	//triangle height
