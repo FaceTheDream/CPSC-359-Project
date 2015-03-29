@@ -1,6 +1,12 @@
 .section .init
 
-.globl drawBeeBody
+.globl drawBeeBody 	//has 9 vertical stripes of equal size upon the body
+			// base stripe size is currently 10 pixels
+			// base bee height is currently 90 pixels
+			// r0, top left x
+			// r1, top left y
+			// r2, size multiplier (will be included in a shift operation, ex: 2^r2)
+			// [sp], non-black colour
 .globl drawBeeK
 .globl drawBeeP
 .globl drawBeeQ
@@ -549,6 +555,35 @@ drawBeeP: //draws pawn bee (top left)
 	bx	lr		//branch to calling code
 
 drawBeeK: //draws knight bee
+	//draws pawn bee (top left)
+	// r0 is the x location
+	// r1 is the y location
+	push 	{r3-r10}
+	mov	r2, #0
+	ldr	r3, =beeRedColour
+	ldr	r3, [r3]
+	push 	{r3}
+	mov	r4, r0 //top-left x
+	mov	r5, r1 // top-left y
+	bl	drawBeeBody //draw bee body
+	add	sp, #4
+	mov	r6, r4
+	add	r6, #90 //add in bee body width (will probably need to be changed later)
+	sub	r6, #5 //breathing room
+	ldr	r7, =wingLength
+	ldr	r7, [r7]
+	sub	r6, r7
+	mov	r0, r6
+	mov	r1, r5
+	add	r1, #15 //more natural looking wings
+	mov	r2, r7	//store wingLength so it may be used by drawBeeWings
+	bl	drawBeeWings	//call drawBeeWings
+	add	r0, r4, #12	// make the drawing position for the bee's eye (x)
+	add	r1, r5, #7	// make the drawing position for the bee's eye (y)
+	bl	drawBeeEye	// draw the bee's eye
+	//now both body and wings are drawn along with the eye
+	pop 	{r3-r10}	//restore registers
+	bx	lr		//branch to calling code
 	bx	lr
 
 drawBeeQ: //draws queen bee
