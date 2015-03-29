@@ -7,11 +7,21 @@
 .globl drawTriangleDown
 .globl drawTriangleLeft
 .globl drawTriangleRight
+.globl drawDiamond
 .globl drawBeeBody
 .globl drawBeeWings
 .globl drawBeeP
+.globl drawBeeK
+.globl drawBeeQ
+.globl drawPlayer
 .globl drawRectB
 .globl drawBeeSting
+.globl drawBush
+.globl drawLazer
+.globl drawCursor
+.globl drawPauseScreen
+.globl drawGameOverScreen
+.globl refreshGameScreen
 
 .section .text
 
@@ -454,6 +464,7 @@ drawBeeWings: //very boxy wings
 	bx	lr
 	
 drawBeeEye:
+	bx	lr
 	
 
 drawBeeP: //draws pawn bee (top left)
@@ -485,8 +496,10 @@ drawBeeP: //draws pawn bee (top left)
 	bx	lr
 
 drawBeeK: //draws knight bee
+	bx	lr
 
 drawBeeQ: //draws queen bee
+	bx	lr
 
 drawPlayer: //draws player at location (x,y) that is the leftmost portion of their helmet
 	//r0 is x location
@@ -641,9 +654,15 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 	bx	lr
 
 drawPauseScreen:
+	\\r0 will indicate which option is selected
+	bx	lr
 
 drawGameOverScreen:
+	bx	lr
 
+refreshGameScreen:
+	\\r0 will be the memory address for all toDraws
+	bx	lr
 
 
 .section .data
