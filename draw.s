@@ -234,7 +234,7 @@ drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagon
 
 
 drawTriangleUp: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-	pus	{r3-r8}
+	push	{r3-r8}
 	mov	r3, r0       //x
 	mov	r4, r1       //y
 	mov	r5, r2       // height
@@ -276,7 +276,7 @@ dtdfl1start: 		//draw triangle down for loop 1 start
 	bge	dtdfl1end
 	push 	{r6} 	//push 6th paramter, colour onto stack
 	mov	r0, #1
-	pus	{r0} 	//push 5th parameter, thickness (1) onto stack
+	push	{r0} 	//push 5th parameter, thickness (1) onto stack
 	add	r0, r7, r7
 	add	r0, #1
 	push 	{r0}	//push 4th parameter, length (2i+1) onto stack
@@ -757,7 +757,7 @@ drawBush: //draws "bush" cover
 	push 	{r2}
 	push 	{r3}
 	push 	{r1}
-	pus	{r0}
+	push	{r0}
 	bl	drawRect
 	add	sp, #20
 	pop {r3}
