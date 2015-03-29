@@ -564,7 +564,7 @@ drawBeeP: //draws pawn bee (top left)
 	pop 	{r3-r10}	//restore registers
 	bx	lr		//branch to calling code
 
-drawBeeK: //draws knight bee
+drawBeeK:
 	//draws knight bee (top left)
 	// r0 is the x location
 	// r1 is the y location
@@ -595,8 +595,38 @@ drawBeeK: //draws knight bee
 	pop 	{r3-r10}	//restore registers
 	bx	lr		//branch to calling code
 
-drawBeeQ: //draws queen bee
-	
+drawBeeQ: //draws queen bee (top left)
+	// r0 is the x location
+	// r1 is the y location
+	push 	{r3-r10}
+	mov	r2, #1
+	ldr	r3, =beeYellowColour
+	ldr	r3, [r3]
+	push 	{r3}
+	mov	r4, r0 //top-left x
+	mov	r5, r1 // top-left y
+	bl	drawBeeBody //draw bee body
+	add	sp, #4
+	mov	r0, r4
+	mov	r1, r5
+	bl	drawCrown	//draws the royal crown onto our royal queen bee
+	mov	r6, r4
+	add	r6, #180 //add in bee body width (will probably need to be changed later)
+	sub	r6, #10 //breathing room
+	ldr	r7, =wingLength
+	ldr	r7, [r7]
+	sub	r6, r7
+	mov	r0, r6
+	mov	r1, r5
+	add	r1, #15 //more natural looking wings
+	mov	r2, r7	//store wingLength so it may be used by drawBeeWings
+	bl	drawBeeWings	//call drawBeeWings
+	add	r0, r4, #12	// make the drawing position for the bee's eye (x)
+	add	r1, r5, #7	// make the drawing position for the bee's eye (y)
+	bl	drawBeeEye	// draw the bee's eye
+	//now both body and wings are drawn along with the eye
+	pop 	{r3-r10}	//restore registers
+	bx	lr		//branch to calling code
 	bx	lr
 
 drawCrown:	//draws the crown that the queen bee shall wear
