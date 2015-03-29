@@ -85,9 +85,8 @@ drawPixel: //r0 is assumed to be the x location, r1 is assumed to be the y locat
 	
 	mul    r1,    #1024                  //row-major r1 <- (y*1024)
 	add    r0,    r1                     //r0 <- (y*1024) + x
-	lsl    r0,    #4                     //16-bit colour assumed
+	lsl    r0,    #1                     //16-bit colour assumed
 	ldr    r1,    =frameBufferPointer    // should get frameBuffer location from file that contains frameBuffer information
-	ldr    r1,    [r1]                   //load the frameBuffer
 	add    r1,    r0                     // add offset
 	strh   r2,    [r1]                   // stores the colour into the FrameBuffer location
 endDrawPixel:				     // end of drawPixel
