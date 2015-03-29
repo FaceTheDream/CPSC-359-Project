@@ -521,7 +521,6 @@ drawBeeEye:
 drawBeeP: //draws pawn bee (top left)
 	// r0 is the x location
 	// r1 is the y location
-	// make wingLength int in memory (TODO)
 	push 	{r3-r10}
 	mov	r2, #0
 	ldr	r3, =beeYellowColour
@@ -1134,4 +1133,5 @@ beeStingSize:  .int   6		//
 playerSize:	.int	75	//
 cursorSize:	.int	10 	//triangle height
 lazerSize:     .int   50, 1 	//rectangle length by width
+wingLength:	.int   25
 font:	.incbin		"font.bin"
