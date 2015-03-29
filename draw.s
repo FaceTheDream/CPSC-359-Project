@@ -656,30 +656,94 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 	bx	lr
 
 drawPauseScreen:
-	\\r0 will indicate which option is selected
+	//r0 will indicate which option is selected
 	bx	lr
 
 drawGameOverScreen:
-	
+	// background colour will be initialized to losingColour
+	// game over at ( 400 , 380)
+	ldr	r0, =losingColour
+	ldr	r0, [r0]
+	bl	drawBG
+	mov	r0, #400	//set first character x
+	mov	r1, #380	//set first character y
+	bl	drawGameOverWords
+	bx	lr
+
+drawGameOverWords:
+	// should draw "GAME OVER!" at start location ( x=r0 , y=r1)
+	push	{r4-r6}
+	mov	r4, r0
+	mov	r5, r1
+	ldr	r6, =losWordColour
+	ldr	r6, [r6]
+	add 	r1, r4, #0	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'G'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #10	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'A'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #20	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'M'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #30	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'E'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #50	//draw x (skips one position because of space)
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'O'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #60	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'V'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #70	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'E'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #80	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'R'	//draw character
+	bl 	drawChar	//call to subroutine
+	add 	r1, r4, #90	//draw x
+	mov 	r2, r5	        //draw y
+	mov 	r3, r6		//draw colour
+	mov 	r0, #'!'	//draw character
+	bl 	drawChar	//call to subroutine
+	pop	{r4-r6}
 	bx	lr
 
 refreshGameScreen:
-	\\r0 will be the memory address for all toDraws
+	//r0 will be the memory address for all toDraws
 	bx	lr
 
 
 .section .data
 // Colour codes from http://www.nthelp.com/colorcodes.htm
-beeBlackColour: .word	0x000000
-beeRedColour:	.word	0xFF6600
-beeYellowColour: .word	0xFFFF00
-beeStingColour:	.word	0x003300
-beeWingColour:	.word	0xFFFFCC
-bushColour:	.word	0x33CC00
-cursorColour:	.word	0xFFFFFF
-lazerColour:	.word	0xFF0000
-playerBodyColour: .word	0x996600
-playerHelmColour: .word	0xCCFFFF
+beeBlackColour: .word	0x000000	//black
+beeRedColour:	.word	0xFF6600	//lightish red
+beeYellowColour: .word	0xFFFF00	//yellow
+beeStingColour:	.word	0x003300	//almost-black
+beeWingColour:	.word	0xFFFFCC	//white-ish (different white-ish from helmet)
+bushColour:	.word	0x33CC00	//green
+cursorColour:	.word	0xFFFFFF	//white
+lazerColour:	.word	0xFF0000	//red
+losingColour:	.word	0x000099	//dark blue
+losWordColour:	.word	0xFFCCFF	//pink
+playerBodyColour: .word	0x996600	//brown
+playerHelmColour: .word	0xCCFFFF	//white-ish
 beeStingSize:  .int   6		//
 playerSize:	.int	75	//
 cursorSize:	.int	10 	//triangle height
