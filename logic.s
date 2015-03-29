@@ -5,7 +5,7 @@ start:	//start up the game
 	mov r1, #0
 	str r1, [r0]
 	ldr r0, =playerx	//move player to middle of screen
-	mov r1, #382
+	ldr r1, =#382
 	str r1, [r0]
 	ldr r0, =playery
 	mov r1, #512
@@ -153,7 +153,7 @@ npcStuff:
 	cmp r5, #0			//skip update if hp = 0
 	beq npcStuff
 	//puts random number %4 in r2
-	mov r3, #69069
+	ldr r3, =#69069
 	ldr r2, =x20003004
 	ldr r2, [r2]		//current clock value
 	mul r2, r3, r2
@@ -248,7 +248,8 @@ bullDown:
 	str r2, [r2, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
-	cmp r2, #767
+	ldr r4, =#767
+	cmp r2, r4
 	moveq r3, #5
 	str r3, [r1, r0, lsl #2]
 
@@ -274,7 +275,8 @@ bullRight:
 	str r2, [r2, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
-	cmp r2, #1023
+	ldr r4, =#1023
+	cmp r2, r4
 	moveq r3, #5
 	str r3, [r1, r0, lsl #2]
 	
@@ -510,7 +512,8 @@ playerDown:
 	str r1, [r0]
 	ldr r0, =playery
 	ldr r1, [r0]
-	cmp r1, #767
+	ldr r4, =#767
+	cmp r1, r4
 	beq endSub
 	add r1, r1, #1
 	str r1, [r0]
@@ -534,7 +537,8 @@ playerRight:
 	str r1, [r0]
 	ldr r0, =playerx
 	ldr r1, [r0]
-	cmp r1, #1023
+	ldr r4, =#1023
+	cmp r1, r4
 	beq endSub
 	add r1, r1, #1
 	str r1, [r0]
@@ -584,7 +588,8 @@ npcDown:
 	ldr r0, [r0]
 	ldr r1, =npcys
 	ldr r2, [r1, r0, lsl #2]
-	cmp r2, #767
+	ldr r4, =#767
+	cmp r2, r4
 	beq endSub
 	add r2, r2, #1
 	str r2, [r1, r0, lsl #2]
@@ -612,7 +617,8 @@ npcRight:
 	ldr r0, [r0]
 	ldr r1, =npcxs
 	ldr r2, [r1, r0, lsl #2]
-	cmp r2, #1023
+	ldr r4, =#1023
+	cmp r2, r4
 	beq endSub
 	sub r2, r2, #1
 	str r2, [r1, r0, lsl #2]
