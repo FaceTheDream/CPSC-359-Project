@@ -111,7 +111,7 @@ drawBG: //r0 is the colour to set the background to
 	ldr	r0, =inGameBGColour
 	ldr	r0, [r0]
 usualBGDrawing:
-	mov	r5, r0 	      //colour
+	mov	r6, r0 	      //colour
 	mov	r4, #0        //initialize row number
 
 rowBGloops:	      // loop through all the rows on the screen
