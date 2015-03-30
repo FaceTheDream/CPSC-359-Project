@@ -59,6 +59,16 @@ InitUArt:
 initSNES:
     //Setting GPIO pin 11 (Clock) to output
 
+    ldr r0, =GPFSEL1
+    ldr r1, [r0]
+    mov r2, #0b0111
+    lsl r2, #3
+    bic r1, r2
+    mov r3, #1
+    lsl r3, #3
+    orr r1, r3
+    str r1, [r0]
+/*
     mov r1, #3
     ldr r0, =GPFSEL1
     ldr r2, [r0]
@@ -68,11 +78,21 @@ initSNES:
     mov r3, #1          //output function code
     lsl r3, r1          //r3 = 0 001 000
     orr r2, r3          //set pin 11 function
-    str r2, [r0]        //write back to GPFSEL1
+    str r2, [r0]        //write back to GPFSEL1*/
 
     //Setting GPIO pin 9 (Latch) to output
 
-    mov r1, #27
+
+    ldr r0, =GPFSEL0
+    ldr r1, [r0]
+    mov r2, #0b0111
+    lsl r2, #27
+    bic r1, r2
+    mov r3, #1
+    lsl r3, #3
+    orr r1, r3
+    str r1, [r0]
+/*    mov r1, #27
     ldr r0, =GPFSEL0
     ldr r2, [r0]
     mov r3, #0b0111
@@ -81,10 +101,18 @@ initSNES:
     mov r3, #1          //output function code
     lsl r3, r1          //shifts output function code to match pin 9
     orr r2, r3          //set pin 9 function
-    str r2, [r0]        //write back to GPFSEL0
+    str r2, [r0]        //write back to GPFSEL0*/
+
 
     //Setting GPIO pin 10 (Data) to input
 
+    ldr r0, =GPFSEL1
+    ldr r1, [r0]
+    mov r2, #0b0111
+    lsl r2, #0
+    bic r1, r2
+    str r1, [r0]
+/*
     mov r1, #0
     ldr r0, =GPFSEL1
     ldr r2, [r0]
@@ -92,14 +120,14 @@ initSNES:
     lsl r3, r1          //creates the mask to clear bits
     bic r2, r3          //clears pin 10 bits
     str r2, [r0]        //write back to GPFSEL1
-
+    */
     bx lr
 
 .globl writeClock
     // Write r0 value to Clock
 writeClock:
     mov r1, #1          //sets pin 11
-    ldr r2, =GPFSEL1    //sets GPFSEL0
+    ldr r2, =GPFSEL1    //sets GPFSEL1
     mov r3, #1
     lsl r3, r1          //aligns bit for pin 11
     teq r0, #0          //checks what r0 is equal to
@@ -199,7 +227,7 @@ add0:
     ror buttons, #1     //rotates right, (stores a 0 bit)
 
 finishReading:
-    mov r0, #1           //writes 1 to clock
+    mov r0, #1          //writes 1 to clock
     bl writeClock
 
     add i, #1           //increments i
@@ -212,7 +240,6 @@ finishReading:
     .unreq  buttons     //unregisters buttons
     .unreq  i           //unregisters iterator
 
-    bx lr
     
 
 /* Draw the character in r0 to (r1, r2) with colour r3
