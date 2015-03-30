@@ -540,7 +540,7 @@ drawBeeP: //draws pawn bee (top left)
 	mov		r0, r4
 	mov		r1, r5
 	mov		r2, #12
-	bl		drawBeeWings
+	//bl		drawBeeWings
 	pop		{r4-r10, pc}
 
 drawBeeK:
@@ -565,7 +565,7 @@ drawBeeK:
 	mov		r0, r4
 	mov		r1, r5
 	mov		r2, #18
-	bl		drawBeeWings
+	//bl		drawBeeWings
 	pop		{r4-r10,pc}
 
 drawBeeQ:
@@ -590,7 +590,7 @@ drawBeeQ:
 	mov		r0, r4
 	mov		r1, r5
 	mov		r2, #30
-	bl		drawBeeWings
+	//bl		drawBeeWings
 	pop		{r4-r10, pc}
 
 drawCrown:	//draws the crown that the queen bee shall wear
