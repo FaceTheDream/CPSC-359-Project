@@ -154,7 +154,7 @@ npcStuff:
 	beq npcStuff
 	//puts random number %4 in r2
 	ldr r3, =0x10DCD	//69069
-	ldr r2, =x20003004
+	ldr r2, =0x20003004	//clock address
 	ldr r2, [r2]		//current clock value
 	mul r2, r3, r2
 	add r2, r3, r2
@@ -743,7 +743,7 @@ drawScreen:
 	blne DrawBeeQ
 	ldr r3, =obstaclexs
 	ldr r4, =obstacleys
-	ldr r5, =obstaclesize
+	ldr r5, =obstaclehp
 	ldr r0, [r3]
 	ldr r1, [r4]
 	ldr r2, [r5]
