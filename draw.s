@@ -1488,4 +1488,7 @@ playerSize:	.int	15	//
 cursorSize:	.int	5 	//triangle height
 lazerSize:     .int   10, 1 	//rectangle length by width
 wingLength:	.int   5
+beePSize:	.int	25
+beeKSize:	.int	50
+beeQSize:	.int	75
 font:	.incbin		"font.bin"
