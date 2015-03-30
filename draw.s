@@ -357,7 +357,7 @@ drawTriangleRight:
 	mov		r1, r5
 	mov		r2, r7
 	bl		drawPixel
-	pastbeginningevencase:
+	pastbegginingevencase:
 	sub		r9, #1
 	add		r10, #1
 	mov		r3, r9
