@@ -754,31 +754,31 @@ drawScreen:
 	ldr r1, [r4]
 	ldr r2, [r5]
 	push {r0, r1, r2}
-	bl drawBush
+	bl drawBeeP
 	pop {r0, r1, r2}
 	ldr r0, [r3, #4]
 	ldr r1, [r4, #4]
 	ldr r2, [r5, #4]
 	push {r0, r1, r2}
-	bl drawBush
+	bl drawBeeP
 	pop {r0, r1, r2}
 	ldr r0, [r3, #8]
 	ldr r1, [r4, #8]
 	ldr r2, [r5, #8]
 	push {r0, r1, r2}
-	bl drawBush
+	bl drawBeeP
 	pop {r0, r1, r2}
 	ldr r0, [r3, #12]
 	ldr r1, [r4, #12]
 	ldr r2, [r5, #12]
 	push {r0, r1, r2}
-	bl drawBush
+	bl drawBeeP
 	pop {r0, r1, r2}
 	ldr r0, [r3, #16]
 	ldr r1, [r4, #16]
 	ldr r2, [r5, #16]
 	push {r0, r1, r2}
-	bl drawBush
+	bl drawBeeP
 	pop {r0, r1, r2}
 	/*
 	ldr r2, =playerx
