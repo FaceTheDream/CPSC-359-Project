@@ -703,6 +703,8 @@ drawCrown:	//draws the crown that the queen bee shall wear
 	pop	{r4-r10}	//restore registers
 	bx	lr		//branch to calling code
 
+.ltorg	//Fix to literal pool being too far
+
 drawPlayer: //draws player at location (x,y) that is the leftmost portion of their helmet
 //r0 is x location
 //r1 is y location
@@ -1089,8 +1091,8 @@ drawVictoryScreen:
 	bl 	drawChar	//call to subroutine
 	//"VICTORY!" drawn
 	//commence drawing of "Congratulations!"
-	mov 	r1, #370	//draw x
-	mov 	r2, #400	//draw y
+	ldr 	r1, =0x172	//draw x (370)
+	ldr 	r2, =0x190	//draw y (400)
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'C'	//draw character
 	bl 	drawChar	//call to subroutine
@@ -1099,7 +1101,7 @@ drawVictoryScreen:
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'o'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #390	//draw x
+	ldr 	r1, =0x186	//draw x (390)
 	mov 	r2, #400	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'n'	//draw character
@@ -1109,7 +1111,7 @@ drawVictoryScreen:
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'g'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #410	//draw x
+	ldr 	r1, =0x19A	//draw x (410)
 	mov 	r2, #400	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'r'	//draw character
@@ -1119,7 +1121,7 @@ drawVictoryScreen:
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'a'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #430	//draw x
+	ldr 	r1, 0x1AE	//draw x (430)
 	mov 	r2, #400	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'t'	//draw character
@@ -1129,7 +1131,7 @@ drawVictoryScreen:
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'u'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #450	//draw x
+	ldr 	r1, 0x1C2	//draw x (450)
 	mov 	r2, #400	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'l'	//draw character
@@ -1139,7 +1141,7 @@ drawVictoryScreen:
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'a'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #470	//draw x
+	ldr 	r1, 0x1D6	//draw x (470)
 	mov 	r2, #400	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'t'	//draw character
@@ -1149,7 +1151,7 @@ drawVictoryScreen:
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'i'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #490	//draw x
+	ldr 	r1, 0x1EA	//draw x (490)
 	mov 	r2, #400	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'o'	//draw character
@@ -1159,7 +1161,7 @@ drawVictoryScreen:
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'n'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #510	//draw x
+	ldr	r1, =0x1FE	//draw x (510)
 	mov 	r2, #400	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'s'	//draw character
@@ -1282,13 +1284,13 @@ endOfSetLazerDirection:
 
 drawAuthorNames: //draws the author names in the top right corner of the screen
 		//takes no arguments
-	mov	r0, #893
+	ldr	r0, =0x37D	//(893)
 	mov	r1, #0
 	bl	drawKyleBuettner
-	mov	r0, #923
+	ldr	r0, =0x39B	// (923)
 	mov	r1, #30
 	bl	drawJustinChu
-	mov	r0, #913
+	ldr	r0, =0x391	// (913)
 	mov	r1, #45
 	bl	drawDavidKenny
 	bx	lr
