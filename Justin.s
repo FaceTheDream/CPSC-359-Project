@@ -153,6 +153,7 @@ waitLoop:
     //Read from SNES
 .globl readSNES
 readSNES:
+    push {r5, r6, lr}
     buttons .req    r5  //Sets register to store buttons
     mov buttons, #0
 
@@ -168,10 +169,10 @@ readSNES:
     mov r0, #0           //writes 0 to latch
     bl writeLatch
 
-pulseLoop:
     i .req          r6  //sets register to store iterator
     mov i, #0
-
+pulseLoop:
+    
     mov r0, #6           //waits 6 microseconds
     bl simpleWait
 
@@ -202,6 +203,7 @@ finishReading:
 
     ror buttons, #16    //rotates to get the correct format
     mov r0, buttons     //moves buttons to r0 to be returned
+    pop {r5,r6,pc}
     .unreq  buttons     //unregisters buttons
     .unreq  i           //unregisters iterator
 
