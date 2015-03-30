@@ -556,7 +556,7 @@ drawBeeEye:
 drawBeeP: //draws pawn bee (top left)
 // r0 is the x location
 // r1 is the y location
-	push 	{r3-r10, lr}
+/*	push 	{r3-r10, lr}
 	mov	r2, #0
 	ldr	r3, =beeYellowColour
 	ldr	r3, [r3]
@@ -581,6 +581,19 @@ drawBeeP: //draws pawn bee (top left)
 	bl	drawBeeEye	// draw the bee's eye
 	//now both body and wings are drawn along with the eye
 	pop 	{r3-r10, pc}	//restore registers
+	*/
+	push	{lr}
+	mov	r2, #5
+	mov	r3, #45
+	push	{r3}
+	push	{r3}
+	ldr	r3, =0xFFED //yellow
+	push	{r3}
+	ldr	r3, =0xBDF7 //light gray
+	push	{r3}
+	bl	drawRectB
+	add	sp, #16
+	pop	{lr}
 
 drawBeeK:
 //draws knight bee (top left)
