@@ -74,30 +74,24 @@
 
 drawPixel: //r0 is assumed to be the x location, r1 is assumed to be the y location, r2 is assumed to be the colour data
 	
-	push	{r3-r6}
-	mov	r4, r0
-	mov	r5, r1
-	mov	r6, r2
-	
-	cmp    r4,    #1024                  //check max x
+	cmp    r0,    #1024                  //check max x
 	bge    endDrawPixel                  // if x >= 1024, don't draw
-	cmp    r4,    #0                      //check min x
+	cmp    r0,    #0                      //check min x
 	blt    endDrawPixel                  // if x < 0, don't draw
-	cmp    r5,    #768                   //check max y
+	cmp    r1,    #768                   //check max y
 	bge    endDrawPixel                  // if y >= 768, don't draw
-	cmp    r5,    #0                      //check min y
+	cmp    r1,    #0                      //check min y
 	blt    endDrawPixel                  // if y < 0, don't draw
 	
     mov    r3,    #1024
-	mul    r5,    r3                 //row-major r1 <- (y*1024)
-	add    r4,    r5                     //r0 <- (y*1024) + x
-	lsl    r4,    #1                     //16-bit colour assumed
-	ldr    r5,    =FrameBufferPointer    // should get frameBuffer location from file that contains frameBuffer information
-	ldr    r5,    [r5]
-    add    r5,    r4                     // add offset
-	strh   r6,    [r5]                   // stores the colour into the FrameBuffer location
+	mul    r1,    r3                 //row-major r1 <- (y*1024)
+	add    r0,    r1                     //r0 <- (y*1024) + x
+	lsl    r0,    #1                     //16-bit colour assumed
+	ldr    r1,    =FrameBufferPointer    // should get frameBuffer location from file that contains frameBuffer information
+	ldr    r1,    [r1]
+    add    r1,    r0                     // add offset
+	strh   r2,    [r1]                   // stores the colour into the FrameBuffer location
 endDrawPixel:				     // end of drawPixel
-	pop	{r3-r6}
 	bx     lr                            // branch to calling code
 
 drawBG: //r0 is the colour to set the background to
