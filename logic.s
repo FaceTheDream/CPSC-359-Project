@@ -104,7 +104,7 @@ finaLoop2:
 	b finaLoop2
 	
 finaLoop3:
-	bl drawScreen
+	bl drawScreen	//draw the initial screen
 
 oneTurn:
 	bl readSNES		//detect inputs
@@ -152,23 +152,23 @@ npcStuff:
 	bge afterNpc
 	ldr r5, =npchp
 	ldr r5, [r5, r1, lsl #2]	//r5 = current npc's hp
-	cmp r5, #0			//skip update if hp = 0
+	cmp r5, #0					//skip update if hp = 0
 	beq npcStuff
 	//puts random number %4 in r2
-	ldr r3, =0x10DCD	//69069
-	ldr r2, =0x20003004	//clock address
-	ldr r2, [r2]		//current clock value
-	mul r2, r3, r2
-	add r2, r3, r2
-modLoop:
-	sub r2, r2, #4		//r2 mod 4
+	ldr r3, =0x10DCD			//69069
+	ldr r2, =0x20003004			//clock address
+	ldr r2, [r2]				//current clock value
+	mul r2, r3, r2				//clock*69069
+	add r2, r3, r2				//clock*69069+69069
+modLoop:				//r2 mod 4
+	sub r2, r2, #4
 	cmp r2, #0
 	blt modLoopE
 	b modLoop
 	
 modLoopE:
 	add r2, r2, #4
-	ldr r6, =currentnpc
+	ldr r6, =currentnpc				//find the npc to move
 	str r1, [r6]
 	cmp r2, #0
 	bleq npcUp
@@ -179,43 +179,43 @@ modLoopE:
 	cmp r2, #3
 	bleq npcRight
 	//puts random number %10 in r2
-	ldr r2, =0x20003004
-	ldr r2, [r2]		//current clock value
+	ldr r2, =0x20003004				//clock address
+	ldr r2, [r2]					//current clock value
 	mul r2, r3, r2
 	add r2, r3, r2
 	
-modLoop2:
-	sub r2, r2, #10		//r2 mod 10
+modLoop2:				//r2 mod 10
+	sub r2, r2, #10
 	cmp r2, #0
 	blt modLoop2E
 	b modLoop2
 	
 modLoop2E:
 	add r2, r2, #10
-	cmp r2, #0
+	cmp r2, #0				//if the random number from 0-9 is 0, npc shoots a bullet
 	bleq npcShoot
 	add r1, r1, #1
 	b npcStuff
 	
 afterNpc:
 	//detect collisions:
-	//if bullet is overlapped by player, player is hit
-	mov r4, #0
-	mov r5, #14
+	//if bullet position matches player position, player is hit
+	mov r4, #0				//bullet counter
+	mov r5, #14				//max bullets
 	
 movBulls:
-	ldr r7, =crntbullet
-	str r4, [r7]
+	ldr r7, =crntbullet			//current bullet
+	str r4, [r7]				//set current bullet
 	//make each bullet continue moving
-	cmp r4, r5
+	cmp r4, r5					//if max bullets is reached, leave loop
 	beq afterBulls
-	ldr r0, =bulletfaces
+	ldr r0, =bulletfaces		//direction bullets face
 	ldr r0, [r0, r4, lsl #2]
 	cmp r0, #5
 	bge skipBull
-	ldr r1, =bulletxs
+	ldr r1, =bulletxs			//each bullet's x position	
 	ldr r1, [r1, r4, lsl #2]
-	ldr r2, =bulletys
+	ldr r2, =bulletys			//each bullet's y position
 	ldr r2, [r2, r4, lsl #2]
 	cmp r0, #0
 	beq bullUp
@@ -228,7 +228,7 @@ movBulls:
 	add r4, r4, #1
 	b movBulls
 	
-bullUp:
+bullUp:			//move current bullet up
 	ldr r0, =crntbullet
 	ldr r0, [r0]
 	ldr r2, =bulletys
@@ -241,7 +241,7 @@ bullUp:
 	moveq r3, #5
 	str r3, [r1, r0, lsl #2]
 
-bullDown:
+bullDown:		//move current bullet down
 	ldr r0, =crntbullet
 	ldr r0, [r0]
 	ldr r2, =bulletys
@@ -255,7 +255,7 @@ bullDown:
 	moveq r3, #5
 	str r3, [r1, r0, lsl #2]
 
-bullLeft:
+bullLeft:		//move current bullet left
 	ldr r0, =crntbullet
 	ldr r0, [r0]
 	ldr r2, =bulletxs
@@ -268,7 +268,7 @@ bullLeft:
 	moveq r3, #5
 	str r3, [r1, r0, lsl #2]
 
-bullRight:
+bullRight:			//move current bullet right
 	ldr r0, =crntbullet
 	ldr r0, [r0]
 	ldr r2, =bulletxs
@@ -282,16 +282,16 @@ bullRight:
 	moveq r3, #5
 	str r3, [r1, r0, lsl #2]
 	
-skipBull:
+skipBull:			//if bullet is inactive, do not move bullet
 	add r4, r4, #1
 	b movBulls
 	
-afterBulls:
+afterBulls:			//reset bullet counter
 	mov r4, #0	//bullet#
 	mov r5, #14	//max bullets
 	
-colLoop:
-	cmp r4, r5
+colLoop:			//start detecting collisions
+	cmp r4, r5		//when last bullet is reached, leave loop
 	beq colLoop2
 	ldr r0, =playerx
 	ldr r0, [r0]
@@ -301,24 +301,24 @@ colLoop:
 	ldr r2, [r2, r4, lsl #2]
 	ldr r3, =bulletys
 	ldr r3, [r3, r4, lsl #2]
-	cmp r0, r2
+	cmp r0, r2			//if player's x and bullet's x are the same, compare y values
 	beq colLoopY
-	add r4, r4, #1
+	add r4, r4, #1		//else, check next bullet
 	b colLoop
 	
-colLoopY:
+colLoopY:			//check if player's y and bullet's y are the same
 	cmp r1, r3
-	beq scoreDown
-	add r4, r4, #1
+	beq scoreDown		//if so, decrease score
+	add r4, r4, #1		//else, check next bullet
 	b colLoop
 	
 scoreDown:
 	ldr r6, =score
 	ldr r6, [r6]
-	sub r6, r6, #10
+	sub r6, r6, #10		//decrease score by 10
 	cmp r6, #0
-	ble gameOver
-	add r4, r4, #1
+	ble gameOver		//if score is 0, game over
+	add r4, r4, #1		//else, check next bullet
 	b colLoop
 	
 colLoop2:
@@ -327,17 +327,17 @@ colLoop2:
 	mov r6, #14	//max bullets
 	mov r7, #16	//max npcs
 	
-colLoop2x:
-	cmp r4, r6
+colLoop2x:				//check if any bullets have hit any npcs
+	cmp r4, r6			//if last bullet is reached, leave loop
 	beq colLoopNpc
 	//if bullet is overlapped by npc, npc is hit
 	ldr r0, =bulletxs
 	ldr r0, [r0, r4, lsl #2]
 	ldr r1, =npcxs
 	ldr r1, [r1, r5, lsl #2]
-	cmp r0, r1
+	cmp r0, r1			//if npc's x and bullet's x match, check y values
 	beq colLoop2y
-	add r4, r4, #1
+	add r4, r4, #1		//else, check next bullet
 	b colLoop2x
 	
 colLoop2y:
@@ -345,54 +345,56 @@ colLoop2y:
 	ldr r0, [r0, r4, lsl #2]
 	ldr r1, =npcys
 	ldr r1, [r1, r5, lsl #2]
-	cmp r0, r1
+	cmp r0, r1			//if npc's y and bullet's y match, the npc has been hit
 	beq npcHit
-	add r4, r4, #1
+	add r4, r4, #1		//else, check next bullet
 	b colLoop2x
 
-colLoopNpc:
-	cmp r5, r7
+colLoopNpc:				//after checking all the bullets against one npc, check the next npc against all bullets
+	cmp r5, r7			//if last npc has been checked, leave loop
 	beq colLoop3
-	mov r4, #0
-	add r5, r5, #1
+	mov r4, #0			//else, reset bullet counter, and
+	add r5, r5, #1		//increase npc counter, and check the next npc
 	b colLoop2x
 	
 npcHit:
 	// r5 = npc#
 	ldr r8, =npchp
 	ldr r9, [r8, r5, lsl #2]
-	cmp r9, #1
+	cmp r9, #1			//if npc's hp was 1 when it was hit, it is now dead
 	beq npcDie
-	b npcHit2
+	b npcHit2			//else, lower its hp
 	
 npcDie:
 	ldr r11, =score
-	ldr r10, [r11]
-	add r10, r10, #5
+	ldr r10, [r11]			//get the current score value
+	add r10, r10, #5		//increase score by 5 when any enemy is killed
 	cmp r5, #10
-	addge r10, r10, #5
+	addge r10, r10, #5		//increase score by another 5 if they were a knight or queen
 	cmp r5, #15
-	addge r10, r10, #90
-	str r10, [r11]
+	addge r10, r10, #90		//increase score by another 90 if they were a queen
+	str r10, [r11]			//store the score value back in memory
+	add r4, r4, #1			//then check the next npc
+	b colLoop2x
 	
 npcHit2:
-	sub r9, r9, #1
-	str r9, [r8, r5, lsl #2]
-	add r4, r4, #1
+	sub r9, r9, #1				//decrease npc's hp by 1
+	str r9, [r8, r5, lsl #2]	//and store it back in memory
+	add r4, r4, #1				//then check next bullet
 	b colLoop2x
 	
 colLoop3:
-	mov r4, #0 //npc counter
-	mov r5, #14 //npc max
+	mov r4, #0	//npc counter
+	mov r5, #14	//npc max
 	
 vicLoop:
-	ldr r6, =npchp
+	ldr r6, =npchp				//get array of npcs' hp values
 	ldr r6, [r6, r4, lsl #2]
-	cmp r6, #0
+	cmp r6, #0					//if any npc has more than 1 hp, no victory
 	bne colLoop3s
-	cmp r4, r5
+	cmp r4, r5					//if last npc is reached and all have 0 hp, a winner is you
 	beq victory
-	add r4, r4, #1
+	add r4, r4, #1				//else, check next npc
 	b vicLoop
 	
 colLoop3s:
@@ -402,16 +404,16 @@ colLoop3s:
 	mov r7, #4	//max obstacles
 	
 colLoop3x:
-	cmp r4, r6
+	cmp r4, r6					//if bullet reaches last bullet, leave loop
 	beq colLoopObs
 	//if bullet is overlapped by obstacle, obstacle is hit
 	ldr r0, =bulletxs
 	ldr r0, [r0, r4, lsl #2]
 	ldr r1, =obstaclexs
 	ldr r1, [r1, r5, lsl #2]
-	cmp r0, r1
+	cmp r0, r1					//if bullet's x matches obstacle's x, check y values
 	beq colLoop3y
-	add r4, r4, #1
+	add r4, r4, #1				//else, check next bullet
 	b colLoop3x
 	
 colLoop3y:
@@ -419,130 +421,127 @@ colLoop3y:
 	ldr r0, [r0, r4, lsl #2]
 	ldr r1, =obstacleys
 	ldr r1, [r1, r5, lsl #2]
-	cmp r0, r1
+	cmp r0, r1					//if bullet's y matches obstacle's y, obstacles is hit
 	beq obsHit
-	add r4, r4, #1
+	add r4, r4, #1				//else, check next bullet
 	b colLoop3x
 
 colLoopObs:
-	cmp r5, r7
+	cmp r5, r7			//if last obstacle is reached, leave loop
 	beq colEnd
-	mov r4, #0
-	add r5, r5, #1
+	mov r4, #0			//else, reset bullet counter, and
+	add r5, r5, #1		//increase obstacle counter
 	b colLoop3x
 	
 obsHit:
 	// r5 = obstacle#
 	ldr r8, =obstaclehp
 	ldr r9, [r8, r5, lsl #2]
-	sub r9, r9, #1
+	sub r9, r9, #1				//decrease obstacle's hp
 	str r9, [r8, r5, lsl #2]
-	add r4, r4, #1
+	add r4, r4, #1				//check next bullet
 	b colLoop3x
 	
 colEnd:
-	bl drawScreen
-	b oneTurn
+	bl drawScreen		//draw screen for this turn
+	b oneTurn			//start next turn
 	
 pauseMenu:
-	bl drawPauseScreen
-	bl readSNES
-	ldr r3, =0x8 //1000 = start button
-	tst r0, r3
+	bl drawPauseScreen		//draw the pause screen
+	bl readSNES				//detect inputs
+	ldr r3, =0x8			//1000 = start button
+	tst r0, r3				//if start button is pressed, leave pause screen
 	beq pauseMenu2
-	b endSub
 	
 pauseMenu2:
 	//put up button value memory location in r2
 	//put down button value memory location in r3
-	ldr r3, =0x10 //10000 = up button
-	tst r0, r3
+	ldr r3, =0x10	//10000 = up button
+	tst r0, r3		//if up is pressed, move cursor up
 	bleq pauseUp
-	
-pauseMenu3:
-	ldr r3, =0x20 //100000 = down button
-	tst r0, r3
+	ldr r3, =0x20	//100000 = down button
+	tst r0, r3		//if down is pressed, move cursor down
 	bleq pauseDown
 	//put 'a' button value memory location in r2
-	ldr r3, =0x100 // 'a' button
-	tst r0, r3
+	ldr r3, =0x100	//'a' button
+	tst r0, r3		//if 'a' button is pressed, execute current selected pause option
 	beq pSelect
-	b pauseMenu
+	b pauseMenu		//else, loop pause menu
 	
 pauseUp:
-	ldr r0, =crntpause
+	ldr r0, =crntpause	//check current pause cursor location
 	ldr r0, [r0]
-	cmp r0, #1
+	cmp r0, #1			//if cursor is at middle position, move to top position
 	subeq r0, r0, #1
-	cmp r0, #2
+	cmp r0, #2			//if cursor is at bottom position, move to middle position
 	subeq r0, r0, #1
 	bx lr
 	
 pauseDown:
-	ldr r0, =crntpause
+	ldr r0, =crntpause	//check current pause cursor location
 	ldr r0, [r0]
-	cmp r0, #0
+	cmp r0, #0			//if cursor is at top position, move to middle position
 	addeq r0, r0, #1
-	cmp r0, #1
+	cmp r0, #1			//if cursor is at middle position, move to bottom position
 	addeq r0, r0, #1
 	bx lr
 	
 pSelect:
-	ldr r0, =crntpause
+	ldr r0, =crntpause	//check current pause cursor location
 	ldr r0, [r0]
-	cmp r0, #0
+	cmp r0, #0			//if cursor is at top position (resume game), leave pause menu
 	beq endSub
-	cmp r0, #1
+	cmp r0, #1			//if cursor is at middle position (restart game), go to start of game
 	beq start
-	bx lr
+	bx lr				//else, quit game
 	
 playerUp:
 	ldr r0, =playerface
 	mov r1, #0
-	str r1, [r0]
+	str r1, [r0]		//make current player direction up
 	ldr r0, =playery
 	ldr r1, [r0]
-	cmp r1, #0
+	cmp r1, #0			//if player is at topmost pixel row, do not move
 	beq endSub
-	sub r1, r1, #1
+	sub r1, r1, #1		//else, move player up
 	str r1, [r0]
 	bx lr
 	
 playerDown:
 	ldr r0, =playerface
 	mov r1, #1
-	str r1, [r0]
+	str r1, [r0]		//make current player direction down
 	ldr r0, =playery
 	ldr r1, [r0]
 	ldr r4, =0x2FF		//767
-	cmp r1, r4
+	cmp r1, r4			//if player is at bottommost pixel row, do not move
 	beq endSub
-	add r1, r1, #1
+	add r1, r1, #1		//else, move player down
 	str r1, [r0]
 	bx lr
 	
 playerLeft:
 	ldr r0, =playerface
 	mov r1, #2
-	str r1, [r0]
+	str r1, [r0]		//make current player direction left
 	ldr r0, =playerx
 	ldr r1, [r0]
-	cmp r1, #0
+	cmp r1, #0			//if player is at leftmost pixel column, do not move
 	beq endSub
-	sub r1, r1, #1
+	sub r1, r1, #1		//else, move player left
 	str r1, [r0]
 	bx lr
 	
 playerRight:
 	ldr r0, =playerface
 	mov r1, #3
-	str r1, [r0]
+	str r1, [r0]		//make current player direction right
 	ldr r0, =playerx
 	ldr r1, [r0]
 	ldr r4, =0x3FF		//1023
-	cmp r1, r4
+	cmp r1, r4			//if player is at rightmost pixel column, do not move
 	beq endSub
-	add r1, r1, #1
+	add r1, r1, #1		//else, move player right
 	str r1, [r0]
 	bx lr
 	
@@ -555,21 +554,22 @@ playerShoot:
 	ldr r2, [r2]
 	ldr r3, =crntbullet
 	ldr r4, [r3]
-	cmp r4, #14
+	mov r5, r4					//copy value
+	cmp r4, #14					//if last bullet shot was the last in the array, move to front of the array
 	moveq r4, #0
-	cmp r4, #14
-	addlt r4, r4, #1
-	str r4, [r3]
-	ldr r3, =bulletfaces
+	cmp r5, #14					//if last bullet was not the last in the aray, increase current bullet by 1
+	addne r4, r4, #1
+	str r4, [r3]				//store current bullet
+	ldr r3, =bulletfaces		//change current bullet's direction to match player's
 	str r0, [r3, r4, lsl #2]
-	ldr r3, =bulletxs
+	ldr r3, =bulletxs			//change current bullet's x to match player's
 	str r1, [r3, r4, lsl #2]
-	ldr r3, =bulletys
+	ldr r3, =bulletys			//change current bullet's y to match player's
 	str r2, [r3, r4, lsl #2]
 	bx lr
 
 npcUp:
-	ldr r0, =currentnpcface
+	ldr r0, =currentnpcface		//check current npc's direction
 	mov r1, #0
 	str r1, [r0]
 	ldr r0, =currentnpc
@@ -651,19 +651,25 @@ npcShoot:
 	bx lr
 	
 drawScreen:
-	ldr r0, =0xFFFFFF
+	/*ldr r0, =0xFFFF
 	bl drawBG
 	bl drawAuthorNames
 	bl drawGameTitle
+	*/
 	ldr r2, =npcxs
 	ldr r3, =npcys
 	ldr r4, =npchp
 	ldr r0, [r2]
 	ldr r1, [r3]
-	ldr r5, [r4]
-	cmp r5, #0
-	blne drawBeeP
-	ldr r0, [r2, #4]
+	ldr r2, [r4]	//change back to r5?
+	ldr r3, =0xFFFF
+	mov r4, #5
+	mov r5, #5
+	//cmp r5, #0
+	push {r0, r1, r2, r3, r4}
+	bl drawBeeP		//change back to blne
+	pop {r0, r1, r2, r3, r4}
+	/*ldr r0, [r2, #4]
 	ldr r1, [r3, #4]
 	ldr r5, [r4, #4]
 	cmp r5, #0
@@ -771,6 +777,7 @@ drawScreen:
 	ldr r0, [r2]
 	ldr r1, [r3]
 	bl drawPlayer
+	*/
 	bx lr
 
 gameOver:
