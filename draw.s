@@ -255,7 +255,7 @@ drawTriangleUp:
 	mov		r4, r0		//x start
 	mov		r5, r1		//y start
 	mov		r6, r2		//height
-	mov		r7, colour	//colour
+	mov		r7, r3		//colour
 	mov		r8, #0		//height counter
 	mov		r9, r4		//xMin for each row
 	mov		r10, r4		//xMax for each row
