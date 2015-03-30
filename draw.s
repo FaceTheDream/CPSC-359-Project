@@ -768,6 +768,7 @@ drawBush: //draws "bush" cover
 	cmp	r2, #0
 	ble	endOfDrawBush	//skips drawing the bush if size is less than or equal to 0
 	push {r3}
+	mul	r2, 10 		// makes the bush "seeable"
 	ldr	r3, =bushColour
 	ldr	r3, [r3]
 	push 	{r2}
