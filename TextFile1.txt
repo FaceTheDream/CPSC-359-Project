@@ -7,13 +7,13 @@ drawTriangleLeft:
 	// r3 is colour
 	push	{r4-r10, lr}
     
-    currentX       .req        r4
-    currentY  .req        r5
-    height  .req        r6
-    colour  .req        r7
-    i       .req        r8
-    ymin    .req        r9
-    ymax    .req        r10
+    currentX    .req        r4
+    currentY    .req        r5
+    height      .req        r6
+    colour      .req        r7
+    i           .req        r8
+    ymin        .req        r9
+    ymax        .req        r10
 
 	mov		currentX, r0	//x start
 	mov		currentY, r1	//y start
@@ -66,8 +66,8 @@ drawTriangleDown:
 // r2 is the height
 // r3 is the colour
 	push	{r4-r10, lr}
-    currentX      .req         r4
-    currentY      .req         r5
+    currentX    .req         r4
+    currentY    .req         r5
     height      .req         r6
     colour      .req         r7
     i           .req         r8
@@ -106,4 +106,12 @@ downEnd2:
 
 downEnd:
 	
+    .unreq  xStart
+    .unreq  yStart
+    .unreq  height
+    .unreq  colour
+    .unreq  i
+    .unreq  xMin
+    .unreq  yMax
+
 	pop		{r4-r10, pc}
