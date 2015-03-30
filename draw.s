@@ -976,16 +976,19 @@ drawPauseScreen:
 	bne	ifPauseNotResume
 	mov	r0, r6
 	mov	r1, #60
+	bl	drawCursor
 	b	afterPauseIfs
 ifPauseNotResume:
 	cmp	r4, #1
 	bne	ifPauseElse
 	mov	r0, r6
 	mov	r1, #80
+	bl	drawCursor
 	b	afterPauseIfs
 ifPauseElse:
 	mov	r0, r6
 	mov	r1, #100
+	bl	drawCursor
 afterPauseIfs:
 	pop	{r4-r10, pc}
 
