@@ -146,23 +146,44 @@ drawRect: // in order on stack: {x,y,colour,lenX,lenY}
 	ldr   r2, [sp,#32] 	// colour
 	ldr   r3, [sp,#36] 	// lenX
 	ldr   r4, [sp,#40] 	// lenY
-	mov   r5, #0       	// i=0
+	
+    x       .req    r7
+    y       .req    r8
+    color   .req    r2
+    xLen    .req    r3
+    yLen    .req    r4
+    i       .req    r5
+    j       .req    r6
+
+    mov   i, #0       	// i=0
 dRFL1s:				// draw rectangle for loop 1 start
-	cmp	  r5, r3   	// compare i and lenX
+	cmp	  i, xLen   	// compare i and lenX
 	bge	  dRFL1e   	// if i>= lenX, the for loop ends
-	mov   r6, #0     	// j=0
+	mov   j, #0     	// j=0
+
 dRFL2s:				//draw rectangle for loop 2 start
-	cmp   r6, r4       	// compares j with lenY
+	cmp   j, yLen       	// compares j with lenY
 	bge   dRFL2e	   	// if j >= lenY, the loop ends
-	add   r0, r7, r5	// stores x+i in r0
-	add   r1, r8, r6  	// stores y+j in r1
+
+	add   r0, x, i	// stores x+i in r0
+	add   r1, y, j  	// stores y+j in r1
 	bl     drawPixel   	// calls drawPixel
-	add   r6, #1       	// increments j
+
+	add   j, #1       	// increments j
 	b     dRFL2s       	// back to the start of column iterating loop
+
 dRFL2e:				// draw rectangle for loop 2 end
-	add   r5, #1       	// increments i
+	add   i, #1       	// increments i
 	b     dRFL1s       	// back to the start of row iterating loop
 dRFL1e:				// draw rectangle for loop 1 end
+
+    .unreq  x
+    .unreq  y
+    .unreq  color
+    .unreq  xLen
+    .unreq  yLen
+    .unreq  i
+    .unreq  j
 	pop {r3,r4,r5,r6,r7,r8} // restore registers
 	bx	lr         	//branch to calling code
 	
