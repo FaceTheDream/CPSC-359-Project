@@ -24,28 +24,28 @@ drawTriangleLeft:
 	mov		ymax, r5	//ymax
 
 leftCheckHeight:
-    cmp i, height
-    bge leftEnd
+    cmp i, height       //compares i and height
+    bge leftEnd         //branches to end if i >= height
 
 leftCheckWidth:
-    cmp ymin, currentY
-    bgt leftEnd2
+    cmp currentY, ymin  //compares current y with y min
+    bgt leftEnd2        //branches to end if current y >= y min
 
-    mov r0, currentX
-    mov r1, currentY
-    mov r3, colour
-    drawPixel
+    mov r0, currentX    //moves current x into r0
+    mov r1, currentY    //moves current y into r1
+    mov r2, colour      //moves colour into r2
+    bl drawPixel        //calls drawPixel
 
-    add ystart, #1
-    b   leftCheckWidth
+    add currentY, #1    //increments current y
+    b   leftCheckWidth  //branches to top of loop
 
 leftEnd2:
-    sub ymin, #1
-    add ymax, #1
-    mov currentY, ymin
-    add i, #1
-    add currentX, #1
-    b   leftCheckHeight
+    sub ymin, #1        //decrements ymin
+    add ymax, #1        //incremnets y max
+    mov currentY, ymin  //current y = y min
+    add i, #1           //increments i
+    add currentX, #1    //increments current x to draw next column to the right
+    b   leftCheckHeight //branches to top of loop
 
 leftEnd:
 
