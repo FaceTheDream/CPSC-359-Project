@@ -101,9 +101,6 @@ endDrawPixel:				     // end of drawPixel
 	bx     lr                            // branch to calling code
 
 drawBG: //r0 is the colour to set the background to
-	//NOTE although the max for x is 1024 and the max for y is 768, 
-	//	the maximum amount of rows is 768 and the maximum amount of columns is 1024
-	//	this is due to the fact that when you change rows you travel along the y axis and vice versa
 	//if the colour is 1, then the inGameBGColour should be used
 	push 	{r4-r6,lr}	      //push registers onto stack so as not to alter them
 	cmp	r0, #1
@@ -115,13 +112,13 @@ usualBGDrawing:
 	mov	r4, #0        //initialize row number
 
 rowBGloops:	      // loop through all the rows on the screen
-	cmp	r4, #768      //compare row number with 768
-	bge	rowBGloope    // end if row number >= 768
+	cmp	r4, #1024      //compare row number with 1024
+	bge	rowBGloope    // end if row number >= 1024
 	mov	r5, #0        //initialize column number
 
 colBGloops:	      //loop through all the columns on the screen
-	cmp	r5, #1024     //compare column number with 1024
-	bge	colBGloope    //end if column number >= 1024
+	cmp	r5, #768      //compare column number with 768
+	bge	colBGloope    //end if column number >= 768
 
 	mov	r0, r4	      //set x to draw
 	mov	r1, r5        //set y to draw
@@ -559,7 +556,7 @@ drawBeeEye:
 drawBeeP: //draws pawn bee (top left)
 // r0 is the x location
 // r1 is the y location
-	push 	{r3-r10, lr}
+/*	push 	{r3-r10, lr}
 	mov	r2, #0
 	ldr	r3, =beeYellowColour
 	ldr	r3, [r3]
@@ -584,6 +581,19 @@ drawBeeP: //draws pawn bee (top left)
 	bl	drawBeeEye	// draw the bee's eye
 	//now both body and wings are drawn along with the eye
 	pop 	{r3-r10, pc}	//restore registers
+	*/
+	push	{lr}
+	mov	r2, #5
+	mov	r3, #45
+	push	{r3}
+	push	{r3}
+	ldr	r3, =0xFFED //yellow
+	push	{r3}
+	ldr	r3, =0xBDF7 //light gray
+	push	{r3}
+	bl	drawRectB
+	add	sp, #16
+	pop	{lr}
 
 drawBeeK:
 //draws knight bee (top left)
@@ -1269,7 +1279,7 @@ drawAuthorNames: //draws the author names in the top right corner of the screen
 		//takes no arguments
 	push	{lr}
 	ldr	r0, =0x37D	//(893)
-	mov	r1, #0
+	mov	r1, #15
 	bl	drawKyleBuettner
 	ldr	r0, =0x39B	// (923)
 	mov	r1, #30
@@ -1517,26 +1527,26 @@ drawJustinChu:
 	pop	{r4-r6, pc}
 
 .section .data
-// Colour codes from http://www.nthelp.com/colorcodes.htm
-authorTextColour: .word	0x000000	//black
-beeBlackColour: .word	0x000000	//black
-beeRedColour:	.word	0xFF6600	//lightish red
-beeYellowColour: .word	0xFFFF00	//yellow
-beeStingColour:	.word	0x003300	//almost-black
-beeWingColour:	.word	0xFFFFCC	//white-ish (different white-ish from helmet)
-bushColour:	.word	0x33CC00	//green
-crownColour:	.word	0xCC33FF	//purple
-cursorColour:	.word	0xFFFFFF	//white
-lazerColour:	.word	0xFF0000	//red
-losingColour:	.word	0x000099	//dark blue
-losWordColour:	.word	0xFFCCFF	//pink
-inGameBGColour:	.word	0x999999	//gray
-pauseMenuMC:	.word	0x000000	//black
-pauseMenuBC:	.word	0x9999FF	//light blue
-playerBodyColour: .word	0x996600	//brown
-playerHelmColour: .word	0xCCFFFF	//white-ish
-victoryBGColour: .word	0x669999	//greenish-turquoise
-victoryTextColour: .word 0x6600CC	//Some sort of dark purple
+// Colour codes from http://wiibrew.org/wiki/U16_colors
+authorTextColour: .word	0x0000	//black
+beeBlackColour: .word	0x0000	//black
+beeRedColour:	.word	0xF81F	//lightish red
+beeYellowColour: .word	0xFFE0	//yellow
+beeStingColour:	.word	0x79E0	//brown
+beeWingColour:	.word	0xFFFF	//white
+bushColour:	.word	0x7E0	//green
+crownColour:	.word	0xF81F	//purple
+cursorColour:	.word	0xFFFF	//white
+lazerColour:	.word	0xF800	//red
+losingColour:	.word	0x1F	//dark blue
+losWordColour:	.word	0xF81F	//pink
+inGameBGColour:	.word	0x7BEF	//gray
+pauseMenuMC:	.word	0x0000	//black
+pauseMenuBC:	.word	0x7FF	//cyan
+playerBodyColour: .word	0x79E0	//brown
+playerHelmColour: .word	0xFFFF	//white
+victoryBGColour: .word	0x7E0	//green
+victoryTextColour: .word 0x0000	//black
 beeStingSize:  .int   6		//
 playerSize:	.int	75	//
 cursorSize:	.int	10 	//triangle height
