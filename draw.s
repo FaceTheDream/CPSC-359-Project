@@ -754,6 +754,7 @@ drawBush: //draws "bush" cover
 //r0 is the x location
 //r1 is the y location
 //r2 is the size of the bush (bush is square)
+	push	{lr}
 	cmp	r2, #0
 	ble	endOfDrawBush	//skips drawing the bush if size is less than or equal to 0
 	push {r3}
@@ -768,7 +769,7 @@ drawBush: //draws "bush" cover
 	add	sp, #20		//remove drawRect parameters from stack
 	pop {r3}		//restore registers
 endOfDrawBush:
-	bx	lr		//branch to calling code
+	pop	{pc}
 
 drawLazer: //draws player lazer projectile
 // r0 is x location
@@ -1013,13 +1014,14 @@ afterPauseIfs:
 drawGameOverScreen: //in the "loss" situation
 // background colour will be initialized to losingColour
 // "GAME OVER!" at ( 400 , 380)
+	push	{lr}
 	ldr	r0, =losingColour
 	ldr	r0, [r0]
 	bl	drawBG
 	mov	r0, #400	//set first character x
 	mov	r1, #380	//set first character y
 	bl	drawGameOverWords
-	bx	lr
+	pop	{pc}
 	
 drawVictoryScreen:
 // background colour will be initialized to winningColour
@@ -1265,6 +1267,7 @@ endOfSetLazerDirection:
 
 drawAuthorNames: //draws the author names in the top right corner of the screen
 		//takes no arguments
+	push	{lr}
 	ldr	r0, =0x37D	//(893)
 	mov	r1, #0
 	bl	drawKyleBuettner
@@ -1274,7 +1277,7 @@ drawAuthorNames: //draws the author names in the top right corner of the screen
 	ldr	r0, =0x391	// (913)
 	mov	r1, #45
 	bl	drawDavidKenny
-	bx	lr
+	pop	{pc}
 
 drawGameTitle: //Moon Bees
 	//should draw on top left corver of the screen
