@@ -1056,33 +1056,33 @@ drawVictoryScreen:
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'I'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #420
+	ldr 	r1, =0x1A4	//(420)
 	//draw x
 	mov 	r2, #380	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'C'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #430	//draw x
+	ldr 	r1, =0x1AE	//draw x (430)
 	mov 	r2, #380	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'T'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #440	//draw x
+	ldr 	r1, =0x1B8	//draw x (44)
 	mov 	r2, #380	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'O'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #450	//draw x
+	ldr 	r1, =0x1C2	//draw x (450)
 	mov 	r2, #380	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'R'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #460	//draw x
+	ldr 	r1, =0x1CC	//draw x (460)
 	mov 	r2, #380	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'Y'	//draw character
 	bl 	drawChar	//call to subroutine
-	mov 	r1, #470	//draw x
+	ldr 	r1, =0x1D6	//draw x (470)
 	mov 	r2, #380	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'!'	//draw character
