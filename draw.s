@@ -359,22 +359,19 @@ drawTriangleRight:
 	rthlps1:
 	cmp		r8, r6
 	bge		rthlpe1
-	cmp		r9, r10
-	bne		pastbegginingevencase
+	rthlps2:
+	cmp		r5, r10
+	bgt		rthlpe2
 	mov		r0, r4
 	mov		r1, r5
 	mov		r2, r7
-	bl		drawPixel
-	pastbegginingevencase:
+	add		r5, #1
+	rthlpe2:
 	sub		r9, #1
 	add		r10, #1
-	mov		r3, r9
-	triangleLineLoopRight:
-	mov		r0, r4
-	mov		r1, r3
-	mov		r2, r7
-	bl		drawPixel
+	mov		r5, r9
 	add		r8, #1
+	sub		r4, #1
 	b		rthlps1
 	rthlpe1:
 	pop		{r4-r10,pc}
