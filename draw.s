@@ -395,42 +395,34 @@ drawDiamond:
 	pop 	{r3-r10, pc}	//restore registers
 
 drawBeeBody:
-// r0, top left x
-// r1, top left y
-// r2, size multiplier (will be included in a shift operation, ex: 2^r2)
-// [sp], non-black colour
-// nine-striped bees
-	push 	{r3-r8, lr}	     // save registers
-	mov	r8, r2       // number of times to multiply size by 2
-	mov	r3, r0       // x
-	mov	r4, r1       // y
-	mov	r5, #0       // stripe counter initialization
-	ldr	r6, =beeBlackColour
-	ldr	r6, [r6]     //black colour
-	ldr	r7, [sp,#24] //other colour
-startStripBeeLoop:
-	cmp	r5, #10
-	bge	endStripBeeLoop
-	mov	r0, #10        // init stripe xlength
-	lsl	r0, r8        // adjust stripe xlength
-	mov	r1, #90       // init bee height
-	lsl	r1, r8        // adjusted bee height
-	push 	{r1}              //push p4
-	push 	{r0}              //push p3
-	tst	r5, #1
-	bne	stipecolourelse
-	push 	{r6}              //push p2
-	b 	stripecolourafterif
-stipecolourelse:
-	push 	{r7}              //push p2
-stripecolourafterif:
-	push 	{r4}              //push p1
-	push 	{r3}              //push p0
-	bl	drawRect
-	add	sp, #20       //remove parameters from stack
-	add	r5, #1        //increment stripe counter
-endStripBeeLoop:
-	pop 	{r3-r8, pc}	      // restore registers
+// r0 is top left x
+// r1 is top left y
+// r2 is the width
+// r3 is the length
+// [sp] is the extra colour
+push		{r4-r10,lr}
+
+mov		r4, r0		// start x
+mov		r5, r1		// start y
+mov		r6, r2		// true width (lenY)
+mov		r7, r3		// true length (lenX)
+ldr		r8, [sp,#32] // extra colour
+ldr		r9, =beeBlackColour
+ldr		r9, [r9]
+beebodfls1:
+mov		r0, r4
+mov		r1, r5
+tst		r0, #1
+movne	r2, r8
+moveq	r2, r9
+mov		r3, #5
+push	{r0,r1,r2,r3,r6}
+bl		drawRect
+add		r4, #5
+cmp		r4, r7
+blt		beebodfls1		
+beebodfle1:
+pop			{r4-r10,pc}
 
 drawRectB: //rectangle with border
 // r0 is x location
