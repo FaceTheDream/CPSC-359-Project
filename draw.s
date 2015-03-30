@@ -1534,7 +1534,7 @@ beeRedColour:	.word	0xF81F	//lightish red
 beeYellowColour: .word	0xFFE0	//yellow
 beeStingColour:	.word	0x79E0	//brown
 beeWingColour:	.word	0xFFFF	//white
-bushColour:	.word	0x7E0	//green
+bushColour:	.word	0x8000	//green
 crownColour:	.word	0xF81F	//purple
 cursorColour:	.word	0xFFFF	//white
 lazerColour:	.word	0xF800	//red
@@ -1544,12 +1544,12 @@ inGameBGColour:	.word	0x7BEF	//gray
 pauseMenuMC:	.word	0x0000	//black
 pauseMenuBC:	.word	0x7FF	//cyan
 playerBodyColour: .word	0x79E0	//brown
-playerHelmColour: .word	0xFFFF	//white
+playerHelmColour: .word	0xFFCC	//white
 victoryBGColour: .word	0x7E0	//green
 victoryTextColour: .word 0x0000	//black
 beeStingSize:  .int   6		//
-playerSize:	.int	75	//
-cursorSize:	.int	10 	//triangle height
-lazerSize:     .int   50, 1 	//rectangle length by width
-wingLength:	.int   25
+playerSize:	.int	15	//
+cursorSize:	.int	5 	//triangle height
+lazerSize:     .int   10, 1 	//rectangle length by width
+wingLength:	.int   5
 font:	.incbin		"font.bin"
