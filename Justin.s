@@ -98,10 +98,10 @@ initSNES:
 .globl writeClock
     // Write r0 value to Clock
 writeClock:
-    mov r1, #11          //sets pin 11
-    ldr r2, =GPFSEL0    //sets GPFSEL0
+    mov r1, #1          //sets pin 11
+    ldr r2, =GPFSEL1    //sets GPFSEL0
     mov r3, #1
-    lsl r3, r0          //aligns bit for pin 11
+    lsl r3, r1          //aligns bit for pin 11
     teq r0, #0          //checks what r0 is equal to
     streq r3, [r2, #40] //clears if r0=0
     strne r3, [r2, #28] //writes if r0=1
@@ -115,7 +115,7 @@ writeLatch:
     mov r1, #9          //sets pin 9
     ldr r2, =GPFSEL0    //sets GPFSEL0
     mov r3, #1
-    lsl r3, r0          //aligns bit for pin 9
+    lsl r3, r1          //aligns bit for pin 9
     teq r0, #0          //checks what r0 is equal to
     streq r3, [r2, #40] //clears if r0=0
     strne r3, [r2, #28] //writes if r0=1
