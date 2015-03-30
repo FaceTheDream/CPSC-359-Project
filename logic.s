@@ -665,9 +665,10 @@ drawScreen:
 	ldr r3, =0xFFFF
 	mov r4, #5
 	mov r5, #5
-	//cmp r5, #0
 	push {r0, r1, r2, r3, r4}
-	bl drawBeeP		//change back to blne
+	cmp r5, #0
+	blne drawRect
+	/*
 	ldr r0, [r2, #4]
 	ldr r1, [r3, #4]
 	ldr r5, [r4, #4]
