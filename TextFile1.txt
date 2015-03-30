@@ -1,0 +1,131 @@
+drawTriangleRight:
+	// r0 is x
+	// r1 is y
+	// r2 is height
+	// r3 is colour
+	push	{r4-r10, lr}
+	mov		r4, r0	//x start
+	mov		r5, r1	//y start
+	mov		r6, r2	//height
+	mov		r7, r3	//colour
+	mov		r8, #0	//iterator
+	mov		r9, r5  //ymin
+	mov		r10, r5	//ymax
+	rthlps1:
+	cmp		r8, r6 // compares iterator with height
+	bge		rthlpe1
+	rthlps2:
+	cmp		r5, r10 //compares start of y to y max
+	bgt		rthlpe2
+
+	mov		r0, r4  //moves x start to x
+	mov		r1, r5  //moves y start to y
+	mov		r2, r7  // moves color in
+    drawPixel
+
+	add		r5, #1 // adds 1 to y
+
+	rthlpe2:
+	sub		r9, #1  //subtracts 1 from y min
+	add		r10, #1 //adds 1 to y max
+	mov		r5, r9  //moves y min to y start
+	add		r8, #1  //adds 1 to iterator
+	sub		r4, #1  //subtracts from x start
+	b		rthlps1
+	rthlpe1:
+	pop		{r4-r10,pc}
+
+drawTriangleLeft:
+    // r0 is x
+	// r1 is y
+	// r2 is height
+	// r3 is colour
+	push	{r4-r10, lr}
+    xStart       .req        r4
+    yStart  .req        r5
+    height  .req        r6
+    colour  .req        r7
+    i       .req        r8
+    ymin    .req        r9
+    ymax    .req        r10
+
+	mov		r4, r0	//x start
+	mov		r5, r1	//y start
+	mov		r6, r2	//height
+	mov		r7, r3	//colour
+	mov		r8, #0	//iterator
+	mov		r9, r5  //ymin
+	mov		r10, r5	//ymax
+
+leftCheckHeight:
+    cmp i, height
+    bge leftEnd
+
+leftCheckWidth
+    cmp ymin, yStart
+    bgt leftEnd2
+
+    mov r0, xStart
+    mov r1, yStart
+    mov r3, colour
+    drawPixel
+
+    add ystart, #1
+
+leftEnd2:
+    sub ymin, #1
+    add ymax, #1
+    mov yStart, ymin
+    add i, #1
+    add xStart, #1
+    b   leftCheckHeight
+
+leftEnd:
+
+    .unreq  xStart
+    .unreq  yStart
+    .unreq  height
+    .unreq  colour
+    .unreq  i
+    .unreq  ymin
+    .unreq  ymax
+
+    pop {r4-r10, pc}
+
+
+drawTriangleDown:
+// r0 is the x
+// r1 is the y
+// r2 is the height
+// r3 is the colour
+	push	{r4-r10, lr}
+	mov		r4, r0		//x start
+	mov		r5, r1		//y start
+	mov		r6, r2		//height
+	mov		r7, r3		//colour
+	mov		r8, #0		//height counter
+	mov		r9, r4		//xMin for each row
+	mov		r10, r4		//xMax for each row
+	dtulps1:
+	cmp		r8, r6
+	bge		dtulpe1
+	
+	dtulps2:
+	cmp		r4,	r10
+	bgt		dtulpe2
+	mov		r0, r4
+	mov		r1, r5
+	mov		r2, r7
+	bl		drawPixel
+	add		r4, #1
+	b	dtulps2
+	dtulpe2:
+	sub		r9, #1
+	add		r10, #1
+	mov		r4, r9
+	sub		r5,	#1
+	add		r8, #1
+	b		dtulps1
+	dtulpe1:
+	
+	pop		{r4-r10, pc}
