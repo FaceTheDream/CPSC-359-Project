@@ -177,7 +177,7 @@ modLoopE:
 	cmp r2, #3
 	bleq npcRight
 	//puts random number %10 in r2
-	ldr r2, =x20003004
+	ldr r2, =0x20003004
 	ldr r2, [r2]		//current clock value
 	mul r2, r3, r2
 	add r2, r3, r2
