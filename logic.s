@@ -668,8 +668,7 @@ drawScreen:
 	//cmp r5, #0
 	push {r0, r1, r2, r3, r4}
 	bl drawBeeP		//change back to blne
-	pop {r0, r1, r2, r3, r4}
-	/*ldr r0, [r2, #4]
+	ldr r0, [r2, #4]
 	ldr r1, [r3, #4]
 	ldr r5, [r4, #4]
 	cmp r5, #0
@@ -749,6 +748,8 @@ drawScreen:
 	ldr r5, [r4, #64]
 	cmp r5, #0
 	blne drawBeeQ
+	pop {r0, r1, r2, r3, r4}
+	/*
 	ldr r3, =obstaclexs
 	ldr r4, =obstacleys
 	ldr r5, =obstaclehp
