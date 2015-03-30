@@ -536,34 +536,29 @@ drawBeeP: //draws pawn bee (top left)
 	pop		{r4-r10, pc}
 
 drawBeeK:
-//draws knight bee (top left)
 // r0 is the x location
 // r1 is the y location
-	push 	{r3-r10, lr}
-	mov	r2, #1
-	ldr	r3, =beeRedColour
-	ldr	r3, [r3]
-	push 	{r3}
-	mov	r4, r0 		//top-left x
-	mov	r5, r1 		// top-left y
-	bl	drawBeeBody 	//draw bee body
-	add	sp, #4
-	mov	r6, r4
-	add	r6, #180 	//add in bee body width (will probably need to be changed later)
-	sub	r6, #10 	//breathing room
-	ldr	r7, =wingLength
-	ldr	r7, [r7]
-	sub	r6, r7
-	mov	r0, r6
-	mov	r1, r5
-	add	r1, #15 	//more natural looking wings
-	mov	r2, r7		//store wingLength so it may be used by drawBeeWings
-	bl	drawBeeWings	//call drawBeeWings
-	add	r0, r4, #12	// make the drawing position for the bee's eye (x)
-	add	r1, r5, #7	// make the drawing position for the bee's eye (y)
-	bl	drawBeeEye	// draw the bee's eye
-	//now both body and wings are drawn along with the eye
-	pop 	{r3-r10, pc}	//restore registers
+	push	{r4-r10,lr}
+	mov		r4, r0
+	mov		r5, r1
+	ldr		r6, =beeKSize
+	ldr		r6, [r6]
+	ldr		r7, =beeRedColour
+	ldr		r7, [r7]
+	mov		r0, r4
+	mov		r1, r5
+	mov		r2, r6
+	mov		r3, r6
+	push	{r7}
+	bl		drawBeeBody
+	add		sp, #4
+	add		r4, #35
+	add		r5, #15
+	mov		r0, r4
+	mov		r1, r5
+	mov		r2, #18
+	bl		drawBeeWings
+	pop		{r4-r10,pc}
 
 drawBeeQ: //draws queen bee (top left)
 // r0 is the x location
