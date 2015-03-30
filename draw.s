@@ -1051,7 +1051,7 @@ drawVictoryScreen:
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'V'	//draw character
 	bl 	drawChar	//call to subroutine
-	str 	r1, =0x19A	//draw x (410)
+	ldr 	r1, =0x19A	//draw x (410)
 	mov 	r2, #380	//draw y
 	mov 	r3, r4		//draw colour
 	mov 	r0, #'I'	//draw character
