@@ -38,23 +38,23 @@ start:	//start up the game
 	mov r1, #0
 	str r1, [r0]
 	ldr r0, =obstaclexs	//set each obstacle's position
-	mov r1, #128
+	mov r1, #170
 	str r1, [r0]
-	mov r1, #256
+	mov r1, #340
 	str r1, [r0, #4]
-	mov r1, #384
-	str r1, [r0, #8]
 	mov r1, #512
+	str r1, [r0, #8]
+	mov r1, #682
 	str r1, [r0, #12]
-	mov r1, #640
+	mov r1, #853
 	str r1, [r0, #16]
 	ldr r0, =obstacleys
-	mov r1, #256
+	mov r1, #192
 	str r1, [r0, #8]
-	mov r1, #512
+	mov r1, #384
 	str r1, [r0]
 	str r1, [r0, #16]
-	mov r1, #768
+	mov r1, #576
 	str r1, [r0, #4]
 	str r1, [r0, #12]
 	ldr r0, =obstaclehp	//set each obstacle's hp
