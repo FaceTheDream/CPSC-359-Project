@@ -653,8 +653,8 @@ drawScreen:
 	bl drawBG
 	bl drawAuthorNames
 	bl drawGameTitle
-	ldr r2, =npcx
-	ldr r3, =npcy
+	ldr r2, =npcxs
+	ldr r3, =npcys
 	ldr r4, =npchp
 	ldr r0, [r2]
 	ldr r1, [r3]
