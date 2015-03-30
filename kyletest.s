@@ -39,7 +39,7 @@ testQueen:
 	bl drawBeeK
 	pop {r0, r1}
 	
-*/
+
 testBush:		//needs to take the size inputted and multiply it to make a recognizable size
 	ldr r0, =0x20			//x coordinate of bush
 	ldr r1, =0x20			//y coordinate of bush
@@ -68,5 +68,32 @@ testRect:
 	bl drawRect
 	pop {r0, r1}
 	
+*/
+testLazer:
+	ldr r0, =0x240			//x coordinate of lazer
+	ldr r1, =0x100			//y coordinate of lazer
+	push {r0, r1}
+	bl drawLazer
+	pop {r0, r1}
+	
+/*
+testStinger:
+	ldr r0, =0xc0			//x coordinate of stinger
+	ldr r1, =0x300			//y coordinate of stinger
+	push {r0, r1}
+	bl drawBeeSting
+	pop {r0, r1}
+	
 
+testPause:
+	mov r0, #0				//currently selected pause option
+	push {r0}
+	bl drawPauseScreen
+	pop {r0}
+	
+testGO:
+	bl drawGameOverScreen
+	
+testVictory:
+	bl drawVictoryScreen
 	
