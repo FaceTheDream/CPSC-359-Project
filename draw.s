@@ -780,7 +780,7 @@ drawPauseScreen:
 	//a newline will be 20 pixels tall
 	mov	r4, r0	//r4 is now the option selected
 	
-	mov	r0, #1000	//x
+	mov	r0, #50		//x
 	mov	r1, #0		//y
 	mov	r2, #30
 	mov	r5, #768
