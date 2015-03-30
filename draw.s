@@ -433,56 +433,27 @@ drawRectB: //rectangle with border
 // [sp+4] is main rectangle colour
 // [sp+8] is length
 // [sp+12] is width
-	push 	{r3-r10, lr}
-	mov	r3, r0 // x
-	mov	r4, r1 // y
-	mov	r5, r2  //border width
-	ldr	r6, [sp,#44] // overall width
-	mov	r0, r6
-	sub	r0, r5
-	sub	r0, r5
-	push 	{r0}
-	ldr	r7, [sp,#40] //overall length
-	sub	r0, r7, r5
-	sub	r0, r5
-	push 	{r0}
-	ldr	r0, [sp,#36] //main rectangle colour
-	push 	{r0}
-	add	r0, r4, r5
-	push 	{r0}
-	add	r0, r3, r5
-	push 	{r0}
-	bl	drawRect	//draws center rectangle
+	push 	{r3-r10, lr}	//adds 36 bytes onto the stack 
+	mov	r4, r0
+	mov	r5, r1
+	mov	r6, r2
+	ldr	r7, [sp,#40]
+	ldr	r8, [sp, #44]
+	ldr	r9, [sp, #48]
+	push	{r4,r5,r7,r8,r9}
+	bl	drawRect
 	add	sp, #20
-	push 	{r5, r6}
-	ldr	r8, [sp,#32]     //border colour
-	push 	{r8}
-	push 	{r3,r4}
-	bl	drawRect	//draws left portion of border
+	ldr	r10, [sp, #36]
+	sub	r9, r6
+	sub	r9, r6
+	sub	r8, r6
+	sub	r8, r6
+	add	r4, r6
+	add	r5, r6
+	mov	r6, r10
+	push	{r4,r5,r6,r8,r9}
+	bl	drawRect
 	add	sp, #20
-	push 	{r5}		// push last drawRect argument onto stack	
-	push 	{r7,r8}		// push 3rd and 4th drawRect arguments onto stack
-	push 	{r3,r4}		// push 1st and 2nd drawRect arguments onto stack
-	bl	drawRect	//draws top portion of border
-	add	sp, #20		// remove drawRect parameters off of stack
-	push 	{r6}		
-	push 	{r5}
-	push 	{r8}
-	push 	{r4}
-	add	r0, r3, r7
-	sub	r0, r5
-	push 	{r0}
-	bl	drawRect	// draws right portion of border
-	add	sp, #20		// remove drawRect parameters from the stack
-	push 	{r5}
-	push 	{r7}
-	push 	{r8}
-	add	r0, r4, r6
-	sub	r0, r5
-	push 	{r0}
-	push 	{r3}
-	bl	drawRect	// draws bottom portion of border
-	add	sp, #20		// remove drawRect parameters from the stack
 	pop 	{r3-r10, pc}
 	
 
