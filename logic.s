@@ -1,3 +1,5 @@
+.globl start
+
 .section .text
 
 start:	//start up the game
