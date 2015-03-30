@@ -665,82 +665,82 @@ drawScreen:
 	ldr r1, [r3, #4]
 	ldr r5, [r4, #4]
 	cmp r5, #0
-	blne DrawBeeP
+	blne drawBeeP
 	ldr r0, [r2, #8]
 	ldr r1, [r3, #8]
 	ldr r5, [r4, #8]
 	cmp r5, #0
-	blne DrawBeeP
+	blne drawBeeP
 	ldr r0, [r2, #12]
 	ldr r1, [r3, #12]
 	ldr r5, [r4, #12]
 	cmp r5, #0
-	blne DrawBeeP
+	blne drawBeeP
 	ldr r0, [r2, #16]
 	ldr r1, [r3, #16]
 	ldr r5, [r4, #16]
 	cmp r5, #0
-	blne DrawBeeP
+	blne drawBeeP
 	ldr r0, [r2, #20]
 	ldr r1, [r3, #20]
 	ldr r5, [r4, #20]
 	cmp r5, #0
-	blne DrawBeeP
+	blne drawBeeP
 	ldr r0, [r2, #24]
 	ldr r1, [r3, #24]
 	ldr r5, [r4, #24]
 	cmp r5, #0
-	blne DrawBeeP
+	blne drawBeeP
 	ldr r0, [r2, #28]
 	ldr r1, [r3, #28]
 	ldr r5, [r4, #28]
 	cmp r5, #0
-	blne DrawBeeP
+	blne drawBeeP
 	ldr r0, [r2, #32]
 	ldr r1, [r3, #32]
 	ldr r5, [r4, #32]
 	cmp r5, #0
-	blne DrawBeeP
+	blne drawBeeP
 	ldr r0, [r2, #36]
 	ldr r1, [r3, #36]
 	ldr r5, [r4, #36]
 	cmp r5, #0
-	blne DrawBeeP
+	blne drawBeeP
 	ldr r0, [r2, #40]
 	ldr r1, [r3, #40]
 	ldr r5, [r4, #40]
 	cmp r5, #0
-	blne DrawBeeK
+	blne drawBeeK
 	ldr r0, [r2, #44]
 	ldr r1, [r3, #44]
 	ldr r5, [r4, #44]
 	cmp r5, #0
-	blne DrawBeeK
+	blne drawBeeK
 	ldr r0, [r2, #48]
 	ldr r1, [r3, #48]
 	ldr r5, [r4, #48]
 	cmp r5, #0
-	blne DrawBeeK
+	blne drawBeeK
 	ldr r0, [r2, #52]
 	ldr r1, [r3, #52]
 	ldr r5, [r4, #52]
 	cmp r5, #0
-	blne DrawBeeK
+	blne drawBeeK
 	ldr r0, [r2, #56]
 	ldr r1, [r3, #56]
 	ldr r5, [r4, #56]
 	cmp r5, #0
-	blne DrawBeeK
+	blne drawBeeK
 	ldr r0, [r2, #60]
 	ldr r1, [r3, #60]
 	ldr r5, [r4, #60]
 	cmp r5, #0
-	blne DrawBeeQ
+	blne drawBeeQ
 	ldr r0, [r2, #64]
 	ldr r1, [r3, #64]
 	ldr r5, [r4, #64]
 	cmp r5, #0
-	blne DrawBeeQ
+	blne drawBeeQ
 	ldr r3, =obstaclexs
 	ldr r4, =obstacleys
 	ldr r5, =obstaclehp
