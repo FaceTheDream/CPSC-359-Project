@@ -136,7 +136,7 @@ oneTurn4:
 oneTurn5:
 	ldr r3, =0x80		// 10000000 = right button
 	tst r0, r3
-	bne oneTurn
+	bne oneTurn6
 	bl playerRight
 	
 oneTurn6:
