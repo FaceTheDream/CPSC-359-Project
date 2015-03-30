@@ -420,7 +420,7 @@ startStripBeeLoop:
 	push 	{r1}              //push p4
 	push 	{r0}              //push p3
 	tst	r5, #1
-	bne	stripecolourelse
+	bne	stipecolourelse
 	push 	{r6}              //push p2
 	b 	stripecolourafterif
 stipecolourelse:
