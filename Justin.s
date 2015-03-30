@@ -64,11 +64,11 @@ initSNES:
     ldr r2, [r0]
     mov r3, #0b0111
     lsl r3, r1          // r3 = 0111000
-    bic r1, r2          //clears pin 11 bits
+    bic r2, r3          //clears pin 11 bits
     mov r3, #1          //output function code
     lsl r3, r1          //r3 = 0 001 000
-    orr r1, r3          //set pin 11 function
-    str r1, [r0]        //write back to GPFSEL1
+    orr r2, r3          //set pin 11 function
+    str r2, [r0]        //write back to GPFSEL1
 
     //Setting GPIO pin 9 (Latch) to output
 
@@ -77,11 +77,11 @@ initSNES:
     ldr r2, [r0]
     mov r3, #0b0111
     lsl r3, r1          //creates the mask to clear bits
-    bic r1, r2          //clears pin 9 bits
+    bic r2, r3          //clears pin 9 bits
     mov r3, #1          //output function code
     lsl r3, r1          //shifts output function code to match pin 9
-    orr r1, r3          //set pin 9 function
-    str r1, [r0]        //write back to GPFSEL0
+    orr r2, r3          //set pin 9 function
+    str r2, [r0]        //write back to GPFSEL0
 
     //Setting GPIO pin 10 (Data) to input
 
@@ -90,8 +90,8 @@ initSNES:
     ldr r2, [r0]
     mov r3, #0b0111
     lsl r3, r1          //creates the mask to clear bits
-    bic r1, r2          //clears pin 10 bits
-    str r1, [r0]        //write back to GPFSEL1
+    bic r2, r3          //clears pin 10 bits
+    str r2, [r0]        //write back to GPFSEL1
 
     bx lr
 
