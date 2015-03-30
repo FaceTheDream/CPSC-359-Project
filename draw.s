@@ -571,7 +571,7 @@ drawBeeQ:
 	push	{r4-r10, lr}
 	mov		r4, r0
 	mov		r5, r1
-	ldr		r6, =beeSizeQ
+	ldr		r6, =beeQSize
 	ldr		r6, [r6]
 	ldr		r7, =beeYellowColour
 	ldr		r7, [r7]
