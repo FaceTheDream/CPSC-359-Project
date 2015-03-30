@@ -167,13 +167,13 @@ dRFL1e:				// draw rectangle for loop 1 end
 	
 	
 drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagonalD as parameters
-	push  	{r3-r10}     // save registers
-	ldr   	r0, [sp,#32] // x
-	ldr   	r1, [sp,#36] // y
-	ldr   	r2, [sp,#56] // colour
-	ldr   	r3, [sp,#48] // length
-	ldr   	r4, [sp,#52] // thickness
-	ldr   	r5, [sp,#44] // direction
+	push  	{r3-r10, lr}     // save registers
+	ldr   	r0, [sp,#36] // x
+	ldr   	r1, [sp,#40] // y
+	ldr   	r2, [sp,#60] // colour
+	ldr   	r3, [sp,#52] // length
+	ldr   	r4, [sp,#56] // thickness
+	ldr   	r5, [sp,#48] // direction
 	sub   	r6, r4, #1   // stores thickness - 1 into r6
 	lsr   	r6, #1 	     // stores (thickness-1)/2 into r6 (a)
 	mov   	r7, #0       // i
@@ -247,8 +247,7 @@ afterif4:
 	add  	r7, #1
 	b    	dLFL1s
 dLFL1e:	
-	pop 	{r3-r9}           // restore registers
-	bx	lr           // branch to calling code
+	pop 	{r3-r9, pc}           // restore registers
 
 
 drawTriangleUp: //r0 is x, r1 is y, r2 is height, colour is sent over stack
@@ -569,7 +568,7 @@ drawBeeEye:
 drawBeeP: //draws pawn bee (top left)
 // r0 is the x location
 // r1 is the y location
-	push 	{r3-r10}
+	push 	{r3-r10, lr}
 	mov	r2, #0
 	ldr	r3, =beeYellowColour
 	ldr	r3, [r3]
@@ -593,8 +592,7 @@ drawBeeP: //draws pawn bee (top left)
 	add	r1, r5, #7	// make the drawing position for the bee's eye (y)
 	bl	drawBeeEye	// draw the bee's eye
 	//now both body and wings are drawn along with the eye
-	pop 	{r3-r10}	//restore registers
-	bx	lr		//branch to calling code
+	pop 	{r3-r10, pc}	//restore registers
 
 drawBeeK:
 //draws knight bee (top left)
