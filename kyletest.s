@@ -10,6 +10,16 @@ starTest:
 	bl drawGameTitle
 	pop {r0}
 	
+testBee:
+	ldr r0, =0x180
+	ldr r1, =0xa
+	mov r2, #5
+	mov r3, #10
+	ldr r4, =0xcc
+	push {r0, r1, r2, r3, r4}
+	bl drawBeeBody
+	pop {r0, r1}
+	
 /*testPawn:		
 //currently draws a yellow rectangle, a small vertical black line, and a long horizontal yellow line
 //will not draw anything after drawn
@@ -68,7 +78,7 @@ testRect:
 	bl drawRect
 	pop {r0, r1}
 	
-*/
+
 testLazer:
 	ldr r0, =0x240			//x coordinate of lazer
 	ldr r1, =0x100			//y coordinate of lazer
@@ -76,7 +86,7 @@ testLazer:
 	bl drawLazer
 	pop {r0, r1}
 	
-/*
+
 testStinger:
 	ldr r0, =0xc0			//x coordinate of stinger
 	ldr r1, =0x300			//y coordinate of stinger
@@ -97,3 +107,4 @@ testGO:
 testVictory:
 	bl drawVictoryScreen
 	
+*/
