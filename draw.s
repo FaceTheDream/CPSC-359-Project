@@ -813,20 +813,15 @@ drawCursor: //draws triangle cursor for use on pause menu always faces right
 // r0 is x location
 // r1 is y location
 // (x,y) is the rightmost point
-	push 	{r3-r6, lr}			//save registers
-	mov	r3, r0			//move x location to r3
-	mov	r4, r1			//move y location to r4
-	ldr	r5, =cursorSize		//load the memory address of cursorSize into r5
-	ldr	r5, [r5]		//load the value of cursorSize into r5
-	ldr	r6, =cursorColour	//load the memory address of cursorColour into r6
-	ldr	r6, [r6]		//load the value of cursorColour into r6
-	mov	r0, r3			//move the x location into r0
-	mov	r1, r4			//move the y location into r1
-	mov	r2, r5			//move the cursorSize (height) into r2
-	push 	{r6}			//push the cursorColour onto the stack
-	bl	drawTriangleRight	//draws the rightwards pointing triangle
-	add	sp, #4 			//removes colour from stack
-	pop 	{r3-r6, pc}			//restores registers
+push	{r6-r7, lr}
+ldr		r6, =cursorSize
+ldr		r6, [r6]
+ldr		r7, =cursorColour
+ldr		r7, [r7]
+mov		r2, r6
+mov		r3, r7
+bl		drawTriangleRight
+pop		{r6-r7,pc}
 
 drawPauseScreen:
 //r0 will indicate which option is selected
@@ -840,7 +835,7 @@ drawPauseScreen:
 	//a newline will be 20 pixels tall
 	mov	r4, r0	//r4 is now the option selected
 	
-	mov	r0, #100	//x
+	mov	r0, #1000	//x
 	mov	r1, #0		//y
 	mov	r2, #30
 	mov	r5, #768
