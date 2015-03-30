@@ -492,7 +492,7 @@ pSelect:
 	beq endSub
 	cmp r0, #1
 	beq start
-	//QUIT GAME HERE
+	bx lr
 	
 playerUp:
 	ldr r0, =playerface
