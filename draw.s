@@ -406,10 +406,13 @@ mov		r4, r0		// start x
 mov		r5, r1		// start y
 mov		r6, r2		// true width (lenY)
 mov		r7, r3		// true length (lenX)
+add		r7, r4		// true end x value
 ldr		r8, [sp,#32] // extra colour
 ldr		r9, =beeBlackColour
 ldr		r9, [r9]
 beebodfls1:
+cmp		r4, r7
+bge		beebodfle1
 mov		r0, r4
 mov		r1, r5
 tst		r0, #1
@@ -419,8 +422,7 @@ mov		r3, #5
 push	{r0,r1,r2,r3,r6}
 bl		drawRect
 add		r4, #5
-cmp		r4, r7
-blt		beebodfls1		
+b		beebodfls1		
 beebodfle1:
 pop			{r4-r10,pc}
 
