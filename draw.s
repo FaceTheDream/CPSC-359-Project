@@ -105,7 +105,7 @@ drawBG: //r0 is the colour to set the background to
 	//	the maximum amount of rows is 768 and the maximum amount of columns is 1024
 	//	this is due to the fact that when you change rows you travel along the y axis and vice versa
 	//if the colour is 1, then the inGameBGColour should be used
-	push 	{r4-r6}	      //push registers onto stack so as not to alter them
+	push 	{r4-r6,lr}	      //push registers onto stack so as not to alter them
 	cmp	r0, #1
 	bne	usualBGDrawing
 	ldr	r0, =inGameBGColour
@@ -136,56 +136,34 @@ colBGloope:	      // end of column loop
 	b	rowBGloops    //back to start of row loop
 
 rowBGloope:	      // end of row loop
-	pop {r4-r6}           //restore registers
-	bx	lr	      //branch to calling code
+	pop {r4-r6,pc}           //restore registers
+
 	
 drawRect: // in order on stack: {x,y,colour,lenX,lenY}
-	push {r3,r4,r5,r6,r7,r8} //save registers
-	ldr   r7, [sp,#24] 	// x
-	ldr   r8, [sp,#28] 	// y
-	ldr   r2, [sp,#32] 	// colour
-	ldr   r3, [sp,#36] 	// lenX
-	ldr   r4, [sp,#40] 	// lenY
-	
-    x       .req    r7
-    y       .req    r8
-    color   .req    r2
-    xLen    .req    r3
-    yLen    .req    r4
-    i       .req    r5
-    j       .req    r6
-
-    mov   i, #0       	// i=0
+	push {r3,r4,r5,r6,r7,r8, lr} //save registers
+	ldr   r7, [sp,#28] 	// x
+	ldr   r8, [sp,#32] 	// y
+	ldr   r2, [sp,#36] 	// colour
+	ldr   r3, [sp,#40] 	// lenX
+	ldr   r4, [sp,#44] 	// lenY
+	mov   r5, #0       	// i=0
 dRFL1s:				// draw rectangle for loop 1 start
-	cmp	  i, xLen   	// compare i and lenX
+	cmp	  r5, r3   	// compare i and lenX
 	bge	  dRFL1e   	// if i>= lenX, the for loop ends
-	mov   j, #0     	// j=0
-
+	mov   r6, #0     	// j=0
 dRFL2s:				//draw rectangle for loop 2 start
-	cmp   j, yLen       	// compares j with lenY
+	cmp   r6, r4       	// compares j with lenY
 	bge   dRFL2e	   	// if j >= lenY, the loop ends
-
-	add   r0, x, i	// stores x+i in r0
-	add   r1, y, j  	// stores y+j in r1
+	add   r0, r7, r5	// stores x+i in r0
+	add   r1, r8, r6  	// stores y+j in r1
 	bl     drawPixel   	// calls drawPixel
-
-	add   j, #1       	// increments j
+	add   r6, #1       	// increments j
 	b     dRFL2s       	// back to the start of column iterating loop
-
 dRFL2e:				// draw rectangle for loop 2 end
-	add   i, #1       	// increments i
+	add   r5, #1       	// increments i
 	b     dRFL1s       	// back to the start of row iterating loop
 dRFL1e:				// draw rectangle for loop 1 end
-
-    .unreq  x
-    .unreq  y
-    .unreq  color
-    .unreq  xLen
-    .unreq  yLen
-    .unreq  i
-    .unreq  j
-	pop {r3,r4,r5,r6,r7,r8} // restore registers
-	bx	lr         	//branch to calling code
+	pop {r3,r4,r5,r6,r7,r8, pc} // restore register
 	
 	
 drawLine: //takes thickness as a parameter, vertical/horizontal/diagonalU/diagonalD as parameters
