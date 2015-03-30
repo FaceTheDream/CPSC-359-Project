@@ -246,34 +246,42 @@ dLFL1e:
 	pop 	{r3-r9, pc}           // restore registers
 
 
-drawTriangleUp: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-	push	{r3-r8, lr}
-	mov	r3, r0       //x
-	mov	r4, r1       //y
-	mov	r5, r2       // height
-	ldr	r6, [sp,#24] //colour
-	mov	r7, #0       // i
-dtufl1start:         	     //draw triangle up for loop 1 start
-	cmp	r7, r5       
-	bge	dtufl1end   
-	push	{r6} 	     //push 6th paramter, colour onto stack
-	mov	r0, #1
-	push	{r0} 	     //push 5th parameter, thickness (1) onto stack
-	add	r0, r7, r7
-	add	r0, #1
-	push	{r0}	     //push 4th parameter, length (2i+1) onto stack
-	mov	r0, #1
-	push 	{r0}	     //push 3rd parameter, direction (1)(horizontal) onto stack
-	add	r0, r4, r7
-	push 	{r0}	     //push 2nd paramteter, (y+i) onto stack
-	sub	r0, r3, r7
-	push    {r0}	     //push 1st paramter, (x-i) onto stack
-	bl	drawLine
-	add	sp, #24
-	add	r7, #1
-	b	dtufl1start
-dtufl1end:
-	pop    {r3-r8, pc}
+drawTriangleUp:
+// r0 is the x
+// r1 is the y
+// r2 is the height
+// r3 is the colour
+	push	{r4-r10, lr}
+	mov		r4, r0		//x start
+	mov		r5, r1		//y start
+	mov		r6, r2		//height
+	mov		r7, colour	//colour
+	mov		r8, #0		//height counter
+	mov		r9, r4		//xMin for each row
+	mov		r10, r4		//xMax for each row
+	dtulps1:
+	cmp		r8, r6
+	bge		dtulpe1
+	
+	dtulps2:
+	cmp		r4,	r10
+	bgt		dtulpe2
+	mov		r0, r4
+	mov		r1, r5
+	mov		r2, r7
+	bl		drawPixel
+	add		r4, #1
+	b	dtulps2
+	dtulpe2:
+	sub		r9, #1
+	add		r10, #1
+	mov		r4, r9
+	add		r5,	#1
+	add		r8, #1
+	b		dtulps1
+	dtulpe1:
+	
+	pop		{r4-r10, pc}
 
 
 drawTriangleDown: //r0 is x, r1 is y, r2 is height, colour is sent over stack
