@@ -661,13 +661,12 @@ drawScreen:
 	ldr r4, =npchp
 	ldr r0, [r2]
 	ldr r1, [r3]
-	ldr r2, [r4]	//change back to r5?
+	ldr r5, [r4]
 	ldr r3, =0xFFFF
-	mov r4, #5
-	mov r5, #5
-	push {r0, r1, r2, r3, r4}
-	cmp r5, #0
-	blne drawRect
+	push {r0, r1}
+	//cmp r5, #0
+	bl drawBeeP		//change back to blne
+	pop {r0, r1}
 	/*
 	ldr r0, [r2, #4]
 	ldr r1, [r3, #4]
@@ -749,8 +748,6 @@ drawScreen:
 	ldr r5, [r4, #64]
 	cmp r5, #0
 	blne drawBeeQ
-	pop {r0, r1, r2, r3, r4}
-	/*
 	ldr r3, =obstaclexs
 	ldr r4, =obstacleys
 	ldr r5, =obstaclehp
@@ -774,12 +771,14 @@ drawScreen:
 	ldr r1, [r4, #8]
 	ldr r2, [r5, #8]
 	bl drawBush
+	*/
 	ldr r2, =playerx
 	ldr r3, =playery
 	ldr r0, [r2]
 	ldr r1, [r3]
+	push {r0, r1}
 	bl drawPlayer
-	*/
+	pop {r0, r1}
 	bx lr
 
 gameOver:
