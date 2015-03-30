@@ -360,7 +360,7 @@ drawTriangleRight:
 	pastbeginningevencase:
 	sub		r9, #1
 	add		r10, #1
-	mov		r3, #r9
+	mov		r3, r9
 	triangleLineLoopRight:
 	mov		r0, r4
 	mov		r1, r3
