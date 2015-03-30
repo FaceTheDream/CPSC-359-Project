@@ -335,34 +335,41 @@ dtlfl1start: //draw triangle left for loop 1 start
 dtlfl1end:
 	pop 	{r3-r7, pc}
 
-drawTriangleRight: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-	push 	{r3-r7, lr}
-	mov	r3, r0 //x
-	mov	r4, r1 //y
-	mov	r5, r2 // height
-	ldr	r6, [sp,#20] //colour
-	mov	r7, #0 // i
-dtrfl1start: //draw triangle right for loop 1 start
-	cmp	r7, r5
-	bge	dtrfl1end
-	push 	{r6} 	//push 6th paramter, colour onto stack
-	mov	r0, #1
-	push	{r0} 	//push 5th parameter, thickness (1) onto stack
-	add	r0, r7, r7
-	add	r0, #1
-	push 	{r0}	//push 4th parameter, length (2i+1) onto stack
-	mov	r0, #2
-	push 	{r0}	//push 3rd parameter, direction (2)(vertical) onto stack
-	add	r0, r4, r7
-	push 	{r0}	//push 2nd paramteter, (y+i) onto stack
-	sub	r0, r3, r7
-	push 	{r0}	//push 1st paramter, (x-i) onto stack
-	bl	drawLine
-	add	sp, #24
-	add	r7, #1
-	b	dtrfl1start
-dtrfl1end:
-	pop 	{r3-r7, pc}
+drawTriangleRight:
+	// r0 is x
+	// r1 is y
+	// r2 is height
+	// r3 is colour
+	push	{r4-r10, lr}
+	mov		r4, r0	//x start
+	mov		r5, r1	//y start
+	mov		r6, r2	//height
+	mov		r7, r3	//colour
+	mov		r8, #0	//
+	mov		r9, r5  //ymin
+	mov		r10, r5	//ymax
+	rthlps1:
+	cmp		r8, r6
+	bge		rthlpe1
+	cmp		r9, r10
+	bne		pastbegginingevencase
+	mov		r0, r4
+	mov		r1, r5
+	mov		r2, r7
+	bl		drawPixel
+	pastbeginningevencase:
+	sub		r9, #1
+	add		r10, #1
+	mov		r3, #r9
+	triangleLineLoopRight:
+	mov		r0, r4
+	mov		r1, r3
+	mov		r2, r7
+	bl		drawPixel
+	add		r8, #1
+	b		rthlps1
+	rthlpe1:
+	pop		{r4-r10,pc}
 
 drawDiamond:
 //r0 is x, r1 is y, r2 is height
