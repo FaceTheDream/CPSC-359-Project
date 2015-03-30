@@ -59,15 +59,7 @@ InitUArt:
 initSNES:
     //Setting GPIO pin 11 (Clock) to output
 
-    ldr r0, =GPFSEL1
-    ldr r1, [r0]
-    mov r2, #0b0111
-    lsl r2, #3
-    bic r1, r2
-    mov r3, #1
-    lsl r3, #3
-    orr r1, r3
-    str r1, [r0]
+    
 /*
     mov r1, #3
     ldr r0, =GPFSEL1
@@ -83,15 +75,16 @@ initSNES:
     //Setting GPIO pin 9 (Latch) to output
 
 
-    ldr r0, =GPFSEL0
-    ldr r1, [r0]
-    mov r2, #0b0111
-    lsl r2, #27
-    bic r1, r2
-    mov r3, #1
-    lsl r3, #3
-    orr r1, r3
-    str r1, [r0]
+    ldr		r0, =GPIOFSEL0
+	ldr		r1, [r0]
+	
+	// clear bits 27-29 and set them to 001 (Output)
+	bic		r1, #0x38000000
+	orr		r1, #0x08000000
+
+	// write back to GPIOFSEL0
+	str		r1, [r0]
+
 /*    mov r1, #27
     ldr r0, =GPFSEL0
     ldr r2, [r0]
@@ -106,12 +99,16 @@ initSNES:
 
     //Setting GPIO pin 10 (Data) to input
 
-    ldr r0, =GPFSEL1
-    ldr r1, [r0]
-    mov r2, #0b0111
-    lsl r2, #0
-    bic r1, r2
-    str r1, [r0]
+    ldr		r0, =GPIOFSEL1
+	ldr		r1, [r0]
+
+	// clear bits 0-2 (GPIO 10) and 3-5 (GPIO 11), set 0-2 to 000 (Input) and 3-5 to 001 (Output)
+	bic		r1, #0x0000003F
+	orr		r1, #0x00000008
+
+	// write back to GPIOFSEL1
+	str		r1, [r0]
+
 /*
     mov r1, #0
     ldr r0, =GPFSEL1
@@ -161,6 +158,7 @@ readData:
     mov r3, #1
     lsl r3, r0          //aligns pin 10 bit
     and r1, r3          //masks everything else
+
     teq r1, #0
     moveq r0, #0        //return 0
     movne r0, #1        //return 1
