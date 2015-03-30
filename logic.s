@@ -655,7 +655,6 @@ drawScreen:
 	bl drawBG
 	bl drawAuthorNames
 	bl drawGameTitle
-	*/
 	ldr r2, =npcxs
 	ldr r3, =npcys
 	ldr r4, =npchp
@@ -667,7 +666,6 @@ drawScreen:
 	//cmp r5, #0
 	bl drawBeeP		//change back to blne
 	pop {r0, r1}
-	/*
 	ldr r0, [r2, #4]
 	ldr r1, [r3, #4]
 	ldr r5, [r4, #4]
@@ -748,30 +746,41 @@ drawScreen:
 	ldr r5, [r4, #64]
 	cmp r5, #0
 	blne drawBeeQ
+	*/
 	ldr r3, =obstaclexs
 	ldr r4, =obstacleys
 	ldr r5, =obstaclehp
 	ldr r0, [r3]
 	ldr r1, [r4]
 	ldr r2, [r5]
+	push {r0, r1, r2}
 	bl drawBush
+	pop {r0, r1, r2}
 	ldr r0, [r3, #4]
 	ldr r1, [r4, #4]
 	ldr r2, [r5, #4]
+	push {r0, r1, r2}
 	bl drawBush
+	pop {r0, r1, r2}
 	ldr r0, [r3, #8]
 	ldr r1, [r4, #8]
 	ldr r2, [r5, #8]
+	push {r0, r1, r2}
 	bl drawBush
-	ldr r0, [r3, #8]
-	ldr r1, [r4, #8]
-	ldr r2, [r5, #8]
+	pop {r0, r1, r2}
+	ldr r0, [r3, #12]
+	ldr r1, [r4, #12]
+	ldr r2, [r5, #12]
+	push {r0, r1, r2}
 	bl drawBush
-	ldr r0, [r3, #8]
-	ldr r1, [r4, #8]
-	ldr r2, [r5, #8]
+	pop {r0, r1, r2}
+	ldr r0, [r3, #16]
+	ldr r1, [r4, #16]
+	ldr r2, [r5, #16]
+	push {r0, r1, r2}
 	bl drawBush
-	*/
+	pop {r0, r1, r2}
+	/*
 	ldr r2, =playerx
 	ldr r3, =playery
 	ldr r0, [r2]
@@ -779,6 +788,7 @@ drawScreen:
 	push {r0, r1}
 	bl drawPlayer
 	pop {r0, r1}
+	*/
 	bx lr
 
 gameOver:
