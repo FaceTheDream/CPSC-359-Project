@@ -1202,7 +1202,7 @@ setPlayerSize:
 setBeeStingerSize:
 //r0 is the new "height"
 	ldr	r1, =beeStingSize
-	str	r1, [r0]
+	str	r0, [r1]
 	bx	lr
 
 setLazerDirection:
