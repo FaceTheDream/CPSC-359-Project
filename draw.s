@@ -1483,7 +1483,7 @@ beeRedColour:	.word	0xF81F	//lightish red
 beeYellowColour: .word	0xFFE0	//yellow
 beeStingColour:	.word	0x79E0	//brown
 beeWingColour:	.word	0xFFFF	//white
-bushColour:	.word	0x8000	//green
+bushColour:	.word	0x79E0	//green
 crownColour:	.word	0xF81F	//purple
 cursorColour:	.word	0xFFFF	//white
 lazerColour:	.word	0xF800	//red
@@ -1492,7 +1492,7 @@ losWordColour:	.word	0xF81F	//pink
 inGameBGColour:	.word	0x7BEF	//gray
 pauseMenuMC:	.word	0x0000	//black
 pauseMenuBC:	.word	0x7FF	//cyan
-playerBodyColour: .word	0x79E0	//brown
+playerBodyColour: .word	0x7E0	//brown
 playerHelmColour: .word	0xFFCC	//white
 victoryBGColour: .word	0x7E0	//green
 victoryTextColour: .word 0x0000	//black
