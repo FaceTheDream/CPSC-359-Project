@@ -8,10 +8,10 @@ start:	//start up the game
 	mov r1, #0
 	str r1, [r0]
 	ldr r0, =playerx	//move player to middle of screen
-	ldr r1, =0x17E		//382
+	ldr r1, =0x200		//512
 	str r1, [r0]
 	ldr r0, =playery
-	mov r1, #512
+	ldr r1, =0x17E		//382
 	str r1, [r0]
 	mov r1, #1
 	mov r2, #2
