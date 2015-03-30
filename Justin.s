@@ -60,7 +60,8 @@ initSNES:
     //Setting GPIO pin 11 (Clock) to output
 
     mov r1, #3
-    ldr r2, =GPFSEL1
+    ldr r0, =GPFSEL1
+    ldr r2, [r0]
     mov r3, #0b0111
     lsl r3, r1          // r3 = 0111000
     bic r1, r2          //clears pin 11 bits
@@ -72,7 +73,8 @@ initSNES:
     //Setting GPIO pin 9 (Latch) to output
 
     mov r1, #27
-    ldr r2, =GPFSEL0
+    ldr r0, =GPFSEL0
+    ldr r2, [r0]
     mov r3, #0b0111
     lsl r3, r1          //creates the mask to clear bits
     bic r1, r2          //clears pin 9 bits
@@ -84,7 +86,8 @@ initSNES:
     //Setting GPIO pin 10 (Data) to input
 
     mov r1, #0
-    ldr r2, =GPFSEL1
+    ldr r0, =GPFSEL1
+    ldr r2, [r0]
     mov r3, #0b0111
     lsl r3, r1          //creates the mask to clear bits
     bic r1, r2          //clears pin 10 bits
@@ -198,7 +201,7 @@ finishReading:
     bl writeClock
 
     add i, #1           //increments i
-    teq i, #16
+    cmp i, #16
     blt pulseLoop       //branches if i < 16 to start of loop
 
     ror buttons, #16    //rotates to get the correct format
