@@ -50,10 +50,11 @@ InitUArt:
     bx, lr
 
 */
-.globl initSNES
-
 .equ GPFSEL1, 0x20200004
 .equ GPFSEL0, 0x20200000
+.globl initSNES
+
+
 
 
 initSNES:
@@ -75,7 +76,7 @@ initSNES:
     //Setting GPIO pin 9 (Latch) to output
 
 
-    ldr		r0, =GPIOFSEL0
+    ldr		r0, =GPFSEL0
 	ldr		r1, [r0]
 	
 	// clear bits 27-29 and set them to 001 (Output)
@@ -99,7 +100,7 @@ initSNES:
 
     //Setting GPIO pin 10 (Data) to input
 
-    ldr		r0, =GPIOFSEL1
+    ldr		r0, =GPFSEL1
 	ldr		r1, [r0]
 
 	// clear bits 0-2 (GPIO 10) and 3-5 (GPIO 11), set 0-2 to 000 (Input) and 3-5 to 001 (Output)
@@ -124,7 +125,7 @@ initSNES:
     // Write r0 value to Clock
 writeClock:
     mov r1, #1          //sets pin 11
-    ldr r2, =GPFSEL1    //sets GPFSEL1
+    ldr r2, =0x20200004    //sets GPFSEL1
     mov r3, #1
     lsl r3, r1          //aligns bit for pin 11
     teq r0, #0          //checks what r0 is equal to
@@ -138,7 +139,7 @@ writeClock:
 .globl writeLatch
 writeLatch:
     mov r1, #9          //sets pin 9
-    ldr r2, =GPFSEL0    //sets GPFSEL0
+    ldr r2, =0x20200000    //sets GPFSEL0
     mov r3, #1
     lsl r3, r1          //aligns bit for pin 9
     teq r0, #0          //checks what r0 is equal to
@@ -153,12 +154,13 @@ writeLatch:
 .globl readData
 readData:
     mov r0, #10            //sets pin 10
-    ldr r2, =GPFSEL0    //sets GPFSEL0
+    ldr r2, =0x20200000    //sets GPFSEL0
     ldr r1, [r2, #52]   //sets GPLEV0
     mov r3, #1
+
     lsl r3, r0          //aligns pin 10 bit
     and r1, r3          //masks everything else
-
+testRead:
     teq r1, #0
     moveq r0, #0        //return 0
     movne r0, #1        //return 1
@@ -185,8 +187,12 @@ waitLoop:
 .globl readSNES
 readSNES:
     push {r5, r6, lr}
-    buttons .req    r5  //Sets register to store buttons
+    buttons .req    r12  //Sets register to store buttons
     mov buttons, #0
+    i .req          r6  //sets register to store iterator
+    mov i, #0
+
+
 
     mov r0, #1           //writes 1 to clock
     bl writeClock
@@ -200,8 +206,8 @@ readSNES:
     mov r0, #0           //writes 0 to latch
     bl writeLatch
 
-    i .req          r6  //sets register to store iterator
-    mov i, #0
+    b testPulse
+   
 pulseLoop:
     
     mov r0, #6           //waits 6 microseconds
@@ -214,25 +220,25 @@ pulseLoop:
     bl simpleWait
 
     bl readData         //reads data and stores it in buttons
-    teq r0, #0
-    beq add0
+   /* teq r0, #0
+    beq add0*/
 
-    eor buttons, #1     //places a 1 in bit 0, then rotates right
-    ror buttons, #1
+    lsl buttons, #1     //places a 1 in bit 0, then rotates right
+    orr buttons, r0/*
     b   finishReading
 
 add0:
-    ror buttons, #1     //rotates right, (stores a 0 bit)
+    ror buttons, #1     //rotates right, (stores a 0 bit)*/
 
 finishReading:
     mov r0, #1          //writes 1 to clock
     bl writeClock
-
+testPulse:
     add i, #1           //increments i
     cmp i, #16
     blt pulseLoop       //branches if i < 16 to start of loop
 
-    ror buttons, #16    //rotates to get the correct format
+//    ror buttons, #16    //rotates to get the correct format
     mov r0, buttons     //moves buttons to r0 to be returned
     pop {r5,r6,pc}
     .unreq  buttons     //unregisters buttons
