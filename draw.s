@@ -101,9 +101,6 @@ endDrawPixel:				     // end of drawPixel
 	bx     lr                            // branch to calling code
 
 drawBG: //r0 is the colour to set the background to
-	//NOTE although the max for x is 1024 and the max for y is 768, 
-	//	the maximum amount of rows is 768 and the maximum amount of columns is 1024
-	//	this is due to the fact that when you change rows you travel along the y axis and vice versa
 	//if the colour is 1, then the inGameBGColour should be used
 	push 	{r4-r6,lr}	      //push registers onto stack so as not to alter them
 	cmp	r0, #1
@@ -115,13 +112,13 @@ usualBGDrawing:
 	mov	r4, #0        //initialize row number
 
 rowBGloops:	      // loop through all the rows on the screen
-	cmp	r4, #768      //compare row number with 768
-	bge	rowBGloope    // end if row number >= 768
+	cmp	r4, #1024      //compare row number with 1024
+	bge	rowBGloope    // end if row number >= 1024
 	mov	r5, #0        //initialize column number
 
 colBGloops:	      //loop through all the columns on the screen
-	cmp	r5, #1024     //compare column number with 1024
-	bge	colBGloope    //end if column number >= 1024
+	cmp	r5, #768      //compare column number with 768
+	bge	colBGloope    //end if column number >= 768
 
 	mov	r0, r4	      //set x to draw
 	mov	r1, r5        //set y to draw
@@ -1269,7 +1266,7 @@ drawAuthorNames: //draws the author names in the top right corner of the screen
 		//takes no arguments
 	push	{lr}
 	ldr	r0, =0x37D	//(893)
-	mov	r1, #0
+	mov	r1, #15
 	bl	drawKyleBuettner
 	ldr	r0, =0x39B	// (923)
 	mov	r1, #30
