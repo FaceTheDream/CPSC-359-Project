@@ -106,26 +106,29 @@ drawTriangleDown:
 	mov		r8, #0		//height counter
 	mov		r9, r4		//xMin for each row
 	mov		r10, r4		//xMax for each row
-	dtulps1:
+
+downCheckHeight:
 	cmp		r8, r6
-	bge		dtulpe1
+	bge		downEnd
 	
-	dtulps2:
+downCheckWidth:
 	cmp		r4,	r10
-	bgt		dtulpe2
+	bgt		downEnd2
 	mov		r0, r4
 	mov		r1, r5
 	mov		r2, r7
 	bl		drawPixel
 	add		r4, #1
-	b	dtulps2
-	dtulpe2:
+	b	    downCheckWidth
+
+downEnd2:
 	sub		r9, #1
 	add		r10, #1
 	mov		r4, r9
 	sub		r5,	#1
 	add		r8, #1
-	b		dtulps1
-	dtulpe1:
+	b		downCheckHeight
+
+downEnd:
 	
 	pop		{r4-r10, pc}
