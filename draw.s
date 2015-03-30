@@ -733,11 +733,12 @@ drawBush: //draws "bush" cover
 //r0 is the x location
 //r1 is the y location
 //r2 is the size of the bush (bush is square)
-	push	{lr}
+	push	{r4,lr}
 	cmp	r2, #0
 	ble	endOfDrawBush	//skips drawing the bush if size is less than or equal to 0
 	push {r3}
-	mul	r2, #10 		// makes the bush "seeable"
+	mov	r4, #10
+	mul	r2, r4 		// makes the bush "seeable"
 	ldr	r3, =bushColour
 	ldr	r3, [r3]
 	push 	{r2}
@@ -749,7 +750,7 @@ drawBush: //draws "bush" cover
 	add	sp, #20		//remove drawRect parameters from stack
 	pop {r3}		//restore registers
 endOfDrawBush:
-	pop	{pc}
+	pop	{r4,pc}
 
 drawLazer: //draws player lazer projectile
 // r0 is x location
