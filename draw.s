@@ -457,37 +457,24 @@ drawRectB: //rectangle with border
 	add	sp, #20
 	pop 	{r3-r10, pc}
 	
-
 drawBeeWings: //very boxy wings
 //r0 is x location
 //r1 is y location
 //r2 is size (square-ish)
-	push 	{r3-r6, lr}
-	mov	r3, r0 		//x
-	mov	r4, r1 		//y
-	mov	r5, r2 		//size
-	ldr	r6, =beeWingColour
-	ldr	r6, [r6]	//colour
-	push    {r5}
-	push    {r5}
-	push    {r6}
-	push 	{r4}
-	push 	{r3}
-	bl	drawRect 	//main wing
-	add	sp, #20		//remove drawRect parameters from the stack
-	sub	r4,#1
-	push 	{r6}
-	mov	r0, #1
-	push 	{r0}
-	sub	r1,r2,#2
-	push 	{r1}
-	push 	{r0}
-	add	r1,r3,#1
-	sub	r0,r4,#1
-	push 	{r0,r1}
-	bl	drawLine  	//hint of wing-curve
-	add	sp, #24		//remove drawLine parameters from the stack
-	pop 	{r3-r6, pc}
+	push	{r4-r10,lr}
+	mov		r4, r0
+	mov		r5, r1
+	mov		r6, r2
+	ldr		r7, =beeWingColour
+	ldr		r7, [r7]
+	mov		r0, r4
+	mov		r1, r5
+	mov		r2, r7
+	mov		r3, r6
+	push	{r0,r1,r2,r3,r6}
+	bl		drawRect
+	add		sp, #20
+	pop		{r4-r10,pc}
 	
 drawBeeEye:
 //r0 is x
