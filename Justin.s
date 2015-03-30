@@ -142,14 +142,16 @@ readData:
     //Clock loop, where r0 is the time delay in micro seconds
 .globl simpleWait
 simpleWait:
-    ldr r1, =0x20003004 //address of CLO
-    ldr r1, [r1]        //reads CLO
-    add r1, r0          //adds time delay
+    push    {r4-r6}
+    ldr r4, =0x20003004 //address of CLO
+    ldr r5, [r4]        //reads CLO
+    add r5, r0          //adds time delay
 waitLoop:
-    ldr r2, [r0]        //loads current CLO
-    cmp r1, r2          //compares current CLO with CLO + time delay
+    ldr r6, [r4]        //loads current CLO
+    cmp r5, r6          //compares current CLO with CLO + time delay
     bhi waitLoop        //branches when times match up
 
+    pop     {r4-r6}
     bx lr
 
 
