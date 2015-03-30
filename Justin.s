@@ -1,55 +1,5 @@
 .section    .text
-/*
-.globl InitUArt
-.equ AUXENB, 0x7E215004
-.equ AUX_MU_IIR_REG, 0x7E215044
-.equ AUX_MU_CNTL_REG, 0x7E215060
-.equ AUX_MU_LCR_REG, 0x7E21504C
-.equ AUX_MU_MCR_REG, 0x7E215050
-.equ AUX_MU_IIR_REG, 0x7E215048
-.equ AUX_MU_BAUD_REG, 0x7E215068
-.equ GPFSEL1, 0x20200004
 
-
-
-InitUArt:
-    ldr r2, =AUXENB
-    mov r1, 0x00000001
-    str r1, [r2]
-
-    ldr r2, =AUX_MU_IIR_REG
-    mov r1, 0x000000000
-    str r1, [r2]
-
-    ldr r2, =AUX_MU_CNTL_REG
-    mov r1, 0x00000000
-    str r1, [r2]
-
-    ldr r2, =AUX_MU_LCR_REG
-    mov r1, 0x00000011
-    str r1, [r2]
-
-    ldr r2, =AUX_MU_MCR_REG
-    mov r1, 0x00000000
-    str r1, [r2]
-
-    ldr r2, =AUX_MU_IIR_REG
-    mov r1, 0x000000C6
-    str r1, [r2]
-
-    ldr r2 =AUX_MU_BAUD_REG
-    mov r1, 270
-    str r1, [r2]
-
-    ldr r0 = GPFSEL1
-    ldr r1, [r0]
-    mov r2, #0b0111111
-    lsl r2, #12
-    bic r1, r2
-
-    bx, lr
-
-*/
 .equ GPFSEL1, 0x20200004
 .equ GPFSEL0, 0x20200000
 .globl initSNES
@@ -60,18 +10,7 @@ InitUArt:
 initSNES:
     //Setting GPIO pin 11 (Clock) to output
 
-    
-/*
-    mov r1, #3
-    ldr r0, =GPFSEL1
-    ldr r2, [r0]
-    mov r3, #0b0111
-    lsl r3, r1          // r3 = 0111000
-    bic r2, r3          //clears pin 11 bits
-    mov r3, #1          //output function code
-    lsl r3, r1          //r3 = 0 001 000
-    orr r2, r3          //set pin 11 function
-    str r2, [r0]        //write back to GPFSEL1*/
+
 
     //Setting GPIO pin 9 (Latch) to output
 
@@ -86,16 +25,6 @@ initSNES:
 	// write back to GPIOFSEL0
 	str		r1, [r0]
 
-/*    mov r1, #27
-    ldr r0, =GPFSEL0
-    ldr r2, [r0]
-    mov r3, #0b0111
-    lsl r3, r1          //creates the mask to clear bits
-    bic r2, r3          //clears pin 9 bits
-    mov r3, #1          //output function code
-    lsl r3, r1          //shifts output function code to match pin 9
-    orr r2, r3          //set pin 9 function
-    str r2, [r0]        //write back to GPFSEL0*/
 
 
     //Setting GPIO pin 10 (Data) to input
@@ -110,22 +39,14 @@ initSNES:
 	// write back to GPIOFSEL1
 	str		r1, [r0]
 
-/*
-    mov r1, #0
-    ldr r0, =GPFSEL1
-    ldr r2, [r0]
-    mov r3, #0b0111
-    lsl r3, r1          //creates the mask to clear bits
-    bic r2, r3          //clears pin 10 bits
-    str r2, [r0]        //write back to GPFSEL1
-    */
+
     bx lr
 
 .globl writeClock
     // Write r0 value to Clock
 writeClock:
-    mov r1, #1          //sets pin 11
-    ldr r2, =0x20200004    //sets GPFSEL1
+    mov r1, #11          //sets pin 11
+    ldr r2, =0x20200000    //sets GPFSEL1
     mov r3, #1
     lsl r3, r1          //aligns bit for pin 11
     teq r0, #0          //checks what r0 is equal to
@@ -187,7 +108,7 @@ waitLoop:
 .globl readSNES
 readSNES:
     push {r5, r6, lr}
-    buttons .req    r12  //Sets register to store buttons
+    buttons .req    r5  //Sets register to store buttons
     mov buttons, #0
     i .req          r6  //sets register to store iterator
     mov i, #0
@@ -220,11 +141,11 @@ pulseLoop:
     bl simpleWait
 
     bl readData         //reads data and stores it in buttons
-   /* teq r0, #0
-    beq add0*/
+    teq r0, #0
+    beq add0
 
-    lsl buttons, #1     //places a 1 in bit 0, then rotates right
-    orr buttons, r0/*
+    eor buttons, #1     //places a 1 in bit 0, then rotates right
+    ror buttons, #1
     b   finishReading
 
 add0:
@@ -238,7 +159,7 @@ testPulse:
     cmp i, #16
     blt pulseLoop       //branches if i < 16 to start of loop
 
-//    ror buttons, #16    //rotates to get the correct format
+    ror buttons, #17    //rotates to get the correct format
     mov r0, buttons     //moves buttons to r0 to be returned
     pop {r5,r6,pc}
     .unreq  buttons     //unregisters buttons
@@ -308,43 +229,44 @@ noPixel$:
 
 .globl drawScore
 drawScore:
+	push {lr}
     mov r1, #0
     mov r2, #0
-    ldr r3, =0xFFFF
+    ldr r3, =0x0000
     mov r0, #'S'
     bl drawChar
 
     mov r1, #10
     mov r2, #0
-    ldr r3, =0xFFFF
+    ldr r3, =0x0000
     mov r0, #'c'
     bl drawChar
 
     mov r1, #20
     mov r2, #0
-    ldr r3, =0xFFFF
+    ldr r3, =0x0000
     mov r0, #'o'
     bl drawChar
 
     mov r1, #30
     mov r2, #0
-    ldr r3, =0xFFFF
+    ldr r3, =0x0000
     mov r0, #'r'
     bl drawChar
 
     mov r1, #40
     mov r2, #0
-    ldr r3, =0xFFFF
+    ldr r3, =0x0000
     mov r0, #'e'
     bl drawChar
 
     mov r1, #50
     mov r2, #0
-    ldr r3, =0xFFFF
+    ldr r3, =0x0000
     mov r0, #':'
     bl drawChar
 
-    bx lr
+    pop {pc}
 
     //Takes in score in r0, and draws it on screen
 .globl drawScoreNum
@@ -373,7 +295,7 @@ drawScoreNum:
 drawHundred:
     mov r1, #60
     mov r2, #0
-    ldr r3, =0xFFFF
+    ldr r3, =0x0000
     b drawChar
 
     cmp r4, #90
@@ -426,7 +348,7 @@ drawHundred:
 drawTen:
     mov r1, #70
     mov r2, #0
-    ldr r3, =0xFFFF
+    ldr r3, =0x0000
     bl drawChar
 
     cmp r4, #9
@@ -470,10 +392,10 @@ drawTen:
 drawOne:
     mov r1, #80
     mov r2, #0
-    ldr r3, =0xFFFF
+    ldr r3, =0x0000
     b drawChar
 
-    pop {r4, pc}
+    pop {r4, r5, pc}
 
     
 
@@ -549,208 +471,4 @@ font:
     .incbin	"font.bin"
 
 
-/*
-.globl InitFrameBuffer
-InitFrameBuffer:
-    infoAdr .req r4
-    push    {r4, lr}
-    ldr     infoAdr, =FrameBufferInfo       // get framebuffer info address
-    
-	result  .req r0
 
-    mov     r0, infoAdr                     // store fb info address as mail message
-	add		r0,	#0x40000000					// set bit 30; tell GPU not to cache changes
-    mov     r1, #1                          // mailbox channel 1
-    bl      MailboxWrite                    // write message
-    
-    mov     r0, #1                          // mailbox channel 1
-    bl      MailboxRead                     // read message
-    
-    teq     result, #0
-    movne   result, #0
-    popne   {r4, pc}                        // return 0 if message from mailbox is 0
-    
-pointerWait$:
-    ldr     result, [infoAdr, #32]
-    teq     result, #0
-    beq     pointerWait$                    // loop until the pointer is set
-	
-	ldr		r1,		=FrameBufferPointer
-	str		result,	[r1]					// store the framebuffer pointer
-    
-    mov     result, infoAdr                 // set result to address of fb info struct
-    pop     {r4, pc}                        // return
-    
-    .unreq  result
-    .unreq  infoAdr
-
-.globl MailboxWrite
-MailboxWrite:
-    tst     r0, #0b1111                     // if lower 4 bits of r0 != 0 (must be a valid message)
-    movne   pc, lr                          //  return
-    
-    cmp     r1, #15                         // if r1 > 15 (must be a valid channel)
-    movhi   pc, lr                          //  return
-    
-    channel .req r1
-    value   .req r2
-    mov     value, r0
-    
-    mailbox .req r0
-	ldr     mailbox,=0x2000B880
-    
-wait1$:
-    status  .req r3
-    ldr     status, [mailbox, #0x18]        // load mailbox status
-    
-    tst     status, #0x80000000             // test bit 32
-    .unreq  status
-    bne     wait1$                          // loop while status bit 32 != 0
-    
-    add     value, channel                  // value += channel
-    .unreq  channel
-    
-    str     value, [mailbox, #0x20]         // store message to write offset
-    
-    .unreq  value
-    .unreq  mailbox
-    
-    bx		lr
-
-
-* Read from mailbox
- * Args:
- *  r0 - channel
- * Return:
- *  r0 - message
- *
-.globl MailboxRead
-MailboxRead:
-    cmp     r0, #15                         // return if invalid channel (> 15)
-    movhi   pc, lr
-    
-    channel .req r1
-    mov     channel, r0
-    
-    mailbox .req r0
-	ldr     mailbox,=0x2000B880
-    
-rightmail$:
-wait2$:
-    status  .req r2
-    ldr     status, [mailbox, #0x18]        // load mailbox status
-    
-    tst     status, #0x4000000              // test bit 30
-    .unreq  status
-    bne     wait2$                          // loop while status bit 30 != 0
-    
-    mail    .req r2
-    ldr     mail, [mailbox, #0]             // retrieve message
-    
-    inchan  .req r3
-    and     inchan, mail, #0b1111           // mask out lower 4 bits of message into inchan
-    
-    teq     inchan, channel
-    .unreq  inchan
-    bne     rightmail$                      // if not the right channel, loop
-    
-    .unreq  mailbox
-    .unreq  channel
-    
-    and     r0, mail, #0xfffffff0           // mask out channel from message, store in return (r0)
-    .unreq  mail
-    
-	bx		lr
-*/
-
-/*  interupt stuff
-
-hang:
-	b		hang
-
-InstallIntTable:
-	ldr		r0, =IntTable
-	mov		r1, #0x00000000
-
-	// load the first 8 words and store at the 0 address
-	ldmia	r0!, {r2-r9}
-	stmia	r1!, {r2-r9}
-
-	// load the second 8 words and store at the next address
-	ldmia	r0!, {r2-r9}
-	stmia	r1!, {r2-r9}
-
-	// switch to IRQ mode and set stack pointer
-	mov		r0, #0xD2
-	msr		cpsr_c, r0
-	mov		sp, #0x8000
-
-	// switch back to Supervisor mode, set the stack pointer
-	mov		r0, #0xD3
-	msr		cpsr_c, r0
-	mov		sp, #0x8000000
-
-	bx		lr	
-
-irq:
-	push	{r0-r12, lr}
-
-	// test if there is an interrupt pending in IRQ Pending 2
-	ldr		r0, =0x2000B200
-	ldr		r1, [r0]
-	tst		r1, #0x200		// bit 9
-	beq		irqEnd
-
-	// test that at least one GPIO IRQ line caused the interrupt
-	ldr		r0, =0x2000B208		// IRQ Pending 2 register
-	ldr		r1, [r0]
-	tst		r1, #0x001E0000
-	beq		irqEnd
-
-	// test if GPIO line 10 caused the interrupt
-	ldr		r0, =0x20200040		// GPIO event detect status register
-	ldr		r1, [r0]
-	tst		r1, #0x400			// bit 10
-	beq		irqEnd
-
-	// invert the LSB of SNESDat
-	ldr		r0, =SNESDat
-	ldr		r1, [r0]
-	eor		r1, #1
-	str		r1, [r0]
-
-	// clear bit 10 in the event detect register
-	ldr		r0, =0x20200040
-	mov		r1, #0x400
-	str		r1, [r0]
-	
-irqEnd:
-	pop		{r0-r12, lr}
-	subs	pc, lr, #4
-
-.section .data
-
-SNESDat:
-	.int	1
-
-IntTable:
-	// Interrupt Vector Table (16 words)
-	ldr		pc, reset_handler
-	ldr		pc, undefined_handler
-	ldr		pc, swi_handler
-	ldr		pc, prefetch_handler
-	ldr		pc, data_handler
-	ldr		pc, unused_handler
-	ldr		pc, irq_handler
-	ldr		pc, fiq_handler
-
-reset_handler:		.word InstallIntTable
-undefined_handler:	.word hang
-swi_handler:		.word hang
-prefetch_handler:	.word hang
-data_handler:		.word hang
-unused_handler:		.word hang
-irq_handler:		.word irq
-fiq_handler:		.word hang
-
-*/

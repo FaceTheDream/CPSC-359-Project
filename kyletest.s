@@ -10,6 +10,19 @@ starTest:
 	bl drawGameTitle
 	pop {r0}
 	
+
+testRectB:
+	mov r0, #100
+	mov r1, #0
+	mov r2, #30
+	ldr r3, =0x0000
+	ldr r4, =0x7FF
+	mov r5, #768
+	mov r6, #600
+	push {r3, r4, r5, r6}
+	bl drawRectB
+	pop {r3, r4, r5, r6}
+/*
 testBee:
 	ldr r0, =0x180
 	ldr r1, =0xa
@@ -20,7 +33,8 @@ testBee:
 	bl drawBeeBody
 	pop {r0, r1}
 	
-/*testPawn:		
+
+testPawn:		
 //currently draws a yellow rectangle, a small vertical black line, and a long horizontal yellow line
 //will not draw anything after drawn
 	ldr r0, =0x180			//x coordinate of pawn bee
@@ -46,7 +60,7 @@ testQueen:
 	ldr r0, =0x2f5			//x coordinate of queen bee
 	ldr r1, =0x200			//y coordinate of queen bee
 	push {r0, r1}
-	bl drawBeeK
+	bl drawBeeQ
 	pop {r0, r1}
 	
 
@@ -76,7 +90,7 @@ testRect:
 	mov r4, #40				//width of rectangle
 	push {r0, r1, r2, r3, r4}
 	bl drawRect
-	pop {r0, r1}
+	pop {r0-r4}
 	
 
 testLazer:
@@ -101,10 +115,11 @@ testPause:
 	bl drawPauseScreen
 	pop {r0}
 	
+
 testGO:
 	bl drawGameOverScreen
 	
 testVictory:
 	bl drawVictoryScreen
-	
-*/
+	*/
+

@@ -3,6 +3,7 @@
 .section .text
 
 start:	//start up the game
+	push {lr}
 	ldr r0, =score	//set score to 0
 	mov r1, #0
 	str r1, [r0]
@@ -67,9 +68,10 @@ start:	//start up the game
 	mov r1, #0
 	str r1, [r0]
 	ldr r0, =npcys		//set each npc's y position
-	mov r1, #0
-	mov r2, #0
-	mov r3, #16
+	mov r1, #0		//input to store
+	mov r2, #0		//npc counter
+	mov r3, #17
+
 startLoop:
 	cmp r2, r3
 	beq endLoop
@@ -79,9 +81,9 @@ startLoop:
 	
 endLoop:
 	ldr r0, =npcxs		//set each npc's x position
-	mov r1, #512
-	mov r2, #0
-	mov r3, #16
+	mov r1, #512		//input to store
+	mov r2, #0		//npc counter
+	mov r3, #17
 	
 nextLoop:
 	cmp r2, r3
@@ -110,37 +112,37 @@ oneTurn:
 	bl readSNES		//detect inputs
 	ldr r3, =0x8		//1000 = start button
 	tst r0, r3
-	beq oneTurn2
+	bne oneTurn2
 	b pauseMenu
 	
 oneTurn2:
 	ldr r3, =0x10		// 10000 = up button
 	tst r0, r3
-	beq oneTurn3
+	bne oneTurn3
 	bl playerUp
 	
 oneTurn3:
 	ldr r3, =0x20		// 100000 = down button
 	tst r0, r3
-	beq oneTurn4
+	bne oneTurn4
 	bl playerDown
 	
 oneTurn4:
 	ldr r3, =0x40		// 1000000 = left button
 	tst r0, r3
-	beq oneTurn5
+	bne oneTurn5
 	bl playerLeft
 	
 oneTurn5:
 	ldr r3, =0x80		// 10000000 = right button
 	tst r0, r3
-	beq oneTurn5
+	bne oneTurn
 	bl playerRight
 	
 oneTurn6:
 	ldr r3, =0x100		// 100000000 = 'a' button
 	tst r0, r3
-	beq oneTurn7
+	bne oneTurn7
 	bl playerShoot
 	
 oneTurn7:
@@ -153,13 +155,14 @@ npcStuff:
 	ldr r5, =npchp
 	ldr r5, [r5, r1, lsl #2]	//r5 = current npc's hp
 	cmp r5, #0					//skip update if hp = 0
-	beq npcStuff
+	beq modLoop3
 	//puts random number %4 in r2
-	ldr r3, =0x10DCD			//69069
+	ldr r3, =0x5				//5
 	ldr r2, =0x20003004			//clock address
 	ldr r2, [r2]				//current clock value
-	mul r2, r3, r2				//clock*69069
-	add r2, r3, r2				//clock*69069+69069
+	ldr r6, =0xFFFFFFFC
+	bic r2, r6
+	add r2, r3, r2				//clock*5+5
 modLoop:				//r2 mod 4
 	sub r2, r2, #4
 	cmp r2, #0
@@ -181,7 +184,8 @@ modLoopE:
 	//puts random number %10 in r2
 	ldr r2, =0x20003004				//clock address
 	ldr r2, [r2]					//current clock value
-	mul r2, r3, r2
+	ldr r6, =0xFFFFFFFC
+	bic r2, r6
 	add r2, r3, r2
 	
 modLoop2:				//r2 mod 10
@@ -194,6 +198,8 @@ modLoop2E:
 	add r2, r2, #10
 	cmp r2, #0				//if the random number from 0-9 is 0, npc shoots a bullet
 	bleq npcShoot
+
+modLoop3:
 	add r1, r1, #1
 	b npcStuff
 	
@@ -208,7 +214,7 @@ movBulls:
 	str r4, [r7]				//set current bullet
 	//make each bullet continue moving
 	cmp r4, r5					//if max bullets is reached, leave loop
-	beq afterBulls
+	bge afterBulls
 	ldr r0, =bulletfaces		//direction bullets face
 	ldr r0, [r0, r4, lsl #2]
 	cmp r0, #5
@@ -447,26 +453,29 @@ colEnd:
 	b oneTurn			//start next turn
 	
 pauseMenu:
+	ldr r0, =crntpause
+	ldr r0, [r0]
 	bl drawPauseScreen		//draw the pause screen
+pauseTest:
 	bl readSNES				//detect inputs
 	ldr r3, =0x8			//1000 = start button
 	tst r0, r3				//if start button is pressed, leave pause screen
-	beq pauseMenu2
+	beq oneTurn
 	
 pauseMenu2:
 	//put up button value memory location in r2
 	//put down button value memory location in r3
 	ldr r3, =0x10	//10000 = up button
 	tst r0, r3		//if up is pressed, move cursor up
-	bleq pauseUp
+	beq pauseUp
 	ldr r3, =0x20	//100000 = down button
 	tst r0, r3		//if down is pressed, move cursor down
-	bleq pauseDown
+	beq pauseDown
 	//put 'a' button value memory location in r2
 	ldr r3, =0x100	//'a' button
 	tst r0, r3		//if 'a' button is pressed, execute current selected pause option
 	beq pSelect
-	b pauseMenu		//else, loop pause menu
+	b pauseTest		//else, loop pause menu
 	
 pauseUp:
 	ldr r0, =crntpause	//check current pause cursor location
@@ -475,7 +484,8 @@ pauseUp:
 	subeq r0, r0, #1
 	cmp r0, #2			//if cursor is at bottom position, move to middle position
 	subeq r0, r0, #1
-	bx lr
+	bl drawPauseScreen
+	b pauseTest
 	
 pauseDown:
 	ldr r0, =crntpause	//check current pause cursor location
@@ -484,7 +494,8 @@ pauseDown:
 	addeq r0, r0, #1
 	cmp r0, #1			//if cursor is at middle position, move to bottom position
 	addeq r0, r0, #1
-	bx lr
+	bl drawPauseScreen
+	b pauseTest
 	
 pSelect:
 	ldr r0, =crntpause	//check current pause cursor location
@@ -493,9 +504,10 @@ pSelect:
 	beq endSub
 	cmp r0, #1			//if cursor is at middle position (restart game), go to start of game
 	beq start
-	bx lr				//else, quit game
+	pop {pc}			//else, quit game
 	
 playerUp:
+	push {lr}
 	ldr r0, =playerface
 	mov r1, #0
 	str r1, [r0]		//make current player direction up
@@ -505,9 +517,10 @@ playerUp:
 	beq endSub
 	sub r1, r1, #1		//else, move player up
 	str r1, [r0]
-	bx lr
+	pop {pc}
 	
 playerDown:
+	push {r4, lr}
 	ldr r0, =playerface
 	mov r1, #1
 	str r1, [r0]		//make current player direction down
@@ -518,9 +531,10 @@ playerDown:
 	beq endSub
 	add r1, r1, #1		//else, move player down
 	str r1, [r0]
-	bx lr
+	pop {r4, pc}
 	
 playerLeft:
+	push {lr}
 	ldr r0, =playerface
 	mov r1, #2
 	str r1, [r0]		//make current player direction left
@@ -530,9 +544,10 @@ playerLeft:
 	beq endSub
 	sub r1, r1, #1		//else, move player left
 	str r1, [r0]
-	bx lr
+	pop {pc}
 	
 playerRight:
+	push {r4, lr}
 	ldr r0, =playerface
 	mov r1, #3
 	str r1, [r0]		//make current player direction right
@@ -543,9 +558,10 @@ playerRight:
 	beq endSub
 	add r1, r1, #1		//else, move player right
 	str r1, [r0]
-	bx lr
+	pop {r4, pc}
 	
 playerShoot:
+	push {r4, r5, lr}
 	ldr r0, =playerface
 	ldr r0, [r0]
 	ldr r1, =playerx
@@ -559,16 +575,18 @@ playerShoot:
 	moveq r4, #0
 	cmp r5, #14					//if last bullet was not the last in the aray, increase current bullet by 1
 	addne r4, r4, #1
-	str r4, [r3]				//store current bullet
-	ldr r3, =bulletfaces		//change current bullet's direction to match player's
-	str r0, [r3, r4, lsl #2]
+	str r4, [r3]
 	ldr r3, =bulletxs			//change current bullet's x to match player's
-	str r1, [r3, r4, lsl #2]
+	str r0, [r3, r4, lsl #2]
 	ldr r3, =bulletys			//change current bullet's y to match player's
+	str r1, [r3, r4, lsl #2]				//store current bullet
+	ldr r3, =bulletfaces		//change current bullet's direction to match player's
 	str r2, [r3, r4, lsl #2]
-	bx lr
+	//bl drawLazer
+	pop {r4, r5, pc}
 
 npcUp:
+	push {lr}
 	ldr r0, =currentnpcface		//check current npc's direction
 	mov r1, #0
 	str r1, [r0]
@@ -580,9 +598,10 @@ npcUp:
 	beq endSub
 	sub r2, r2, #1
 	str r2, [r1, r0, lsl #2]
-	bx lr
+	pop {pc}
 	
 npcDown:
+	push {r4, lr}
 	ldr r0, =currentnpcface
 	mov r1, #1
 	str r1, [r0]
@@ -595,9 +614,10 @@ npcDown:
 	beq endSub
 	add r2, r2, #1
 	str r2, [r1, r0, lsl #2]
-	bx lr
+	pop {r4, pc}
 	
 npcLeft:
+	push {lr}
 	ldr r0, =currentnpcface
 	mov r1, #2
 	str r1, [r0]
@@ -609,9 +629,10 @@ npcLeft:
 	beq endSub
 	sub r2, r2, #1
 	str r2, [r1, r0, lsl #2]
-	b endSub
+	pop {pc}
 	
 npcRight:
+	push {r4, lr}
 	ldr r0, =currentnpcface
 	mov r1, #3
 	str r1, [r0]
@@ -624,9 +645,10 @@ npcRight:
 	beq endSub
 	sub r2, r2, #1
 	str r2, [r1, r0, lsl #2]
-	bx lr
+	pop {r4, pc}
 	
 npcShoot:
+	push {r4, r5, lr}
 	ldr r5, =currentnpc
 	ldr r5, [r5]
 	ldr r0, =currentnpcface
@@ -648,154 +670,202 @@ npcShoot:
 	str r1, [r3, r4, lsl #2]
 	ldr r3, =bulletys
 	str r2, [r3, r4, lsl #2]
-	bx lr
+	pop {r4, r5, pc}
 	
 drawScreen:
+	push {r0,r4,r5,lr}
 	ldr r0, =0xFFFF
-	push {r0}
 	bl drawBG
 	bl drawAuthorNames
 	bl drawGameTitle
-	pop {r0}
-	/*
+	/*bl drawScore
+	ldr r0, =score
+	ldr r0, [r0]
+	bl drawScoreNum*/
 	ldr r2, =npcxs
 	ldr r3, =npcys
 	ldr r4, =npchp
 	ldr r0, [r2]
 	ldr r1, [r3]
 	ldr r5, [r4]
-	ldr r3, =0xFFFF
-	push {r0, r1}
-	//cmp r5, #0
-	bl drawBeeP		//change back to blne
-	pop {r0, r1}
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
+	blne drawBeeP
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #4]
 	ldr r1, [r3, #4]
 	ldr r5, [r4, #4]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeP
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #8]
 	ldr r1, [r3, #8]
 	ldr r5, [r4, #8]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeP
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #12]
 	ldr r1, [r3, #12]
 	ldr r5, [r4, #12]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeP
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #16]
 	ldr r1, [r3, #16]
 	ldr r5, [r4, #16]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeP
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #20]
 	ldr r1, [r3, #20]
 	ldr r5, [r4, #20]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeP
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #24]
 	ldr r1, [r3, #24]
 	ldr r5, [r4, #24]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeP
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #28]
 	ldr r1, [r3, #28]
 	ldr r5, [r4, #28]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeP
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #32]
 	ldr r1, [r3, #32]
 	ldr r5, [r4, #32]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeP
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #36]
 	ldr r1, [r3, #36]
 	ldr r5, [r4, #36]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeP
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #40]
 	ldr r1, [r3, #40]
 	ldr r5, [r4, #40]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeK
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #44]
 	ldr r1, [r3, #44]
 	ldr r5, [r4, #44]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeK
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #48]
 	ldr r1, [r3, #48]
 	ldr r5, [r4, #48]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeK
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #52]
 	ldr r1, [r3, #52]
 	ldr r5, [r4, #52]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeK
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #56]
 	ldr r1, [r3, #56]
 	ldr r5, [r4, #56]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeK
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #60]
 	ldr r1, [r3, #60]
 	ldr r5, [r4, #60]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeQ
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #64]
 	ldr r1, [r3, #64]
 	ldr r5, [r4, #64]
 	cmp r5, #0
+	push {r0, r1, r2, r3, r4, r5}
+	cmp r5, #0
 	blne drawBeeQ
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r3, =obstaclexs
 	ldr r4, =obstacleys
 	ldr r5, =obstaclehp
 	ldr r0, [r3]
 	ldr r1, [r4]
 	ldr r2, [r5]
-	push {r0, r1, r2}
+	push {r0, r1, r2, r3, r4, r5}
 	bl drawBush
-	pop {r0, r1, r2}
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r3, #4]
 	ldr r1, [r4, #4]
 	ldr r2, [r5, #4]
-	push {r0, r1, r2}
+	push {r0, r1, r2, r3, r4, r5}
 	bl drawBush
-	pop {r0, r1, r2}
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r3, #8]
 	ldr r1, [r4, #8]
 	ldr r2, [r5, #8]
-	push {r0, r1, r2}
+	push {r0, r1, r2, r3, r4, r5}
 	bl drawBush
-	pop {r0, r1, r2}
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r3, #12]
 	ldr r1, [r4, #12]
 	ldr r2, [r5, #12]
-	push {r0, r1, r2}
+	push {r0, r1, r2, r3, r4, r5}
 	bl drawBush
-	pop {r0, r1, r2}
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r3, #16]
 	ldr r1, [r4, #16]
 	ldr r2, [r5, #16]
-	push {r0, r1, r2}
+	push {r0, r1, r2, r3, r4, r5}
 	bl drawBush
-	pop {r0, r1, r2}
+	pop {r0, r1, r2, r3, r4, r5}
 	ldr r2, =playerx
 	ldr r3, =playery
 	ldr r0, [r2]
 	ldr r1, [r3]
-	push {r0, r1}
+	push {r0, r1, r2, r3}
 	bl drawPlayer
-	pop {r0, r1}
-	*/
-	bx lr
+	pop {r0, r1, r2, r3}
+	pop {r0, r4, r5, pc}
 
 gameOver:
 	bl drawGameOverScreen
 	bl readSNES
-	ldr r3, =0x8 //1000 = start button
+	ldr r3, =0x100 //'a' button
 	tst r0, r3
 	beq start
 	b gameOver
@@ -803,13 +873,13 @@ gameOver:
 victory:
 	bl drawVictoryScreen
 	bl readSNES
-	ldr r3, =0x8 //1000 = start button
+	ldr r3, =0x100 //'a' button
 	tst r0, r3
 	beq start
 	b victory
 	
 endSub:
-	bx lr
+	pop {pc}
 	
 .section .data
 
