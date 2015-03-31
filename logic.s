@@ -5,7 +5,7 @@
 start:	//start up the game
 	push {lr}
 	ldr r0, =score	//set score to 0
-	mov r1, #0
+	mov r1, #20
 	str r1, [r0]
 	ldr r0, =playerx	//move player to middle of screen
 	ldr r1, =0x200		//512
@@ -95,7 +95,7 @@ nextLoop:
 finaLoop:
 	mov r0, #5		//set each bullet to inactive
 	mov r1, #0
-	mov r2, #14
+	mov r2, #15
 	
 finaLoop2:
 	cmp r1, r2
@@ -110,36 +110,48 @@ finaLoop3:
 
 oneTurn:
 	bl readSNES		//detect inputs
+	ldr r1, =crntinputs
+	str r0, [r1]
 	ldr r3, =0x8		//1000 = start button
 	tst r0, r3
 	bne oneTurn2
 	b pauseMenu
 	
 oneTurn2:
+	ldr r0, =crntinputs
+	ldr r0, [r0]
 	ldr r3, =0x10		// 10000 = up button
 	tst r0, r3
 	bne oneTurn3
 	bl playerUp
 	
 oneTurn3:
+	ldr r0, =crntinputs
+	ldr r0, [r0]
 	ldr r3, =0x20		// 100000 = down button
 	tst r0, r3
 	bne oneTurn4
 	bl playerDown
 	
 oneTurn4:
+	ldr r0, =crntinputs
+	ldr r0, [r0]
 	ldr r3, =0x40		// 1000000 = left button
 	tst r0, r3
 	bne oneTurn5
 	bl playerLeft
 	
 oneTurn5:
+	ldr r0, =crntinputs
+	ldr r0, [r0]
 	ldr r3, =0x80		// 10000000 = right button
 	tst r0, r3
 	bne oneTurn6
 	bl playerRight
 	
 oneTurn6:
+	ldr r0, =crntinputs
+	ldr r0, [r0]
 	ldr r3, =0x100		// 100000000 = 'a' button
 	tst r0, r3
 	bne oneTurn7
@@ -149,7 +161,6 @@ oneTurn7:
 	mov r1, #0	// current npc, add this offset*4 to get current npc's stats
 	ldr r0, =currentnpc
 	str r1, [r0]
-	//mov r0, #16
 npcStuff:
 	mov r0, #17
 	mov r4, #0
@@ -191,14 +202,15 @@ modLoopE:
 	bic r2, r6
 	add r2, r3, r2
 	
-modLoop2:				//r2 mod 10
+/*modLoop2:				//r2 mod 10
 	sub r2, r2, #10
 	cmp r2, #0
 	blt modLoop2E
 	b modLoop2
 	
 modLoop2E:
-	add r2, r2, #10
+	add r2, r2, #10*/
+	mov r2, #0
 	cmp r2, #0				//if the random number from 0-9 is 0, npc shoots a bullet
 	bleq npcShoot
 
@@ -213,11 +225,11 @@ afterNpc:
 	//detect collisions:
 	//if bullet position matches player position, player is hit
 	mov r4, #0				//bullet counter
-	mov r5, #14				//max bullets
+	mov r5, #15				//max bullets
 	
 movBulls:
 	ldr r7, =crntbullet			//current bullet
-	str r4, [r7]				//set current bullet
+	str r4, [r7]				//set current bullet, starts at 0
 	//make each bullet continue moving
 	cmp r4, r5					//if max bullets is reached, leave loop
 	bge afterBulls
@@ -243,64 +255,75 @@ movBulls:
 bullUp:			//move current bullet up
 	ldr r0, =crntbullet
 	ldr r0, [r0]
-	ldr r2, =bulletys
-	ldr r2, [r2, r0, lsl #2]
+	ldr r8, =bulletys
+	ldr r2, [r8, r0, lsl #2]
 	sub r2, r2, #1
-	str r2, [r2, r0, lsl #2]
+	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
 	cmp r2, #0
 	moveq r3, #5
 	str r3, [r1, r0, lsl #2]
+	b skipBull
 
 bullDown:		//move current bullet down
 	ldr r0, =crntbullet
 	ldr r0, [r0]
-	ldr r2, =bulletys
-	ldr r2, [r2, r0, lsl #2]
-	add r2, r2, #1
-	str r2, [r2, r0, lsl #2]
+	ldr r8, =bulletys
+	ldr r2, [r8, r0, lsl #2]
+	add r2, r2, #15
+	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
 	ldr r4, =0x2FF		//767
 	cmp r2, r4
 	moveq r3, #5
 	str r3, [r1, r0, lsl #2]
+	b skipBull
 
 bullLeft:		//move current bullet left
 	ldr r0, =crntbullet
 	ldr r0, [r0]
-	ldr r2, =bulletxs
-	ldr r2, [r2, r0, lsl #2]
-	sub r2, r2, #1
-	str r2, [r2, r0, lsl #2]
+	ldr r8, =bulletxs
+	ldr r2, [r8, r0, lsl #2]
+	sub r2, r2, #15
+	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
 	cmp r2, #0
 	moveq r3, #5
 	str r3, [r1, r0, lsl #2]
+	b skipBull
 
 bullRight:			//move current bullet right
 	ldr r0, =crntbullet
 	ldr r0, [r0]
-	ldr r2, =bulletxs
-	ldr r2, [r2, r0, lsl #2]
-	add r2, r2, #1
-	str r2, [r2, r0, lsl #2]
+	ldr r8, =bulletxs
+	ldr r2, [r8, r0, lsl #2]
+	add r2, r2, #15
+	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
 	ldr r4, =0x3FF		//1023
 	cmp r2, r4
 	moveq r3, #5
 	str r3, [r1, r0, lsl #2]
+	b skipBull
 	
 skipBull:			//if bullet is inactive, do not move bullet
+	ldr r4, =crntbullet
+	ldr r4, [r4]
+	ldr r0, =bulletxs
+	ldr r0, [r0, r4, lsl #2]
+	ldr r1, =bulletys
+	ldr r1, [r1, r4, lsl #2]
+	bl drawLazer
 	add r4, r4, #1
 	b movBulls
 	
 afterBulls:			//reset bullet counter
 	mov r4, #0	//bullet#
-	mov r5, #14	//max bullets
+	mov r5, #15	//max bullets
 	
 colLoop:			//start detecting collisions
 	cmp r4, r5		//when last bullet is reached, leave loop
@@ -325,9 +348,10 @@ colLoopY:			//check if player's y and bullet's y are the same
 	b colLoop
 	
 scoreDown:
-	ldr r6, =score
-	ldr r6, [r6]
+	ldr r7, =score
+	ldr r6, [r7]
 	sub r6, r6, #10		//decrease score by 10
+	str r6, [r7]
 	cmp r6, #0
 	ble gameOver		//if score is 0, game over
 	add r4, r4, #1		//else, check next bullet
@@ -386,8 +410,6 @@ npcDie:
 	cmp r5, #15
 	addge r10, r10, #90		//increase score by another 90 if they were a queen
 	str r10, [r11]			//store the score value back in memory
-	add r4, r4, #1			//then check the next npc
-	b colLoop2x
 	
 npcHit2:
 	sub r9, r9, #1				//decrease npc's hp by 1
@@ -397,7 +419,7 @@ npcHit2:
 	
 colLoop3:
 	mov r4, #0	//npc counter
-	mov r5, #14	//npc max
+	mov r5, #17	//npc max
 	
 vicLoop:
 	ldr r6, =npchp				//get array of npcs' hp values
@@ -412,7 +434,7 @@ vicLoop:
 colLoop3s:
 	mov r4, #0	//bullet#
 	mov r5, #0	//obstacle#
-	mov r6, #14	//max bullets
+	mov r6, #15	//max bullets
 	mov r7, #4	//max obstacles
 	
 colLoop3x:
@@ -514,7 +536,9 @@ pSelect:
 	beq oneTurn
 	cmp r0, #1			//if cursor is at middle position (restart game), go to start of game
 	beq start
-	pop {pc}			//else, quit game
+	ldr r0, =0x0000
+	bl drawBG
+	b haltLoop			//else, quit game
 	
 playerUp:
 	push {lr}
@@ -526,25 +550,25 @@ playerUp:
 	cmp r1, #0			//if player is at topmost pixel row, do not move
 	movle r1, #0
 	strle r1, [r0]
-	ble endSub2
+	ble endSub
 	sub r1, r1, #10		//else, move player up
 	str r1, [r0]
 	pop {pc}
 	
 playerDown:
-	push {r4, lr}
+	push {lr}
 	ldr r0, =playerface
 	mov r1, #1
 	str r1, [r0]		//make current player direction down
 	ldr r0, =playery
 	ldr r1, [r0]
-	ldr r4, =0x2d0		//720
-	cmp r1, r4			//if player is at bottommost pixel row, do not move
-	strle r4, [r0]
-	bge endSub2
+	ldr r2, =0x2d0		//720
+	cmp r1, r2			//if player is at bottommost pixel row, do not move
+	strge r2, [r0]
+	bge endSub
 	add r1, r1, #10		//else, move player down
 	str r1, [r0]
-	pop {r4, pc}
+	pop {pc}
 	
 playerLeft:
 	push {lr}
@@ -556,25 +580,25 @@ playerLeft:
 	cmp r1, #0			//if player is at leftmost pixel column, do not move
 	movle r1, #0
 	strle r1, [r0]
-	ble endSub2
+	ble endSub
 	sub r1, r1, #10		//else, move player left
 	str r1, [r0]
 	pop {pc}
 	
 playerRight:
-	push {r4, lr}
+	push {lr}
 	ldr r0, =playerface
 	mov r1, #3
 	str r1, [r0]		//make current player direction right
 	ldr r0, =playerx
 	ldr r1, [r0]
-	ldr r4, =0x3de		//990
-	cmp r1, r4			//if player is at rightmost pixel column, do not move
-	strle r4, [r0]
-	bge endSub2
+	ldr r2, =0x3de		//990
+	cmp r1, r2			//if player is at rightmost pixel column, do not move
+	strge r2, [r0]
+	bge endSub
 	add r1, r1, #10		//else, move player right
 	str r1, [r0]
-	pop {r4, pc}
+	pop {pc}
 	
 playerShoot:
 	push {r4, r5, lr}
@@ -582,16 +606,16 @@ playerShoot:
 	ldr r2, [r2]
 	ldr r0, =playerx
 	ldr r0, [r0]
-	add r0, r0, #5
+	//sub r0, r0, #5
 	ldr r1, =playery
 	ldr r1, [r1]
-	add r1, r1, #5
-	ldr r3, =crntbullet
+	sub r1, r1, #5
+	ldr r3, =shotbullet
 	ldr r4, [r3]
 	mov r5, r4					//copy value
-	cmp r4, #14					//if last bullet shot was the last in the array, move to front of the array
+	cmp r4, #15					//if last bullet shot was the last in the array, move to front of the array
 	moveq r4, #0
-	cmp r5, #14					//if last bullet was not the last in the array, increase current bullet by 1
+	cmp r5, #15					//if last bullet was not the last in the array, increase current bullet by 1
 	addne r4, r4, #1
 	str r4, [r3]
 	ldr r3, =bulletxs			//change current bullet's x to match player's
@@ -599,7 +623,7 @@ playerShoot:
 	ldr r3, =bulletys			//change current bullet's y to match player's
 	str r1, [r3, r4, lsl #2]				//store current bullet
 	ldr r3, =bulletfaces		//change current bullet's direction to match player's
-	str r0, [r3, r4, lsl #2]
+	str r2, [r3, r4, lsl #2]
 	bl drawLazer
 	pop {r4, r5, pc}
 
@@ -631,7 +655,7 @@ npcDown:
 	ldr r2, [r1, r0, lsl #2]
 	ldr r4, =0x2d0		//720
 	cmp r2, r4
-	strle r4, [r1, r0, lsl #2]
+	strge r4, [r1, r0, lsl #2]
 	bge endSub2
 	add r2, r2, #5
 	str r2, [r1, r0, lsl #2]
@@ -665,7 +689,7 @@ npcRight:
 	ldr r2, [r1, r0, lsl #2]
 	ldr r4, =0x3de		//990
 	cmp r2, r4
-	strle r4, [r1, r0, lsl #2]
+	strge r4, [r1, r0, lsl #2]
 	bge endSub2
 	sub r2, r2, #5
 	str r2, [r1, r0, lsl #2]
@@ -681,19 +705,20 @@ npcShoot:
 	ldr r1, [r1, r5, lsl #2]
 	ldr r2, =npcys
 	ldr r2, [r2, r5, lsl #2]
-	ldr r3, =crntbullet
+	ldr r3, =shotbullet
 	ldr r4, [r3]
-	cmp r4, #14
+	cmp r4, #15
 	moveq r4, #0
-	cmp r4, #14
+	cmp r4, #15
 	addlt r4, r4, #1
 	str r4, [r3]
-	ldr r3, =bulletfaces
-	str r0, [r3, r4, lsl #2]
 	ldr r3, =bulletxs
-	str r1, [r3, r4, lsl #2]
+	str r0, [r3, r4, lsl #2]
 	ldr r3, =bulletys
-	str r2, [r3, r4, lsl #2]
+	str r1, [r3, r4, lsl #2]
+	ldr r3, =bulletfaces
+	str r3, [r3, r4, lsl #2]
+	bl drawLazer
 	pop {r4, r5, pc}
 	
 drawScreen:
@@ -702,10 +727,10 @@ drawScreen:
 	bl drawBG
 	bl drawAuthorNames
 	bl drawGameTitle
-	/*bl drawScore
+	bl drawScore
 	ldr r0, =score
 	ldr r0, [r0]
-	bl drawScoreNum*/
+	bl drawScoreNum
 	ldr r2, =npcxs
 	ldr r3, =npcys
 	ldr r4, =npchp
@@ -714,119 +739,105 @@ drawScreen:
 	ldr r5, [r4]
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeP
+	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #4]
 	ldr r1, [r3, #4]
 	ldr r5, [r4, #4]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeP
+	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #8]
 	ldr r1, [r3, #8]
 	ldr r5, [r4, #8]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeP
+	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #12]
 	ldr r1, [r3, #12]
 	ldr r5, [r4, #12]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeP
+	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #16]
 	ldr r1, [r3, #16]
 	ldr r5, [r4, #16]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeP
+	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #20]
 	ldr r1, [r3, #20]
 	ldr r5, [r4, #20]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeP
+	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #24]
 	ldr r1, [r3, #24]
 	ldr r5, [r4, #24]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeP
+	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #28]
 	ldr r1, [r3, #28]
 	ldr r5, [r4, #28]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeP
+	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #32]
 	ldr r1, [r3, #32]
 	ldr r5, [r4, #32]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeP
+	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #36]
 	ldr r1, [r3, #36]
 	ldr r5, [r4, #36]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeP
+	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #40]
 	ldr r1, [r3, #40]
 	ldr r5, [r4, #40]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeK
+	blgt drawBeeK
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #44]
 	ldr r1, [r3, #44]
 	ldr r5, [r4, #44]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeK
+	blgt drawBeeK
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #48]
 	ldr r1, [r3, #48]
 	ldr r5, [r4, #48]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeK
+	blgt drawBeeK
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #52]
 	ldr r1, [r3, #52]
 	ldr r5, [r4, #52]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeK
+	blgt drawBeeK
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #56]
 	ldr r1, [r3, #56]
 	ldr r5, [r4, #56]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeK
+	blgt drawBeeK
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #60]
 	ldr r1, [r3, #60]
@@ -834,15 +845,14 @@ drawScreen:
 	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeQ
+	blgt drawBeeQ
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #64]
 	ldr r1, [r3, #64]
 	ldr r5, [r4, #64]
-	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
 	cmp r5, #0
-	blne drawBeeQ
+	blgt drawBeeQ
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r3, =obstaclexs
 	ldr r4, =obstacleys
@@ -928,3 +938,5 @@ crntbullet:	.int	0	//keep track of certain bullet in loops
 obstaclexs:	.int	0, 0, 0, 0, 0	//each obstacle's x position
 obstacleys:	.int	0, 0, 0, 0, 0	//each obstacle's y position
 obstaclehp:	.int	0, 0, 0, 0, 0	//each obstacle's hp
+crntinputs:	.int	0
+shotbullet:	.int	0

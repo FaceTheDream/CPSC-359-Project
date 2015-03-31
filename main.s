@@ -1,5 +1,6 @@
 .section    .init
 .globl     _start
+.globl	haltLoop
 
 _start:
     b       main
@@ -18,9 +19,9 @@ main:
 //	cmp		r0, #0
 //	beq		haltLoop
 
-haltLoop:
+
 
 	bl		start
 
-
+haltLoop:
 	b		haltLoop
