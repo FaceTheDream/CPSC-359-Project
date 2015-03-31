@@ -499,26 +499,34 @@ drawTriangleUp:
 	mov		r8, #0		//height counter
 	mov		r9, r4		//xMin for each row
 	mov		r10, r4		//xMax for each row
-	dtulps1:
+
+    //tests if counter is equal to height
+dtulps1:
 	cmp		r8, r6
 	bge		dtulpe1
 	
-	dtulps2:
-	cmp		r4,	r10
+dtulps2:
+	cmp		r4,	r10     //compares current x with max x
 	bgt		dtulpe2
+
+    //moves registers for subroutine call
 	mov		r0, r4
 	mov		r1, r5
 	mov		r2, r7
 	bl		drawPixel
-	add		r4, #1
-	b	dtulps2
-	dtulpe2:
-	sub		r9, #1
-	add		r10, #1
-	mov		r4, r9
-	add		r5,	#1
-	add		r8, #1
-	b		dtulps1
+
+
+	add		r4, #1      //increments counter
+	b	dtulps2         //branches to top of loop
+
+dtulpe2:
+
+	sub		r9, #1      //decrements min x
+	add		r10, #1     //increments max s
+	mov		r4, r9      //sets current x to min x
+	add		r5,	#1      //increments y start to draw a row below
+	add		r8, #1      //increments counter
+	b		dtulps1     //branches to top
 	dtulpe1:
 	
 	pop		{r4-r10, pc}
@@ -715,18 +723,21 @@ ldr		r8, [sp,#32] // extra colour
 ldr		r9, =beeBlackColour
 ldr		r9, [r9]
 beebodfls1:
-cmp		r4, r7
+cmp		r4, r7      //compares current x with length
 bge		beebodfle1
-mov		r0, r4
-mov		r1, r5
-tst		r0, #1
+
+mov		r0, r4      //moves current x to r0
+mov		r1, r5      //moves current y to r1
+tst		r0, #1      //tests to see if x is 1 to determine what colour to use
 movne	r2, r8
 moveq	r2, r9
-mov		r3, #5
+mov		r3, #5      //sets length to 5
+
 push	{r0,r1,r2,r3,r6}
-bl		drawRect
+bl		drawRect    //draws stripe of the bee
 pop	{r0,r1,r2,r3,r6}
-add		r4, #5
+
+add		r4, #5      //increases x by 5 to draw next stripe
 b		beebodfls1		
 beebodfle1:
 pop			{r4-r10,pc}
@@ -740,16 +751,22 @@ drawRectB: //rectangle with border
 // [sp+8] is length
 // [sp+12] is width
 	push 	{r3-r10, lr}	//adds 36 bytes onto the stack 
+    //moves arguments to stack registers
 	mov	r4, r0
 	mov	r5, r1
 	mov	r6, r2
 	ldr	r7, [sp,#40]
 	ldr	r8, [sp, #44]
 	ldr	r9, [sp, #48]
+
+    //calls drawRect to draw the outer rectangle
 	push	{r4,r5,r7,r8,r9}
 	bl	drawRect
 	add	sp, #20
-	ldr	r10, [sp, #36]
+
+	ldr	r10, [sp, #36]  //loads second color for inner rectangle
+
+    //subracts all dimensions for the second inner rectangle
 	sub	r9, r6
 	sub	r9, r6
 	sub	r8, r6
@@ -757,74 +774,31 @@ drawRectB: //rectangle with border
 	add	r4, r6
 	add	r5, r6
 	mov	r6, r10
+
+    //draws the inner rectangle
 	push	{r4,r5,r6,r8,r9}
 	bl	drawRect
 	add	sp, #20
+
+
 	pop 	{r3-r10, pc}
 	
-drawBeeWings: //very boxy wings
-//r0 is x location
-//r1 is y location
-//r2 is size (square-ish)
-	push	{r4-r10,lr}
-	mov		r4, r0
-	mov		r5, r1
-	mov		r6, r2
-	ldr		r7, =beeWingColour
-	ldr		r7, [r7]
-	mov		r0, r4
-	mov		r1, r5
-	mov		r2, r7
-	mov		r3, r6
-	push	{r0,r1,r2,r3,r6}
-	bl		drawRect
-	add		sp, #20
-	pop		{r4-r10,pc}
-	
-drawBeeEye:
-//r0 is x
-//r1 is y
-	push	{r4-r10, lr}	//make room for local registers
-	sub	sp, #8 		//make room for two local variables on the stack
-	mov	r4, #13		//default inner eye length
-	mov	r5, #26		//default outer-eye length
-	mov	r6, #20	 	//default inner-eye width
-	mov	r7, #40 	//default outer-eye width
-	mov	r8, #0		//default inner-eye colour
-	ldr	r9, =0xFFFFFFF	//default outer-eye colour
-	str	r0, [sp,#4]	//saves x as a local variable (sp+4)
-	str	r1, [sp]	//saves y as a local variable (sp)
-	push	{r5,r7}		//push lenX, lenY onto stack
-	push	{r0,r1,r9}	//push x,y,colour onto stack
-	bl	drawRect	//draws outer-eye
-	add	sp, #20		//removes paramters of outer-eye off of the stack
-	ldr	r0, [sp,#4]	//load x from local storage
-	lsl	r7, #2		//divide outer length by 4
-	add	r0, r7		//add (oLen/4) to x
-	str	r0, [sp, #4]	//save the changes to x
-	ldr	r1, [sp]	//load y from local storage
-	lsl	r5, #2		//divide outer width by 4
-	add	r1, r5		//add (oWid/4) to y
-	str	r1, [sp]	//save changes to y
-	ldr	r0, [sp, #4]	//load x from the stack
-	ldr	r1, [sp]	//load y from the stack
-	push	{r4,r6}		//push lenX, lenY onto the stack
-	push	{r0,r1,r8}	//push x,y,colour onto the stack
-	bl	drawRect	//draw the inner-eye (pupil)
-	add	sp, #20		//remove parameters left on stack
-	add	sp, #8		//remove local variables from the stack
-	pop	{r4-r10, pc}	//restore original registers
-	
+
 drawBeeP: //draws pawn bee (top left)
 // r0 is the x location
 // r1 is the y location
 	push	{r4-r10, lr}
+    //moves arguments to stack registers
 	mov		r4, r0
 	mov		r5, r1
+
+    //gets beeSize and colour from memory
 	ldr		r6, =beePSize
 	ldr		r6, [r6]
 	ldr		r7, =beeYellowColour
 	ldr		r7, [r7]
+
+    //moves values into registers for subroutine call
 	mov		r0, r4
 	mov		r1, r5
 	mov		r2, r6
@@ -832,24 +806,25 @@ drawBeeP: //draws pawn bee (top left)
 	push	{r7}
 	bl		drawBeeBody
 	add		sp, #4
-	add		r4, #15
-	add		r5, #15
-	mov		r0, r4
-	mov		r1, r5
-	mov		r2, #12
-	//bl		drawBeeWings
+
 	pop		{r4-r10, pc}
 
+    //Subroutine for drawing a bee knight
 drawBeeK:
 // r0 is the x location
 // r1 is the y location
 	push	{r4-r10,lr}
+    //moves arguments to stack registers
 	mov		r4, r0
 	mov		r5, r1
+
+    //gets bee knight size and colour from memory
 	ldr		r6, =beeKSize
 	ldr		r6, [r6]
 	ldr		r7, =beeRedColour
 	ldr		r7, [r7]
+
+    //moves values into registers for subroutine call
 	mov		r0, r4
 	mov		r1, r5
 	mov		r2, r6
@@ -857,24 +832,26 @@ drawBeeK:
 	push	{r7}
 	bl		drawBeeBody
 	add		sp, #4
-/*	add		r4, #35
-	add		r5, #15
-	mov		r0, r4
-	mov		r1, r5
-	mov		r2, #18*/
-	//bl		drawBeeWings
+
 	pop		{r4-r10,pc}
 
+    //Draws queen bee
 drawBeeQ:
 //r0 is the x location
 //r1 is the y location
 	push	{r4-r10, lr}
+
+    //moves arguments to stack registers
 	mov		r4, r0
 	mov		r5, r1
+
+    //gets bee queen size and colour from memory
 	ldr		r6, =beeQSize
 	ldr		r6, [r6]
 	ldr		r7, =beeYellowColour
 	ldr		r7, [r7]
+
+    //moves values into registers for subroutine call
 	mov		r0, r4
 	mov		r1, r5
 	mov		r2, r6
@@ -882,57 +859,10 @@ drawBeeQ:
 	push		{r7}
 	bl		drawBeeBody
 	add		sp, #4
-	add		r4, #55
-	add		r5, #35
-	mov		r0, r4
-	mov		r1, r5
-	mov		r2, #30
-	//bl		drawBeeWings
+
 	pop		{r4-r10, pc}
 
-drawCrown:	//draws the crown that the queen bee shall wear
-//r0 is the x at the top left of the crown's rectangular base
-//r1 is the y at the top left of the crown's rectangular base
-//crownColour is stored in the data section of this file
-//height of base is 25 pixels
-//length of base is 50 pixels
-//height of triangles is 15 pixels
-//total crown height is 25+15=40 pixels
-	push	{r4-r10, lr}
-	mov	r4, r0		//x
-	mov	r5, r1		//y
-	mov	r7, #15		//triangle height
-	ldr	r6, =crownColour //colour address 
-	ldr	r6, [r6]	//colour
-	mov	r1, #25
-	mov	r0, #50
-	push	{r0,r1}
-	push	{r4,r5,r6}
-	bl	drawRect	//draw rectangular base of crown
-	add	sp, #20
-	add	r4, #12		//add roughly 1/4th of the base's length to x
-	add	r5, r7		//add the triangle's height to y
-	mov	r0, r4
-	mov	r1, r5
-	mov	r2, r7		//move height of triangle into r2
-	push	{r6}
-	bl	drawTriangleUp	//draws an upward pointing triangle
-	add	sp, #4		//remove drawTriangle parameter from the stack
-	add	r4, #13		//add roughly 1/4th of the base's length to x
-	mov	r0, r4
-	mov	r1, r5
-	mov	r2, r7
-	push	{r6}
-	bl	drawTriangleUp	//draws an upward pointing triangle
-	add	sp, #4		//remove drawTriangle parameter from the stack
-	add	r4, #13		//add roughly 1/4th of the base's length to x
-	mov	r0, r4
-	mov	r1, r5
-	mov	r2, r7
-	push	{r6}
-	bl	drawTriangleUp	//draws an upward pointing triangle
-	add	sp, #4		//remove parameters from the stack
-	pop	{r4-r10, pc}	//restore registers
+
 
 .ltorg	//Fix to literal pool being too far
 
@@ -940,12 +870,17 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 //r0 is x location
 //r1 is y location
 	push {r3-r7, lr}
+    //moves arguments to subroutine registers
 	mov	r3, r0
 	mov	r4, r1
+
+    //gets player size and colour from memory
 	ldr	r5, =playerSize
 	ldr	r5, [r5]
 	ldr	r6, =playerHelmColour
 	ldr	r6, [r6]
+
+    //pushes values onto stack for subroutine call
 	push 	{r5}
 	push 	{r5}
 	push 	{r6}
@@ -953,13 +888,18 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	push 	{r3}
 	bl	drawRect 	//draws head
 	add	sp, #20
+
+    //gets player colour from memory
 	ldr	r6, =playerBodyColour
 	ldr	r6, [r6]
+
 	mov	r7, r5
 	add	r7, r5
-	add	r7, r5 		//r7 = 3*r5
+	add	r7, r5 		//r7 = 3*r5 to get body size
 	sub	r0, r3, r5
 	add	r1, r4, r5
+
+    //pushes values onto stack for soubroutine call
 	push 	{r5}
 	push 	{r7}
 	push 	{r6}
@@ -967,6 +907,8 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	push 	{r0}
 	bl	drawRect	//draw body
 	add	sp, #20
+
+    //calculates values for feet portion of body
 	add	r0, r4, r5
 	add	r0, r5
 	push 	{r5}
@@ -976,7 +918,9 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	push 	{r3}
 	bl	drawRect	//draw feet things
 	add	sp, #20
-	add	r0, r4, r5
+
+
+/*	add	r0, r4, r5
 	add	r0, r5
 	lsr	r1, r5, #1     	// logical shift right
 	add	r1, r3
@@ -990,7 +934,7 @@ drawPlayer: //draws player at location (x,y) that is the leftmost portion of the
 	push	{r0}
 	push 	{r1}
 	//bl	drawLine    	//calls drawLine
-	add	sp, #24
+	add	sp, #24*/
 	pop 	{r3-r7, pc}
 
 drawBush: //draws "bush" cover
@@ -1026,12 +970,13 @@ drawLazer: //draws player lazer projectile
 	mov	r4, r1 		// y location (yMin)
 	ldr	r5, =lazerSize
 
-
+    //puts values for size of laser and colour
     mov r7, #10
     mov r6, #1
 	ldr	r5, =lazerColour
 	ldr	r5, [r5]
 
+    //calls subroutine
     push    {r3-r7}
 	bl	drawRect
 	pop	{r3-r7}
@@ -1039,36 +984,7 @@ drawLazer: //draws player lazer projectile
 	pop 	{r3-r8, pc}		//restore registers
 
 
-drawBeeSting: //draws bee bullet projectile
-//r2 is bee sting direction
-//r0 is x location
-//r1 is y location
-// 0 is up
-// 1 is down
-// 2 is left
-// 3 is right
-	push    {r3-r4, lr}
-	mov 	r4, r2
-	ldr	r2, =beeStingSize
-	ldr	r2, [r2]
-	ldr	r3, =beeStingColour
-	ldr	r3, [r3]
-	push    {r3}
-	cmp	r4, #0
-	bne	bdsif2
-	bl	drawTriangleUp
-bdsif2:
-	cmp	r4, #1
-	bne	bdsif3
-	bl	drawTriangleDown
-bdsif3:
-	cmp	r4, #2
-	bne	bdselse
-	bl	drawTriangleLeft
-bdselse:
-	bl	drawTriangleRight
-	add	sp, #4
-	pop   	{r3-r4, pc}			//restore registers
+
 
 drawCursor: //draws triangle cursor for use on pause menu always faces right
 // r0 is x location
@@ -1084,6 +1000,7 @@ mov		r3, r7
 bl		drawTriangleRight
 pop		{r6-r7,pc}
 
+    //draws the pause screen
 drawPauseScreen:
 //r0 will indicate which option is selected
 // 0 indicates Resume
@@ -1232,6 +1149,7 @@ drawPauseScreen:
 	
 	mov	r6, #145 	//x
 	
+    //compares the cursor value and places the cursor at specific points on the pause screen 
 	cmp	r4, #0
 	bne	ifPauseNotResume
 	mov	r0, r6
@@ -1252,7 +1170,7 @@ ifPauseElse:
 afterPauseIfs:
 	pop	{r4-r10, pc}
 
-drawGameOverScreen: //in the "loss" situation
+drawGameOverScreen: //in the "loss" situation draws the game over screen
 // background colour will be initialized to losingColour
 // "GAME OVER!" at ( 400 , 380)
 	push	{lr}
@@ -1264,6 +1182,7 @@ drawGameOverScreen: //in the "loss" situation
 	bl	drawGameOverWords
 	pop	{pc}
 	
+    //draws the victory screen
 drawVictoryScreen:
 // background colour will be initialized to winningColour
 // "VICTORY!" at (400, 380)
@@ -1399,6 +1318,7 @@ drawVictoryScreen:
 	bl 	drawChar	//call to subroutine
 	pop	{r4, pc}		//restore registers
 
+    //used to draw the words "game over"
 drawGameOverWords:
 // should draw "GAME OVER!" at start location ( x=r0 , y=r1)
 	push	{r4-r6, lr}
