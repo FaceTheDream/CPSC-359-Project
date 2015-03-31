@@ -68,7 +68,7 @@ start:	//start up the game
 	mov r1, #0
 	str r1, [r0]
 
-	ldr r0, =bulletxs	//set each npc's hp
+	ldr r0, =bulletxs	//set each bulletx
 	mov r1, #0
 	str r1, [r0]
 	str r1, [r0, #4]
@@ -86,7 +86,7 @@ start:	//start up the game
 	str r2, [r0, #52]
 	str r2, [r0, #56]
 
-	ldr r0, =bulletys	//set each npc's hp
+	ldr r0, =bulletys	//set each bullety
 	ldr r1, =0x2ff
 	str r1, [r0]
 	str r1, [r0, #4]
@@ -257,7 +257,7 @@ modLoop2E:
 	add r2, r2, #10*/
 	mov r2, #0
 	cmp r2, #0				//if the random number from 0-9 is 0, npc shoots a bullet
-	//bleq npcShoot
+	bleq npcShoot
 
 modLoop3:
 	ldr r2, =currentnpc
