@@ -302,7 +302,7 @@ bullUp:			//move current bullet up
 	ldr r0, [r0]
 	ldr r8, =bulletys
 	ldr r2, [r8, r0, lsl #2]
-	sub r2, r2, #1
+	sub r2, r2, #1			//change this to change speed of bullet
 	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
@@ -316,7 +316,7 @@ bullDown:		//move current bullet down
 	ldr r0, [r0]
 	ldr r8, =bulletys
 	ldr r2, [r8, r0, lsl #2]
-	add r2, r2, #15
+	add r2, r2, #1			//change this to change speed of bullet
 	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
@@ -331,7 +331,7 @@ bullLeft:		//move current bullet left
 	ldr r0, [r0]
 	ldr r8, =bulletxs
 	ldr r2, [r8, r0, lsl #2]
-	sub r2, r2, #15
+	sub r2, r2, #1			//change this to change speed of bullet
 	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
@@ -345,7 +345,7 @@ bullRight:			//move current bullet right
 	ldr r0, [r0]
 	ldr r8, =bulletxs
 	ldr r2, [r8, r0, lsl #2]
-	add r2, r2, #15
+	add r2, r2, #1			//change this to change speed of bullet
 	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
@@ -683,15 +683,15 @@ npcUp:
 	ldr r2, [r1, r0, lsl #2]
 	cmp r2, #0
 	movle r2, #0
-	strle r2, [r1, r0, lsl #2]
+	strle r2, [r1, r0, lsl #2]	//if npc is at the top of the screen, do not move
 	ble endSub2
-	sub r2, r2, #5
+	sub r2, r2, #5			//else, move npc up 5 pixels
 	str r2, [r1, r0, lsl #2]
 	pop {pc}
 	
 npcDown:
 	push {r4, lr}
-	ldr r0, =currentnpcface
+	ldr r0, =currentnpcface		//check current npc's direction
 	mov r1, #1
 	str r1, [r0]
 	ldr r0, =currentnpc
@@ -700,15 +700,15 @@ npcDown:
 	ldr r2, [r1, r0, lsl #2]
 	ldr r4, =0x2d0		//720
 	cmp r2, r4
-	strge r4, [r1, r0, lsl #2]
+	strge r4, [r1, r0, lsl #2]	//if npc is at the bottom of the screen, do not move
 	bge endSub2
-	add r2, r2, #5
+	add r2, r2, #5			//else, move npc down 5 pixels
 	str r2, [r1, r0, lsl #2]
 	pop {r4, pc}
 	
 npcLeft:
 	push {lr}
-	ldr r0, =currentnpcface
+	ldr r0, =currentnpcface		//check current npc's direction
 	mov r1, #2
 	str r1, [r0]
 	ldr r0, =currentnpc
@@ -717,15 +717,15 @@ npcLeft:
 	ldr r2, [r1, r0, lsl #2]
 	cmp r2, #0
 	movle r2, #0
-	strle r2, [r1, r0, lsl #2]
+	strle r2, [r1, r0, lsl #2]	//if npc is at the left of the screen, do not move
 	ble endSub2
-	sub r2, r2, #5
+	sub r2, r2, #5			//else, move npc left 5 pixels
 	str r2, [r1, r0, lsl #2]
 	pop {pc}
 	
 npcRight:
 	push {r4, lr}
-	ldr r0, =currentnpcface
+	ldr r0, =currentnpcface		//check current npc's direction
 	mov r1, #3
 	str r1, [r0]
 	ldr r0, =currentnpc
@@ -734,35 +734,35 @@ npcRight:
 	ldr r2, [r1, r0, lsl #2]
 	ldr r4, =0x3de		//990
 	cmp r2, r4
-	strge r4, [r1, r0, lsl #2]
+	strge r4, [r1, r0, lsl #2]	//if npc is at the right of the screen, do not move
 	bge endSub2
-	sub r2, r2, #5
+	sub r2, r2, #5			//else, move npc right 5 pixels
 	str r2, [r1, r0, lsl #2]
 	pop {r4, pc}
 	
 npcShoot:
 	push {r4, r5, r6, lr}
 	ldr r5, =currentnpc
-	ldr r5, [r5]
+	ldr r5, [r5]			//retrieve the current npc#
 	ldr r6, =currentnpcface
-	ldr r6, [r6]
+	ldr r6, [r6]			//retrieve the current npc's direction
 	ldr r0, =npcxs
-	ldr r0, [r0, r5, lsl #2]
+	ldr r0, [r0, r5, lsl #2]	//retrieve the firing npc's x coordinate
 	ldr r1, =npcys
-	ldr r1, [r1, r5, lsl #2]
+	ldr r1, [r1, r5, lsl #2]	//retrieve the firing npc's y coordinate
 	ldr r3, =shotbullet
 	ldr r4, [r3]
-	cmp r4, #15
+	cmp r4, #15			//if 15th bullet, change to 0th bullet
 	moveq r4, #0
 	cmp r4, #15
-	addlt r4, r4, #1
+	addlt r4, r4, #1		//else, increment bullet by 1
 	str r4, [r3]
 	ldr r2, =bulletfaces
-	str r6, [r2, r4, lsl #2]
+	str r6, [r2, r4, lsl #2]	//store the new bullet's direction
 	ldr r3, =bulletxs
-	str r0, [r3, r4, lsl #2]
+	str r0, [r3, r4, lsl #2]	//store the new bullet's x coordinate
 	ldr r3, =bulletys
-	str r1, [r3, r4, lsl #2]
+	str r1, [r3, r4, lsl #2]	//store the new bullet's y coordinate
 	bl drawLazer
 	pop {r4, r5, r6, pc}
 	
@@ -774,114 +774,114 @@ drawScreen:
 	bl drawGameTitle
 	bl drawScore
 	ldr r0, =score
-	ldr r0, [r0]
+	ldr r0, [r0]			//send score to drawScoreNum in r0
 	bl drawScoreNum
 	ldr r2, =npcxs
 	ldr r3, =npcys
 	ldr r4, =npchp
-	ldr r0, [r2]
-	ldr r1, [r3]
-	ldr r5, [r4]
+	ldr r0, [r2]			//retrieve array of npcs' x coordinates
+	ldr r1, [r3]			//retrieve array of npcs' y coordinates
+	ldr r5, [r4]			//retrieve array of npcs' hp values
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #4]
 	ldr r1, [r3, #4]
 	ldr r5, [r4, #4]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #8]
 	ldr r1, [r3, #8]
 	ldr r5, [r4, #8]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #12]
 	ldr r1, [r3, #12]
 	ldr r5, [r4, #12]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #16]
 	ldr r1, [r3, #16]
 	ldr r5, [r4, #16]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #20]
 	ldr r1, [r3, #20]
 	ldr r5, [r4, #20]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #24]
 	ldr r1, [r3, #24]
 	ldr r5, [r4, #24]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #28]
 	ldr r1, [r3, #28]
 	ldr r5, [r4, #28]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #32]
 	ldr r1, [r3, #32]
 	ldr r5, [r4, #32]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #36]
 	ldr r1, [r3, #36]
 	ldr r5, [r4, #36]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeP
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #40]
 	ldr r1, [r3, #40]
 	ldr r5, [r4, #40]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeK
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #44]
 	ldr r1, [r3, #44]
 	ldr r5, [r4, #44]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeK
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #48]
 	ldr r1, [r3, #48]
 	ldr r5, [r4, #48]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeK
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #52]
 	ldr r1, [r3, #52]
 	ldr r5, [r4, #52]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeK
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #56]
 	ldr r1, [r3, #56]
 	ldr r5, [r4, #56]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeK
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #60]
@@ -889,55 +889,55 @@ drawScreen:
 	ldr r5, [r4, #60]
 	cmp r5, #0
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeQ
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r2, #64]
 	ldr r1, [r3, #64]
 	ldr r5, [r4, #64]
 	push {r0, r1, r2, r3, r4, r5}
-	cmp r5, #0
+	cmp r5, #0			//draw bee if its hp is greater than 0
 	blgt drawBeeQ
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r3, =obstaclexs
 	ldr r4, =obstacleys
 	ldr r5, =obstaclehp
-	ldr r0, [r3]
-	ldr r1, [r4]
-	ldr r2, [r5]
+	ldr r0, [r3]			//retrieve array of obstacles' x coordinates
+	ldr r1, [r4]			//retrieve array of obstacles' y coordinates
+	ldr r2, [r5]			//retrieve array of obstacles' hp values (aka sizes)
 	push {r0, r1, r2, r3, r4, r5}
-	bl drawBush
+	bl drawBush			//draw a bush based on its hp value
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r3, #4]
 	ldr r1, [r4, #4]
 	ldr r2, [r5, #4]
 	push {r0, r1, r2, r3, r4, r5}
-	bl drawBush
+	bl drawBush			//draw a bush based on its hp value
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r3, #8]
 	ldr r1, [r4, #8]
 	ldr r2, [r5, #8]
 	push {r0, r1, r2, r3, r4, r5}
-	bl drawBush
+	bl drawBush			//draw a bush based on its hp value
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r3, #12]
 	ldr r1, [r4, #12]
 	ldr r2, [r5, #12]
 	push {r0, r1, r2, r3, r4, r5}
-	bl drawBush
+	bl drawBush			//draw a bush based on its hp value
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r0, [r3, #16]
 	ldr r1, [r4, #16]
 	ldr r2, [r5, #16]
 	push {r0, r1, r2, r3, r4, r5}
-	bl drawBush
+	bl drawBush			//draw a bush based on its hp value
 	pop {r0, r1, r2, r3, r4, r5}
 	ldr r2, =playerx
 	ldr r3, =playery
-	ldr r0, [r2]
-	ldr r1, [r3]
+	ldr r0, [r2]			//retrieve player's x position
+	ldr r1, [r3]			//retrieve player's y position
 	push {r0, r1, r2, r3}
-	bl drawPlayer
+	bl drawPlayer			//draw the player at its coordinates
 	pop {r0, r1, r2, r3}
 	pop {r0, r4, r5, pc}
 
@@ -945,11 +945,12 @@ gameOver:
 	bl drawGameOverScreen
 	bl drawAuthorNames
 	bl drawGameTitle
+gameOver2:
 	bl readSNES
-	ldr r3, =0x00FFFF //any button
+	ldr r3, =0x00FFFF //bitmask for any button
 	teq r0, r3
 	bne start
-	b gameOver
+	b gameOver2
 	
 victory:
 	bl drawVictoryScreen
@@ -959,11 +960,12 @@ victory:
 	ldr r0, =score
 	ldr r0, [r0]
 	bl drawScoreNum
+victory2:
 	bl readSNES
-	ldr r3, =0x00FFFF //any button
+	ldr r3, =0x00FFFF //bitmask for any button
 	teq r0, r3
 	bne start
-	b victory
+	b victory2
 	
 endSub:
 	pop {pc}
@@ -991,5 +993,5 @@ crntbullet:	.int	0	//keep track of certain bullet in loops
 obstaclexs:	.int	0, 0, 0, 0, 0	//each obstacle's x position
 obstacleys:	.int	0, 0, 0, 0, 0	//each obstacle's y position
 obstaclehp:	.int	0, 0, 0, 0, 0	//each obstacle's hp
-crntinputs:	.int	0
-shotbullet:	.int	0
+crntinputs:	.int	0	//keeps track of current snes inputs
+shotbullet:	.int	0	//keeps track of the last bullet that was shot
