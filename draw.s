@@ -284,64 +284,103 @@ drawTriangleUp:
 	pop		{r4-r10, pc}
 
 
-drawTriangleDown: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-	push	{r3-r7, lr}
-	mov	r3, r0 	//x
-	mov	r4, r1 	//y
-	mov	r5, r2 	// height
-	ldr	r6, [sp,#20] //colour
-	mov	r7, #0 	// i
-dtdfl1start: 		//draw triangle down for loop 1 start
-	cmp	r7, r5
-	bge	dtdfl1end
-	push 	{r6} 	//push 6th paramter, colour onto stack
-	mov	r0, #1
-	push	{r0} 	//push 5th parameter, thickness (1) onto stack
-	add	r0, r7, r7
-	add	r0, #1
-	push 	{r0}	//push 4th parameter, length (2i+1) onto stack
-	mov	r0, #1
-	push 	{r0}	//push 3rd parameter, direction (1)(horizontal) onto stack
-	sub	r0, r4, r7
-	push 	{r0}	//push 2nd paramteter, (y-i) onto stack
-	sub	r0, r3, r7
-	push 	{r0}	//push 1st paramter, (x-i) onto stack
-	bl	drawLine
-	add	sp, #24
-	add	r7, #1
-	b	dtdfl1start
-dtdfl1end:
-	pop {r3-r7, pc}
+drawTriangleLeft:
+    // r0 is x
+	// r1 is y
+	// r2 is height
+	// r3 is colour
+	push	{r4-r10, lr}
+    xStart       .req        r4
+    yStart  .req        r5
+    height  .req        r6
+    colour  .req        r7
+    i       .req        r8
+    ymin    .req        r9
+    ymax    .req        r10
+
+	mov		r4, r0	//x start
+	mov		r5, r1	//y start
+	mov		r6, r2	//height
+	mov		r7, r3	//colour
+	mov		r8, #0	//iterator
+	mov		r9, r5  //ymin
+	mov		r10, r5	//ymax
+
+leftCheckHeight:
+    cmp i, height
+    bge leftEnd
+
+leftCheckWidth:
+    cmp ymin, yStart
+    bgt leftEnd2
+
+    mov r0, xStart
+    mov r1, yStart
+    mov r3, colour
+    bl	drawPixel
+
+    add ystart, #1
+
+leftEnd2:
+    sub ymin, #1
+    add ymax, #1
+    mov yStart, ymin
+    add i, #1
+    add xStart, #1
+    b   leftCheckHeight
+
+leftEnd:
+
+    .unreq  xStart
+    .unreq  yStart
+    .unreq  height
+    .unreq  colour
+    .unreq  i
+    .unreq  ymin
+    .unreq  ymax
+
+    pop {r4-r10, pc}
 
 
-drawTriangleLeft: //r0 is x, r1 is y, r2 is height, colour is sent over stack
-	push 	{r3-r7, lr}
-	mov	r3, r0 //x
-	mov	r4, r1 //y
-	mov	r5, r2 // height
-	ldr	r6, [sp,#20] //colour
-	mov	r7, #0 // i
-dtlfl1start: //draw triangle left for loop 1 start
-	cmp	r7, r5
-	bge	dtlfl1end
-	push 	{r6} 	//push 6th paramter, colour onto stack
-	mov	r0, #1
-	push 	{r0} 	//push 5th parameter, thickness (1) onto stack
-	add	r0, r7, r7
-	add	r0, #1
-	push 	{r0}	//push 4th parameter, length (2i+1) onto stack
-	mov	r0, #2
-	push 	{r0}	//push 3rd parameter, direction (2)(vertical) onto stack
-	add	r0, r4, r7
-	push 	{r0}	//push 2nd paramteter, (y+i) onto stack
-	add	r0, r3, r7
-	push 	{r0}	//push 1st paramter, (x+i) onto stack
-	bl	drawLine
-	add	sp, #24
-	add	r7, #1
-	b	dtlfl1start
-dtlfl1end:
-	pop 	{r3-r7, pc}
+drawTriangleDown:
+// r0 is the x
+// r1 is the y
+// r2 is the height
+// r3 is the colour
+	push	{r4-r10, lr}
+	mov		r4, r0		//x start
+	mov		r5, r1		//y start
+	mov		r6, r2		//height
+	mov		r7, r3		//colour
+	mov		r8, #0		//height counter
+	mov		r9, r4		//xMin for each row
+	mov		r10, r4		//xMax for each row
+
+downCheckHeight:
+	cmp		r8, r6
+	bge		downEnd
+	
+downCheckWidth:
+	cmp		r4,	r10
+	bgt		downEnd2
+	mov		r0, r4
+	mov		r1, r5
+	mov		r2, r7
+	bl		drawPixel
+	add		r4, #1
+	b	    downCheckWidth
+
+downEnd2:
+	sub		r9, #1
+	add		r10, #1
+	mov		r4, r9
+	sub		r5,	#1
+	add		r8, #1
+	b		downCheckHeight
+
+downEnd:
+	
+	pop		{r4-r10, pc}
 
 drawTriangleRight:
 	// r0 is x
@@ -357,19 +396,21 @@ drawTriangleRight:
 	mov		r9, r5  //ymin
 	mov		r10, r5	//ymax
 	rthlps1:
-	cmp		r8, r6
-	bge		rthlpe1
+	cmp		r8, r6	//compare 0 to height
+	bge		rthlpe1 //branch to end
 	rthlps2:
-	cmp		r5, r10
+	cmp		r5, r10 //compare y start to y start
 	bgt		rthlpe2
 	mov		r0, r4
 	mov		r1, r5
 	mov		r2, r7
-	add		r5, #1
+	bl		drawPixel
+	add		r5, #1	//increase y start
+	b		rthlps2
 	rthlpe2:
-	sub		r9, #1
-	add		r10, #1
-	mov		r5, r9
+	sub		r9, #1	//decrease ymin
+	add		r10, #1	//increase ymax
+	mov		r5, r9	//move ymin into ymin
 	add		r8, #1
 	sub		r4, #1
 	b		rthlps1
@@ -731,14 +772,19 @@ drawLazer: //draws player lazer projectile
 	ldr	r5, [r5,#4] 	//width
 	ldr	r7, =lazerColour
 	ldr	r7, [r7]
+	push	{r3}
+	push	{r4}
+	push 	{r7}
 	push 	{r5}
 	push 	{r6}
-	push 	{r7}
-	push 	{r4}
-	push 	{r3}
 	bl	drawRect
+	pop	{r3}
+	pop	{r4}
+	pop	{r7}
+	pop	{r5}
+	pop	{r6}
 	mov	r0, r8
-	pop 	{r3-r7, pc}		//restore registers
+	pop 	{r3-r8, pc}		//restore registers
 
 
 drawBeeSting: //draws bee bullet projectile
@@ -932,24 +978,24 @@ drawPauseScreen:
 	mov 	r0, #'t'	//draw character
 	bl 	drawChar	//call to subroutine
 	
-	mov	r6, #150 	//x
+	mov	r6, #145 	//x
 	
 	cmp	r4, #0
 	bne	ifPauseNotResume
 	mov	r0, r6
-	mov	r1, #60
+	mov	r1, #55
 	bl	drawCursor
 	b	afterPauseIfs
 ifPauseNotResume:
 	cmp	r4, #1
 	bne	ifPauseElse
-	mov	r1, r6
-	mov	r0, #80
-	bl	drawRect
+	mov	r0, r6
+	mov	r1, #75
+	bl	drawCursor
 	b	afterPauseIfs
 ifPauseElse:
 	mov	r0, r6
-	mov	r1, #100
+	mov	r1, #95
 	bl	drawCursor
 afterPauseIfs:
 	pop	{r4-r10, pc}

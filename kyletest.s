@@ -11,6 +11,29 @@ starTest:
 	pop {r0}
 	
 
+testTriangle:
+	mov r0, #100
+	mov r1, #60
+	mov r2, #5
+	ldr r3, =0x00
+	push {r3}
+	bl drawTriangleUp
+	pop {r3}
+	mov r0, #200
+	mov r1, #120
+	mov r2, #5
+	ldr r3, =0x00
+	push {r3}
+	bl drawTriangleDown
+	pop {r3}
+	mov r0, #200
+	mov r1, #60
+	mov r2, #5
+	ldr r3, =0x00
+	push {r3}
+	bl drawTriangleLeft
+	pop {r3}
+/*
 testRectB:
 	mov r0, #100
 	mov r1, #0
@@ -22,7 +45,7 @@ testRectB:
 	push {r3, r4, r5, r6}
 	bl drawRectB
 	pop {r3, r4, r5, r6}
-/*
+
 testBee:
 	ldr r0, =0x180
 	ldr r1, =0xa

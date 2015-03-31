@@ -44,9 +44,9 @@ start:	//start up the game
 	str r1, [r0, #4]
 	mov r1, #512
 	str r1, [r0, #8]
-	mov r1, #682
+	ldr r1, =0x2aa
 	str r1, [r0, #12]
-	mov r1, #853
+	ldr r1, =0x355
 	str r1, [r0, #16]
 	ldr r0, =obstacleys
 	mov r1, #192
@@ -147,8 +147,11 @@ oneTurn6:
 	
 oneTurn7:
 	mov r1, #0	// current npc, add this offset*4 to get current npc's stats
-	mov r0, #16
+	ldr r0, =currentnpc
+	str r1, [r0]
+	//mov r0, #16
 npcStuff:
+	mov r0, #17
 	mov r4, #0
 	cmp r1, r0
 	bge afterNpc
@@ -171,8 +174,8 @@ modLoop:				//r2 mod 4
 	
 modLoopE:
 	add r2, r2, #4
-	ldr r6, =currentnpc				//find the npc to move
-	str r1, [r6]
+	//ldr r6, =currentnpc				//find the npc to move
+	//str r1, [r6]
 	cmp r2, #0
 	bleq npcUp
 	cmp r2, #1
@@ -200,7 +203,10 @@ modLoop2E:
 	bleq npcShoot
 
 modLoop3:
+	ldr r2, =currentnpc
+	ldr r1, [r2]
 	add r1, r1, #1
+	str r1, [r2]
 	b npcStuff
 	
 afterNpc:
@@ -330,8 +336,8 @@ scoreDown:
 colLoop2:
 	mov r4, #0	//bullet#
 	mov r5, #0	//npc#
-	mov r6, #14	//max bullets
-	mov r7, #16	//max npcs
+	mov r6, #15	//max bullets
+	mov r7, #17	//max npcs
 	
 colLoop2x:				//check if any bullets have hit any npcs
 	cmp r4, r6			//if last bullet is reached, leave loop
@@ -478,30 +484,34 @@ pauseMenu2:
 	b pauseTest		//else, loop pause menu
 	
 pauseUp:
-	ldr r0, =crntpause	//check current pause cursor location
-	ldr r0, [r0]
+	ldr r1, =crntpause	//check current pause cursor location
+	ldr r0, [r1]
 	cmp r0, #1			//if cursor is at middle position, move to top position
 	subeq r0, r0, #1
 	cmp r0, #2			//if cursor is at bottom position, move to middle position
 	subeq r0, r0, #1
-	bl drawPauseScreen
-	b pauseTest
+	str r0, [r1]
+	//bl drawPauseScreen
+	//b pauseTest
+	b pauseMenu
 	
 pauseDown:
-	ldr r0, =crntpause	//check current pause cursor location
-	ldr r0, [r0]
-	cmp r0, #0			//if cursor is at top position, move to middle position
-	addeq r0, r0, #1
+	ldr r1, =crntpause	//check current pause cursor location
+	ldr r0, [r1]
 	cmp r0, #1			//if cursor is at middle position, move to bottom position
 	addeq r0, r0, #1
-	bl drawPauseScreen
-	b pauseTest
+	cmp r0, #0			//if cursor is at top position, move to middle position
+	addeq r0, r0, #1
+	str r0, [r1]
+	//bl drawPauseScreen
+	//b pauseTest
+	b pauseMenu
 	
 pSelect:
 	ldr r0, =crntpause	//check current pause cursor location
 	ldr r0, [r0]
 	cmp r0, #0			//if cursor is at top position (resume game), leave pause menu
-	beq endSub
+	beq oneTurn
 	cmp r0, #1			//if cursor is at middle position (restart game), go to start of game
 	beq start
 	pop {pc}			//else, quit game
@@ -514,8 +524,10 @@ playerUp:
 	ldr r0, =playery
 	ldr r1, [r0]
 	cmp r1, #0			//if player is at topmost pixel row, do not move
-	beq endSub
-	sub r1, r1, #1		//else, move player up
+	movle r1, #0
+	strle r1, [r0]
+	ble endSub2
+	sub r1, r1, #10		//else, move player up
 	str r1, [r0]
 	pop {pc}
 	
@@ -526,10 +538,11 @@ playerDown:
 	str r1, [r0]		//make current player direction down
 	ldr r0, =playery
 	ldr r1, [r0]
-	ldr r4, =0x2FF		//767
+	ldr r4, =0x2d0		//720
 	cmp r1, r4			//if player is at bottommost pixel row, do not move
-	beq endSub
-	add r1, r1, #1		//else, move player down
+	strle r4, [r0]
+	bge endSub2
+	add r1, r1, #10		//else, move player down
 	str r1, [r0]
 	pop {r4, pc}
 	
@@ -541,8 +554,10 @@ playerLeft:
 	ldr r0, =playerx
 	ldr r1, [r0]
 	cmp r1, #0			//if player is at leftmost pixel column, do not move
-	beq endSub
-	sub r1, r1, #1		//else, move player left
+	movle r1, #0
+	strle r1, [r0]
+	ble endSub2
+	sub r1, r1, #10		//else, move player left
 	str r1, [r0]
 	pop {pc}
 	
@@ -553,27 +568,30 @@ playerRight:
 	str r1, [r0]		//make current player direction right
 	ldr r0, =playerx
 	ldr r1, [r0]
-	ldr r4, =0x3FF		//1023
+	ldr r4, =0x3de		//990
 	cmp r1, r4			//if player is at rightmost pixel column, do not move
-	beq endSub
-	add r1, r1, #1		//else, move player right
+	strle r4, [r0]
+	bge endSub2
+	add r1, r1, #10		//else, move player right
 	str r1, [r0]
 	pop {r4, pc}
 	
 playerShoot:
 	push {r4, r5, lr}
-	ldr r0, =playerface
-	ldr r0, [r0]
-	ldr r1, =playerx
-	ldr r1, [r1]
-	ldr r2, =playery
+	ldr r2, =playerface
 	ldr r2, [r2]
+	ldr r0, =playerx
+	ldr r0, [r0]
+	add r0, r0, #5
+	ldr r1, =playery
+	ldr r1, [r1]
+	add r1, r1, #5
 	ldr r3, =crntbullet
 	ldr r4, [r3]
 	mov r5, r4					//copy value
 	cmp r4, #14					//if last bullet shot was the last in the array, move to front of the array
 	moveq r4, #0
-	cmp r5, #14					//if last bullet was not the last in the aray, increase current bullet by 1
+	cmp r5, #14					//if last bullet was not the last in the array, increase current bullet by 1
 	addne r4, r4, #1
 	str r4, [r3]
 	ldr r3, =bulletxs			//change current bullet's x to match player's
@@ -581,8 +599,8 @@ playerShoot:
 	ldr r3, =bulletys			//change current bullet's y to match player's
 	str r1, [r3, r4, lsl #2]				//store current bullet
 	ldr r3, =bulletfaces		//change current bullet's direction to match player's
-	str r2, [r3, r4, lsl #2]
-	//bl drawLazer
+	str r0, [r3, r4, lsl #2]
+	bl drawLazer
 	pop {r4, r5, pc}
 
 npcUp:
@@ -595,8 +613,10 @@ npcUp:
 	ldr r1, =npcys
 	ldr r2, [r1, r0, lsl #2]
 	cmp r2, #0
-	beq endSub
-	sub r2, r2, #1
+	movle r2, #0
+	strle r2, [r1, r0, lsl #2]
+	ble endSub2
+	sub r2, r2, #5
 	str r2, [r1, r0, lsl #2]
 	pop {pc}
 	
@@ -609,10 +629,11 @@ npcDown:
 	ldr r0, [r0]
 	ldr r1, =npcys
 	ldr r2, [r1, r0, lsl #2]
-	ldr r4, =0x2FF		//767
+	ldr r4, =0x2d0		//720
 	cmp r2, r4
-	beq endSub
-	add r2, r2, #1
+	strle r4, [r1, r0, lsl #2]
+	bge endSub2
+	add r2, r2, #5
 	str r2, [r1, r0, lsl #2]
 	pop {r4, pc}
 	
@@ -626,8 +647,10 @@ npcLeft:
 	ldr r1, =npcxs
 	ldr r2, [r1, r0, lsl #2]
 	cmp r2, #0
-	beq endSub
-	sub r2, r2, #1
+	movle r2, #0
+	strle r2, [r1, r0, lsl #2]
+	ble endSub2
+	sub r2, r2, #5
 	str r2, [r1, r0, lsl #2]
 	pop {pc}
 	
@@ -640,10 +663,11 @@ npcRight:
 	ldr r0, [r0]
 	ldr r1, =npcxs
 	ldr r2, [r1, r0, lsl #2]
-	ldr r4, =0x3FF		//1023
+	ldr r4, =0x3de		//990
 	cmp r2, r4
-	beq endSub
-	sub r2, r2, #1
+	strle r4, [r1, r0, lsl #2]
+	bge endSub2
+	sub r2, r2, #5
 	str r2, [r1, r0, lsl #2]
 	pop {r4, pc}
 	
@@ -880,6 +904,9 @@ victory:
 	
 endSub:
 	pop {pc}
+
+endSub2:
+	bx lr
 	
 .section .data
 
