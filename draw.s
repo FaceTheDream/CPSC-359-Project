@@ -573,8 +573,8 @@ leftEnd2:
 
 leftEnd:
 
-    .unreq  xStart
-    .unreq  yStart
+    .unreq  currentX
+    .unreq  currentY
     .unreq  height
     .unreq  colour
     .unreq  i
@@ -630,13 +630,13 @@ downEnd2:
 
 downEnd:
 	
-    .unreq  xStart
-    .unreq  yStart
+    .unreq  currentX
+    .unreq  currentY
     .unreq  height
     .unreq  colour
     .unreq  i
     .unreq  xMin
-    .unreq  yMax
+    .unreq  xMax
 
 	pop		{r4-r10, pc}
 
