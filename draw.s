@@ -530,44 +530,46 @@ drawTriangleLeft:
 	// r2 is height
 	// r3 is colour
 	push	{r4-r10, lr}
-    xStart       .req        r4
-    yStart  .req        r5
-    height  .req        r6
-    colour  .req        r7
-    i       .req        r8
-    ymin    .req        r9
-    ymax    .req        r10
+    
+    currentX    .req        r4
+    currentY    .req        r5
+    height      .req        r6
+    colour      .req        r7
+    i           .req        r8
+    ymin        .req        r9
+    ymax        .req        r10
 
-	mov		r4, r0	//x start
-	mov		r5, r1	//y start
-	mov		r6, r2	//height
-	mov		r7, r3	//colour
-	mov		r8, #0	//iterator
-	mov		r9, r5  //ymin
-	mov		r10, r5	//ymax
+	mov		currentX, r0	//x start
+	mov		currentY, r1	//y start
+	mov		height, r2	//height
+	mov		colour, r3	//colour
+	mov		i, #0	//iterator
+	mov		ymin, r5  //ymin
+	mov		ymax, r5	//ymax
 
 leftCheckHeight:
-    cmp i, height
-    bge leftEnd
+    cmp i, height       //compares i and height
+    bge leftEnd         //branches to end if i >= height
 
 leftCheckWidth:
-    cmp ymin, yStart
-    bgt leftEnd2
+    cmp currentY, ymin  //compares current y with y min
+    bgt leftEnd2        //branches to end if current y >= y min
 
-    mov r0, xStart
-    mov r1, yStart
-    mov r3, colour
-    bl	drawPixel
+    mov r0, currentX    //moves current x into r0
+    mov r1, currentY    //moves current y into r1
+    mov r2, colour      //moves colour into r2
+    bl drawPixel        //calls drawPixel
 
-    add ystart, #1
+    add currentY, #1    //increments current y
+    b   leftCheckWidth  //branches to top of loop
 
 leftEnd2:
-    sub ymin, #1
-    add ymax, #1
-    mov yStart, ymin
-    add i, #1
-    add xStart, #1
-    b   leftCheckHeight
+    sub ymin, #1        //decrements ymin
+    add ymax, #1        //incremnets y max
+    mov currentY, ymin  //current y = y min
+    add i, #1           //increments i
+    add currentX, #1    //increments current x to draw next column to the right
+    b   leftCheckHeight //branches to top of loop
 
 leftEnd:
 
@@ -588,38 +590,54 @@ drawTriangleDown:
 // r2 is the height
 // r3 is the colour
 	push	{r4-r10, lr}
-	mov		r4, r0		//x start
-	mov		r5, r1		//y start
-	mov		r6, r2		//height
-	mov		r7, r3		//colour
-	mov		r8, #0		//height counter
-	mov		r9, r4		//xMin for each row
-	mov		r10, r4		//xMax for each row
+    currentX    .req         r4
+    currentY    .req         r5
+    height      .req         r6
+    colour      .req         r7
+    i           .req         r8
+    xMin        .req         r9
+    xMax        .req         r10
+
+	mov		currentX, r0	//x start
+	mov		currentY, r1	//y start
+	mov		height, r2		//height
+	mov		colour, r3		//colour
+	mov		i, #0		    //counter
+	mov		xMin, r4		//xMin for each row
+	mov		xMax, r4		//xMax for each row
 
 downCheckHeight:
-	cmp		r8, r6
-	bge		downEnd
+	cmp		i, height       //compares height and i
+	bge		downEnd         //branches if i >= height
 	
 downCheckWidth:
-	cmp		r4,	r10
-	bgt		downEnd2
-	mov		r0, r4
-	mov		r1, r5
-	mov		r2, r7
-	bl		drawPixel
-	add		r4, #1
-	b	    downCheckWidth
+	cmp		currentX, xMax  //compares current x with max
+	bgt		downEnd2        //branches if current x > max
+	mov		r0, currentX    //moves value of x into r0
+	mov		r1, currentY    //moves value of y into r1
+	mov		r2, colour      //moves value of colour into r2
+	bl		drawPixel       //calls drawPixel
+	add		currentX, #1    //increments currentX
+	b	    downCheckWidth  //branches to top of loop
 
 downEnd2:
-	sub		r9, #1
-	add		r10, #1
-	mov		r4, r9
-	sub		r5,	#1
-	add		r8, #1
-	b		downCheckHeight
+	sub		xMin, #1        //decrements xMin
+	add		xMax, #1        //increments xMax
+	mov		currentX, xMin  //sets current X to xMin
+	sub		currentY,	#1  //subtracts 1 from currentY to draw next row to the left
+	add		i, #1           //increments counter
+	b		downCheckHeight //branches to top of loop
 
 downEnd:
 	
+    .unreq  xStart
+    .unreq  yStart
+    .unreq  height
+    .unreq  colour
+    .unreq  i
+    .unreq  xMin
+    .unreq  yMax
+
 	pop		{r4-r10, pc}
 
 drawTriangleRight:
@@ -1007,22 +1025,16 @@ drawLazer: //draws player lazer projectile
 	mov	r3, r0 		// x location (xMin)
 	mov	r4, r1 		// y location (yMin)
 	ldr	r5, =lazerSize
-	mov	r8, r5
-	ldr	r6, [r5] 	//length
-	ldr	r5, [r5,#4] 	//width
-	ldr	r7, =lazerColour
-	ldr	r7, [r7]
-	push	{r3}
-	push	{r4}
-	push 	{r7}
-	push 	{r5}
-	push 	{r6}
+
+
+    mov r7, #10
+    mov r6, #1
+	ldr	r5, =lazerColour
+	ldr	r5, [r5]
+
+    push    {r3-r7}
 	bl	drawRect
-	pop	{r3}
-	pop	{r4}
-	pop	{r7}
-	pop	{r5}
-	pop	{r6}
+	pop	{r3-r7}
 	mov	r0, r8
 	pop 	{r3-r8, pc}		//restore registers
 
