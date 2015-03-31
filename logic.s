@@ -5,7 +5,7 @@
 start:	//start up the game
 	push {lr}
 	ldr r0, =score	//set score to 0
-	mov r1, #20
+	mov r1, #0
 	str r1, [r0]
 	ldr r0, =playerx	//move player to middle of screen
 	ldr r1, =0x200		//512
@@ -67,6 +67,43 @@ start:	//start up the game
 	ldr r0, =crntbullet	//reset bullet counter
 	mov r1, #0
 	str r1, [r0]
+
+	ldr r0, =bulletxs	//set each npc's hp
+	mov r1, #0
+	str r1, [r0]
+	str r1, [r0, #4]
+	str r1, [r0, #8]
+	str r1, [r0, #12]
+	str r1, [r0, #16]
+	str r1, [r0, #20]
+	str r1, [r0, #24]
+	str r1, [r0, #28]
+	str r1, [r0, #32]
+	str r1, [r0, #36]
+	str r2, [r0, #40]
+	str r2, [r0, #44]
+	str r2, [r0, #48]
+	str r2, [r0, #52]
+	str r2, [r0, #56]
+
+	ldr r0, =bulletys	//set each npc's hp
+	ldr r1, =0x2ff
+	str r1, [r0]
+	str r1, [r0, #4]
+	str r1, [r0, #8]
+	str r1, [r0, #12]
+	str r1, [r0, #16]
+	str r1, [r0, #20]
+	str r1, [r0, #24]
+	str r1, [r0, #28]
+	str r1, [r0, #32]
+	str r1, [r0, #36]
+	str r2, [r0, #40]
+	str r2, [r0, #44]
+	str r2, [r0, #48]
+	str r2, [r0, #52]
+	str r2, [r0, #56]
+
 	ldr r0, =npcys		//set each npc's y position
 	mov r1, #0		//input to store
 	mov r2, #0		//npc counter
@@ -169,7 +206,7 @@ npcStuff:
 	ldr r5, =npchp
 	ldr r5, [r5, r1, lsl #2]	//r5 = current npc's hp
 	cmp r5, #0					//skip update if hp = 0
-	beq modLoop3
+	ble modLoop3
 	//puts random number %4 in r2
 	ldr r3, =0x5				//5
 	ldr r2, =0x20003004			//clock address
@@ -188,12 +225,20 @@ modLoopE:
 	//ldr r6, =currentnpc				//find the npc to move
 	//str r1, [r6]
 	cmp r2, #0
+	ldreq r3, =currentnpcface
+	streq r2, [r3]
 	bleq npcUp
 	cmp r2, #1
+	ldreq r3, =currentnpcface
+	streq r2, [r3]
 	bleq npcDown
 	cmp r2, #2
+	ldreq r3, =currentnpcface
+	streq r2, [r3]
 	bleq npcLeft
 	cmp r2, #3
+	ldreq r3, =currentnpcface
+	streq r2, [r3]
 	bleq npcRight
 	//puts random number %10 in r2
 	ldr r2, =0x20003004				//clock address
@@ -212,7 +257,7 @@ modLoop2E:
 	add r2, r2, #10*/
 	mov r2, #0
 	cmp r2, #0				//if the random number from 0-9 is 0, npc shoots a bullet
-	bleq npcShoot
+	//bleq npcShoot
 
 modLoop3:
 	ldr r2, =currentnpc
@@ -425,7 +470,7 @@ vicLoop:
 	ldr r6, =npchp				//get array of npcs' hp values
 	ldr r6, [r6, r4, lsl #2]
 	cmp r6, #0					//if any npc has more than 1 hp, no victory
-	bne colLoop3s
+	bgt colLoop3s
 	cmp r4, r5					//if last npc is reached and all have 0 hp, a winner is you
 	beq victory
 	add r4, r4, #1				//else, check next npc
@@ -696,15 +741,15 @@ npcRight:
 	pop {r4, pc}
 	
 npcShoot:
-	push {r4, r5, lr}
+	push {r4, r5, r6, lr}
 	ldr r5, =currentnpc
 	ldr r5, [r5]
-	ldr r0, =currentnpcface
-	ldr r0, [r0]
-	ldr r1, =npcxs
+	ldr r6, =currentnpcface
+	ldr r6, [r6]
+	ldr r0, =npcxs
+	ldr r0, [r0, r5, lsl #2]
+	ldr r1, =npcys
 	ldr r1, [r1, r5, lsl #2]
-	ldr r2, =npcys
-	ldr r2, [r2, r5, lsl #2]
 	ldr r3, =shotbullet
 	ldr r4, [r3]
 	cmp r4, #15
@@ -712,14 +757,14 @@ npcShoot:
 	cmp r4, #15
 	addlt r4, r4, #1
 	str r4, [r3]
+	ldr r2, =bulletfaces
+	str r6, [r2, r4, lsl #2]
 	ldr r3, =bulletxs
 	str r0, [r3, r4, lsl #2]
 	ldr r3, =bulletys
 	str r1, [r3, r4, lsl #2]
-	ldr r3, =bulletfaces
-	str r3, [r3, r4, lsl #2]
 	bl drawLazer
-	pop {r4, r5, pc}
+	pop {r4, r5, r6, pc}
 	
 drawScreen:
 	push {r0,r4,r5,lr}
@@ -898,18 +943,26 @@ drawScreen:
 
 gameOver:
 	bl drawGameOverScreen
+	bl drawAuthorNames
+	bl drawGameTitle
 	bl readSNES
-	ldr r3, =0x100 //'a' button
-	tst r0, r3
-	beq start
+	ldr r3, =0x00FFFF //any button
+	teq r0, r3
+	bne start
 	b gameOver
 	
 victory:
 	bl drawVictoryScreen
+	bl drawAuthorNames
+	bl drawGameTitle
+	bl drawScore
+	ldr r0, =score
+	ldr r0, [r0]
+	bl drawScoreNum
 	bl readSNES
-	ldr r3, =0x100 //'a' button
-	tst r0, r3
-	beq start
+	ldr r3, =0x00FFFF //any button
+	teq r0, r3
+	bne start
 	b victory
 	
 endSub:

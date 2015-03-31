@@ -144,10 +144,10 @@ finishReading:
     bl writeClock
 testPulse:
     add i, #1           //increments i
-    cmp i, #16
+    cmp i, #17
     blt pulseLoop       //branches if i < 16 to start of loop
 
-    ror buttons, #17    //rotates to get the correct format
+    ror buttons, #16    //rotates to get the correct format
     mov r0, buttons     //moves buttons to r0 to be returned
     pop {r5,r6,pc}
     .unreq  buttons     //unregisters buttons
