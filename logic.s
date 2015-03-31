@@ -316,7 +316,7 @@ bullDown:		//move current bullet down
 	ldr r0, [r0]
 	ldr r8, =bulletys
 	ldr r2, [r8, r0, lsl #2]
-	add r2, r2, #1			//change this to change speed of bullet
+	add r2, r2, #15			//change this to change speed of bullet
 	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
@@ -331,7 +331,7 @@ bullLeft:		//move current bullet left
 	ldr r0, [r0]
 	ldr r8, =bulletxs
 	ldr r2, [r8, r0, lsl #2]
-	sub r2, r2, #1			//change this to change speed of bullet
+	sub r2, r2, #15			//change this to change speed of bullet
 	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
@@ -345,7 +345,7 @@ bullRight:			//move current bullet right
 	ldr r0, [r0]
 	ldr r8, =bulletxs
 	ldr r2, [r8, r0, lsl #2]
-	add r2, r2, #1			//change this to change speed of bullet
+	add r2, r2, #15			//change this to change speed of bullet
 	str r2, [r8, r0, lsl #2]
 	ldr r1, =bulletfaces
 	ldr r3, [r1, r0, lsl #2]
