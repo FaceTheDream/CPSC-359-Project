@@ -8,9 +8,6 @@
 
 
 initSNES:
-    //Setting GPIO pin 11 (Clock) to output
-
-
 
     //Setting GPIO pin 9 (Latch) to output
 
@@ -204,7 +201,7 @@ rowLoop$:
 	mov r0, px
     mov     r1, py
     mov     r2, colour
-	bl		drawPixel			// draw red pixel at (px, py)
+	bl		drawPixel			// draw a coloured pixel at (px, py)
 
 noPixel$:
 	add		px,		#1			// increment x coordinate by 1
@@ -226,45 +223,45 @@ noPixel$:
 
 	pop		{r4-r10, pc}
 
-
+    //Draws the word "Score" at the top left position of the screen
 .globl drawScore
 drawScore:
 	push {lr}
-    mov r1, #0
-    mov r2, #0
-    ldr r3, =0x0000
-    mov r0, #'S'
-    bl drawChar
+    mov r1, #0          //sets x position
+    mov r2, #0          //sets y position
+    ldr r3, =0x0000     //sets colour for character
+    mov r0, #'S'        //moves character into r0
+    bl drawChar         //draws character
 
-    mov r1, #10
-    mov r2, #0
-    ldr r3, =0x0000
-    mov r0, #'c'
-    bl drawChar
+    mov r1, #10         //sets x position
+    mov r2, #0          //sets y position
+    ldr r3, =0x0000     //sets colour for character
+    mov r0, #'c'        //moves character into r0
+    bl drawChar         //draws character
 
-    mov r1, #20
-    mov r2, #0
-    ldr r3, =0x0000
-    mov r0, #'o'
-    bl drawChar
+    mov r1, #20          //sets x position
+    mov r2, #0          //sets y position
+    ldr r3, =0x0000     //sets colour for character
+    mov r0, #'o'        //moves character into r0
+    bl drawChar         //draws character
 
-    mov r1, #30
-    mov r2, #0
-    ldr r3, =0x0000
-    mov r0, #'r'
-    bl drawChar
+    mov r1, #30          //sets x position
+    mov r2, #0          //sets y position
+    ldr r3, =0x0000     //sets colour for character
+    mov r0, #'r'        //moves character into r0
+    bl drawChar         //draws character
 
-    mov r1, #40
-    mov r2, #0
-    ldr r3, =0x0000
-    mov r0, #'e'
-    bl drawChar
+    mov r1, #40          //sets x position
+    mov r2, #0          //sets y position
+    ldr r3, =0x0000     //sets colour for character
+    mov r0, #'e'        //moves character into r0
+    bl drawChar         //draws character
 
-    mov r1, #50
-    mov r2, #0
-    ldr r3, =0x0000
-    mov r0, #':'
-    bl drawChar
+    mov r1, #50          //sets x position
+    mov r2, #0          //sets y position
+    ldr r3, =0x0000     //sets colour for character
+    mov r0, #':'        //moves character into r0
+    bl drawChar         //draws character
 
     pop {pc}
 
@@ -273,7 +270,9 @@ drawScore:
 drawScoreNum:
     push {r4,r5, lr}
 
-    mov r4, r0
+    mov r4, r0          //moves score into r4
+
+    //following code checks to see what number is currently in the hundreds position and then sets the character and branches
 
     cmp r4, #300
     movhs r0, #'3'
@@ -293,11 +292,13 @@ drawScoreNum:
     mov r0, #'0'
 
 drawHundred:
+    //draws the character
     mov r1, #60
     mov r2, #0
     ldr r3, =0x0000
-    b drawChar
+    bl drawChar
 
+    //following code checks to see what number is currently in the tens position and then sets the character and branches
     cmp r4, #90
     movhs r0, #'9'
     subhs r4, #90
@@ -346,11 +347,13 @@ drawHundred:
     mov r0, #'0'
 
 drawTen:
+    //draws the character
     mov r1, #70
     mov r2, #0
     ldr r3, =0x0000
     bl drawChar
 
+    //following code checks to see what number is currently in the ones position and then sets the character and branches
     cmp r4, #9
     moveq r0, #'9'
     beq drawOne
@@ -390,10 +393,11 @@ drawTen:
     mov r0, #'0'
 
 drawOne:
+    //draws the character
     mov r1, #80
     mov r2, #0
     ldr r3, =0x0000
-    b drawChar
+    bl drawChar
 
     pop {r4, r5, pc}
 
